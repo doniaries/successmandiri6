@@ -35,6 +35,15 @@ class Penjual extends Model
             ->latest();
     }
 
+
+    //riwayat bayar
+    public function laporanKeuangan()
+    {
+        return $this->hasMany(LaporanKeuangan::class, 'pihak_terkait', 'nama')
+            ->whereIn('sub_kategori', ['Bayar Hutang', 'Pinjaman'])
+            ->orderBy('tanggal', 'desc');
+    }
+
     public function updateHutang(float $amount, string $type = 'add'): void
     {
         if ($type === 'add') {

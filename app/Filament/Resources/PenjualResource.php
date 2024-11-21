@@ -18,7 +18,7 @@ use Illuminate\Support\Collection;
 use App\Filament\Resources\PenjualResource\Pages;
 use Filament\Tables\Pagination\Pagination;
 use App\Filament\Resources\PenjualResource\Widgets\PenjualStatsOverview;
-use App\Filament\Resources\PenjualResource\Widgets\PenjualHutangTertinggiWidget;
+use App\Filament\Resources\PenjualResource\RelationManagers\RiwayatHutangPinjamanRelationManager;
 
 class PenjualResource extends Resource
 {
@@ -29,15 +29,20 @@ class PenjualResource extends Resource
     protected static ?int $navigationSort = 4;
 
 
-    public static function getWidgets(): array
+    // public static function getWidgets(): array
+    // {
+    //     return [
+    //         PenjualStatsOverview::class,
+    //         PenjualHutangTertinggiWidget::class,
+    //     ];
+    // }
+
+    public static function getRelations(): array
     {
         return [
-            PenjualStatsOverview::class,
-            PenjualHutangTertinggiWidget::class,
+            RiwayatHutangPinjamanRelationManager::class,
         ];
     }
-
-
 
     //---form----//
 
@@ -155,6 +160,9 @@ class PenjualResource extends Resource
                     ->form([
                         Forms\Components\DateTimePicker::make('tanggal')
                             ->label('Tanggal')
+                            ->native(false)
+                            ->timezone('Asia/Jakarta')
+                            ->displayFormat('d/m/Y H:i')
                             ->required()
                             ->default(now()),
 
@@ -302,8 +310,6 @@ class PenjualResource extends Resource
                     }),
             ]);
     }
-
-
 
 
 

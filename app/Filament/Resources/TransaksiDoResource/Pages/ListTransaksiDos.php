@@ -20,7 +20,10 @@ class ListTransaksiDos extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),  // Ubah ini
+            Actions\CreateAction::make()
+                ->icon('heroicon-o-plus')
+                ->color('primary')
+                ->label('Tambah Transaksi'),  // Ubah ini
 
         ];
     }
