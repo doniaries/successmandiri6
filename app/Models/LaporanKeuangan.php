@@ -26,9 +26,9 @@ class LaporanKeuangan extends Model
         'tipe_pihak',
         'cara_pembayaran',
         'file_bukti', // Tambahkan ini
-        'saldo_sebelum', // Tambahkan ini
-        'saldo_sesudah', // Tambahkan ini
-        'mempengaruhi_kas', // Tambahkan ini
+        // 'saldo_sebelum', // Tambahkan ini
+        // 'saldo_sesudah', // Tambahkan ini
+        // 'mempengaruhi_kas', // Tambahkan ini
         'keterangan',
         'created_at',
         'updated_at',

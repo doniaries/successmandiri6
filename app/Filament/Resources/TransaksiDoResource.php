@@ -73,6 +73,7 @@ class TransaksiDoResource extends Resource
                             Forms\Components\DateTimePicker::make('tanggal')
                                 ->label('Tanggal')
                                 ->format('Y-m-d H:i:s')
+                                ->native(false)
                                 ->displayFormat('d/m/Y H:i:s')
                                 ->default(Carbon::now()) // Menggunakan Carbon untuk nilai default
                                 ->required()
@@ -100,6 +101,8 @@ class TransaksiDoResource extends Resource
                                         ->preload()
                                         ->live()
                                         ->required()
+                                        ->hint('+ tambahkan penjual baru')
+                                        ->hintColor('primary')
                                         ->createOptionForm([
                                             Forms\Components\TextInput::make('nama')
                                                 ->label('Nama Penjual')
