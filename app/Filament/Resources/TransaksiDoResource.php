@@ -34,10 +34,10 @@ class TransaksiDoResource extends Resource
     protected static ?int $navigationSort = 1;
 
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::count();
+    // }
 
     public static function getWidgets(): array
     {
@@ -95,6 +95,10 @@ class TransaksiDoResource extends Resource
                                         ->label('Penjual')
                                         ->relationship('penjual', 'nama')
                                         ->searchable()
+                                        ->debounce(500)
+                                        ->preload()
+                                        ->live()
+                                        ->required()
                                         ->createOptionForm([
                                             Forms\Components\TextInput::make('nama')
                                                 ->label('Nama Penjual')
@@ -123,9 +127,6 @@ class TransaksiDoResource extends Resource
                                                     precision: 0
                                                 ),
                                         ])
-                                        ->preload()
-                                        ->live()
-                                        ->required()
                                         ->afterStateUpdated(function ($state, Forms\Set $set) {
                                             if ($state) {
                                                 // Get fresh data penjual

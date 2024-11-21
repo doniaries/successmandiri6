@@ -83,7 +83,7 @@ class TransaksiDo extends Model
     const CARA_BAYAR = [
         'Tunai' => 'Tunai',           // Mempengaruhi saldo kas
         'Transfer' => 'Transfer',      // Tidak mempengaruhi saldo kas
-        'Cair di Luar' => 'Cair di Luar'  // Tidak mempengaruhi saldo kas
+        'cair di luar' => 'cair di luar'  // Tidak mempengaruhi saldo kas
     ];
 
     // Panggil method dari trait
@@ -140,28 +140,6 @@ class TransaksiDo extends Model
         return $this->penjual ? $this->penjual->hutang : 0;
     }
 
-    // Di Model TransaksiDo
-    // public function generateQrCode()
-    // {
-    //     $renderer = new ImageRenderer(
-    //         new RendererStyle(300),
-    //         new SvgImageBackEnd()
-    //     );
-
-    //     $writer = new Writer($renderer);
-    //     $qrData = [
-    //         'nomor' => $this->nomor,
-    //         'tanggal' => $this->tanggal->format('d/m/Y H:i'),
-    //         'penjual' => $this->penjual->nama,
-    //         'total' => $this->total,
-    //         'hutang_awal' => $this->hutang_awal,
-    //         'pembayaran_hutang' => $this->pembayaran_hutang,
-    //         'sisa_hutang' => $this->sisa_hutang_penjual,
-    //         'timestamp' => now()->timestamp
-    //     ];
-
-    //     return $writer->writeString(json_encode($qrData));
-    // }
 
 
     //cetak pdf di transaksi DO

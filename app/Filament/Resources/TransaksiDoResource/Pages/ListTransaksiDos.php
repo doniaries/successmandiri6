@@ -65,11 +65,11 @@ class ListTransaksiDos extends ListRecords
                 ->badge(fn() => $this->getModel()::where('cara_bayar', 'Transfer')->count())
                 ->badgeColor('info'),
 
-            'cair di luar' => Tab::make('Cair Di Luar')
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('status_bayar', 'Cair Di Luar'))
+            'cair di luar' => Tab::make('cair di luar')
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('status_bayar', 'cair di luar'))
                 ->icon('heroicon-o-check-circle')
-                ->badge(fn() => $this->getModel()::where('status_bayar', 'Cair Di Luar')->count())
-                ->badgeColor('success'),
+                ->badge(fn() => $this->getModel()::where('status_bayar', 'cair di luar')->count())
+                ->badgeColor('danger'),
 
         ];
     }

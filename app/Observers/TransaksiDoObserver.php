@@ -265,8 +265,7 @@ class TransaksiDoObserver
                 'nominal' => $laporan->nominal,
                 'mempengaruhi_kas' => $laporan->mempengaruhi_kas,
                 'cara_pembayaran' => $laporan->cara_pembayaran,
-                'saldo_sebelum' => $laporan->saldo_sebelum,
-                'saldo_sesudah' => $laporan->saldo_sesudah
+
             ]);
 
             return $laporan;

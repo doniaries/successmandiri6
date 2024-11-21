@@ -21,10 +21,10 @@ class OperasionalResource extends Resource
     protected static ?string $navigationLabel = 'Operasional';
     protected static ?int $navigationSort = 5;
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::count();
+    // }
 
     public static function form(Form $form): Form
     {

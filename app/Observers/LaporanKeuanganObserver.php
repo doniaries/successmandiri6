@@ -47,8 +47,7 @@ class LaporanKeuanganObserver
                     'tipe_pihak' => 'penjual',
                     'cara_pembayaran' => 'Tunai',
                     'keterangan' => "Pembayaran hutang dari DO {$transaksiDo->nomor}",
-                    'saldo_sebelum' => $saldoAwal + $totalPemasukan,
-                    'saldo_sesudah' => $saldoAwal + $totalPemasukan + $transaksiDo->pembayaran_hutang
+
                 ]);
 
                 // Update saldo perusahaan (pemasukan tunai)
@@ -61,16 +60,13 @@ class LaporanKeuanganObserver
                 // Validasi saldo untuk pembayaran tunai
                 if ($transaksiDo->cara_bayar === 'Tunai') {
                     if ($transaksiDo->sisa_bayar > $perusahaan->saldo) {
-                        throw new \Exception(
-                            "Saldo tidak mencukupi untuk pembayaran tunai.\n" .
-                                "Saldo: Rp " . number_format($perusahaan->saldo, 0, ',', '.') . "\n" .
-                                "Dibutuhkan: Rp " . number_format($transaksiDo->sisa_bayar, 0, ',', '.')
-                        );
+                        throw new \Exception("Saldo tidak mencukupi untuk pembayaran tunai");
                     }
-
-                    // Kurangi saldo perusahaan untuk pembayaran tunai
+                    // Update saldo hanya untuk pembayaran tunai
                     $perusahaan->decrement('saldo', $transaksiDo->sisa_bayar);
                 }
+
+
 
                 // Catat pengeluaran
                 $saldoSebelum = $perusahaan->saldo;
@@ -90,7 +86,7 @@ class LaporanKeuanganObserver
                     'saldo_sebelum' => $saldoSebelum,
                     'saldo_sesudah' => $transaksiDo->cara_bayar === 'Tunai' ?
                         $saldoSebelum - $transaksiDo->sisa_bayar :
-                        $saldoSebelum // Jika transfer tidak mempengaruhi saldo
+                        $saldoSebelum // Saldo tidak berubah untuk Transfer dan Cair di Luar
                 ]);
             }
 

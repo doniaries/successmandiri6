@@ -120,7 +120,7 @@
         }
 
         .signature-box {
-            min-height: 6rem;
+            min-height: 1rem;
             margin: 1rem auto;
             width: 60%;
         }
@@ -327,7 +327,7 @@
             </tr>
             @if ($detailPemasukan['saldo'] > 0)
                 <tr>
-                    <td>&nbsp;&nbsp;- Saldo</td>
+                    <td>&nbsp;&nbsp;- Tambah Saldo</td>
                     <td class="text-right text-success">Rp {{ number_format($detailPemasukan['saldo'], 0, ',', '.') }}
                     </td>
                 </tr>

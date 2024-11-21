@@ -95,11 +95,14 @@ class TransaksiDoStatWidget extends BaseWidget
                 DB::raw('COALESCE(SUM(biaya_lain), 0) as biaya_lain'),
                 DB::raw('COALESCE(SUM(pembayaran_hutang), 0) as pembayaran_hutang'),
                 DB::raw('COALESCE(SUM(upah_bongkar + biaya_lain + pembayaran_hutang), 0) as total_pemasukan'),
+                // Update query untuk cara bayar
                 DB::raw('COALESCE(SUM(CASE WHEN cara_bayar = "Tunai" THEN sisa_bayar ELSE 0 END), 0) as total_tunai'),
                 DB::raw('COALESCE(SUM(CASE WHEN cara_bayar = "Transfer" THEN sisa_bayar ELSE 0 END), 0) as total_transfer'),
+                DB::raw('COALESCE(SUM(CASE WHEN cara_bayar = "Cair di Luar" THEN sisa_bayar ELSE 0 END), 0) as total_cair_di_luar'),
                 DB::raw('COALESCE(SUM(sisa_bayar), 0) as total_pengeluaran'),
                 DB::raw('COUNT(CASE WHEN cara_bayar = "Tunai" THEN 1 END) as tunai_count'),
                 DB::raw('COUNT(CASE WHEN cara_bayar = "Transfer" THEN 1 END) as transfer_count'),
+                DB::raw('COUNT(CASE WHEN cara_bayar = "Cair di Luar" THEN 1 END) as cair_di_luar_count'),
             ])
             ->get()
             ->map(function ($item) {
@@ -153,6 +156,14 @@ class TransaksiDoStatWidget extends BaseWidget
                 "Transfer (%d DO): Rp %s",
                 $stats['transfer_count'],
                 number_format($stats['total_transfer'], 0, ',', '.')
+            );
+        }
+
+        if ($stats['total_cair_di_luar'] > 0) {
+            $components[] = sprintf(
+                "Cair di Luar (%d DO): Rp %s",
+                $stats['cair_di_luar_count'],
+                number_format($stats['total_cair_di_luar'], 0, ',', '.')
             );
         }
 
