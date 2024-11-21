@@ -22,6 +22,7 @@ use Filament\Tables\Actions\Action as TableAction;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Services\LaporanKeuanganService;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\LaporanKeuanganResource\Pages;
 use App\Filament\Resources\LaporanKeuanganResource\RelationManagers;
@@ -154,10 +155,21 @@ class LaporanKeuanganResource extends Resource
                             $endDate = Carbon::parse($data['end_date'])->endOfDay();
 
 
-                            // Gunakan service untuk mendapatkan data
-                            $laporanService = app(\App\Services\LaporanKeuanganService::class);
+                            // Get laporan data dari service
+                            $laporanService = app(LaporanKeuanganService::class);
                             $laporanData = $laporanService->getLaporanData($startDate, $endDate);
-
+                            // Prepare additional data
+                            $viewData = array_merge($laporanData, [
+                                'startDate' => $startDate,
+                                'endDate' => $endDate,
+                                'perusahaan' => \App\Models\Perusahaan::firstOrFail(),
+                                'user' => auth()->user(),
+                                // Format data untuk badges dan styling
+                                'jenisTransaksi' => [
+                                    'Pemasukan' => 'success',
+                                    'Pengeluaran' => 'danger'
+                                ]
+                            ]);
 
                             // Get transaksi data
                             $transaksi = LaporanKeuangan::whereBetween('tanggal', [$startDate, $endDate])
@@ -186,15 +198,8 @@ class LaporanKeuanganResource extends Resource
                             $saldoAkhir = $perusahaan->saldo + $totalPemasukan - $totalPengeluaran;
 
                             // Generate PDF
-                            $pdf = Pdf::loadView('laporan.keuangan-harian', array_merge(
-                                $laporanData,
-                                [
-                                    'startDate' => $startDate,
-                                    'endDate' => $endDate,
-                                    'perusahaan' => \App\Models\Perusahaan::firstOrFail(),
-                                    'user' => auth()->user(),
-                                ]
-                            ));
+                            $pdf = Pdf::loadView('laporan.keuangan-harian', $viewData);
+                            $pdf->setPaper('a4', 'landscape');
 
                             return response()->streamDownload(
                                 fn() => print($pdf->output()),

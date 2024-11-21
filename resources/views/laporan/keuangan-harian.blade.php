@@ -244,7 +244,7 @@
             @forelse($transaksiDo as $do)
                 <tr>
                     <td>{{ Carbon\Carbon::parse($do->tanggal)->format('d/m/y H:i') }}</td>
-                    <td>{{ $do->nomor }}</td>
+                    <td>{{ $do->nomor_referensi }}</td> <!-- Ganti dari $do->nomor -->
                     <td>
                         <span class="badge badge-{{ $do->jenis_transaksi === 'Pemasukan' ? 'success' : 'danger' }}">
                             {{ $do->jenis_transaksi }}
@@ -314,25 +314,80 @@
     <!-- Bagian D: Ringkasan Kas -->
     <h4 class="section-title">D. Ringkasan Kas</h4>
     <table class="summary-table">
+        <!-- Saldo Awal -->
         <tr>
             <td>Saldo Awal</td>
-            <td class="text-right">{{ number_format($saldoAwal, 0, ',', '.') }}</td>
+            <td class="text-right">Rp {{ number_format($saldoAwal, 0, ',', '.') }}</td>
+        </tr>
+
+        <!-- Detail Pemasukan -->
+        @if ($detailPemasukan['saldo'] > 0 || $detailPemasukan['do'] > 0 || $detailPemasukan['operasional'] > 0)
+            <tr>
+                <td colspan="2"><strong>Pemasukan:</strong></td>
+            </tr>
+            @if ($detailPemasukan['saldo'] > 0)
+                <tr>
+                    <td>&nbsp;&nbsp;- Saldo</td>
+                    <td class="text-right text-success">Rp {{ number_format($detailPemasukan['saldo'], 0, ',', '.') }}
+                    </td>
+                </tr>
+            @endif
+            @if ($detailPemasukan['do'] > 0)
+                <tr>
+                    <td>&nbsp;&nbsp;- Transaksi DO</td>
+                    <td class="text-right text-success">Rp {{ number_format($detailPemasukan['do'], 0, ',', '.') }}
+                    </td>
+                </tr>
+            @endif
+            @if ($detailPemasukan['operasional'] > 0)
+                <tr>
+                    <td>&nbsp;&nbsp;- Operasional</td>
+                    <td class="text-right text-success">Rp
+                        {{ number_format($detailPemasukan['operasional'], 0, ',', '.') }}</td>
+                </tr>
+            @endif
+        @endif
+
+        <!-- Detail Pengeluaran -->
+        @if ($detailPengeluaran['saldo'] > 0 || $detailPengeluaran['do'] > 0 || $detailPengeluaran['operasional'] > 0)
+            <tr>
+                <td colspan="2"><strong>Pengeluaran:</strong></td>
+            </tr>
+            @if ($detailPengeluaran['saldo'] > 0)
+                <tr>
+                    <td>&nbsp;&nbsp;- Saldo</td>
+                    <td class="text-right text-danger">Rp {{ number_format($detailPengeluaran['saldo'], 0, ',', '.') }}
+                    </td>
+                </tr>
+            @endif
+            @if ($detailPengeluaran['do'] > 0)
+                <tr>
+                    <td>&nbsp;&nbsp;- Transaksi DO</td>
+                    <td class="text-right text-danger">Rp {{ number_format($detailPengeluaran['do'], 0, ',', '.') }}
+                    </td>
+                </tr>
+            @endif
+            @if ($detailPengeluaran['operasional'] > 0)
+                <tr>
+                    <td>&nbsp;&nbsp;- Operasional</td>
+                    <td class="text-right text-danger">Rp
+                        {{ number_format($detailPengeluaran['operasional'], 0, ',', '.') }}</td>
+                </tr>
+            @endif
+        @endif
+
+        <!-- Total & Saldo Akhir -->
+        <tr>
+            <td>Total Pemasukan</td>
+            <td class="text-right text-success">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</td>
         </tr>
         <tr>
-            <td>Perubahan Saldo</td>
-            <td class="text-right">{{ number_format($totalPerubahanSaldo, 0, ',', '.') }}</td>
-        </tr>
-        <tr>
-            <td>Total Transaksi DO</td>
-            <td class="text-right">{{ number_format($totalTransaksiDo, 0, ',', '.') }}</td>
-        </tr>
-        <tr>
-            <td>Total Operasional</td>
-            <td class="text-right">{{ number_format($totalOperasional, 0, ',', '.') }}</td>
+            <td>Total Pengeluaran</td>
+            <td class="text-right text-danger">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</td>
         </tr>
         <tr>
             <td><strong>Saldo Akhir</strong></td>
-            <td class="text-right"><strong>{{ number_format($saldoAkhir, 0, ',', '.') }}</strong></td>
+            <td class="text-right"><strong>Rp {{ number_format($saldoAkhir, 0, ',', '.') }}</strong></td>
         </tr>
     </table>
 

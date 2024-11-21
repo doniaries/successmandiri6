@@ -14,17 +14,20 @@ class LaporanKeuanganObserver
         try {
             DB::beginTransaction();
 
-            // Ambil data perusahaan sekali saja
-            $perusahaan = Perusahaan::first();
+            // Ambil data perusahaan dengan locking untuk mencegah race condition
+            $perusahaan = Perusahaan::lockForUpdate()->first();
             if (!$perusahaan) {
                 throw new \Exception('Data perusahaan tidak ditemukan');
             }
+
+            // Simpan saldo awal sebelum transaksi
+            $saldoAwal = $perusahaan->saldo;
 
             // Eager load relasi penjual untuk mencegah n+1 query
             $transaksiDo->load('penjual');
 
             // 1. Pemasukan tunai (upah bongkar & biaya lain)
-            $this->catatPemasukanTunai($transaksiDo);
+            $totalPemasukan = $this->catatPemasukanTunai($transaksiDo, $saldoAwal);
 
             // 2. Handle pembayaran hutang (jika ada)
             if ($transaksiDo->pembayaran_hutang > 0) {
@@ -43,11 +46,14 @@ class LaporanKeuanganObserver
                     'pihak_terkait' => $transaksiDo->penjual->nama,
                     'tipe_pihak' => 'penjual',
                     'cara_pembayaran' => 'Tunai',
-                    'keterangan' => "Pembayaran hutang dari DO {$transaksiDo->nomor}"
+                    'keterangan' => "Pembayaran hutang dari DO {$transaksiDo->nomor}",
+                    'saldo_sebelum' => $saldoAwal + $totalPemasukan,
+                    'saldo_sesudah' => $saldoAwal + $totalPemasukan + $transaksiDo->pembayaran_hutang
                 ]);
 
                 // Update saldo perusahaan (pemasukan tunai)
                 $perusahaan->increment('saldo', $transaksiDo->pembayaran_hutang);
+                $saldoAwal += $transaksiDo->pembayaran_hutang;
             }
 
             // 3. Handle sisa bayar berdasarkan cara bayar
@@ -62,11 +68,12 @@ class LaporanKeuanganObserver
                         );
                     }
 
-                    // Kurangi saldo perusahaan
+                    // Kurangi saldo perusahaan untuk pembayaran tunai
                     $perusahaan->decrement('saldo', $transaksiDo->sisa_bayar);
                 }
 
                 // Catat pengeluaran
+                $saldoSebelum = $perusahaan->saldo;
                 $this->createLaporan([
                     'tanggal' => $transaksiDo->tanggal,
                     'jenis_transaksi' => 'Pengeluaran',
@@ -79,13 +86,23 @@ class LaporanKeuanganObserver
                     'pihak_terkait' => $transaksiDo->penjual->nama,
                     'tipe_pihak' => 'penjual',
                     'cara_pembayaran' => $transaksiDo->cara_bayar,
-                    'keterangan' => "Pembayaran DO {$transaksiDo->nomor} via {$transaksiDo->cara_bayar}"
+                    'keterangan' => "Pembayaran DO {$transaksiDo->nomor} via {$transaksiDo->cara_bayar}",
+                    'saldo_sebelum' => $saldoSebelum,
+                    'saldo_sesudah' => $transaksiDo->cara_bayar === 'Tunai' ?
+                        $saldoSebelum - $transaksiDo->sisa_bayar :
+                        $saldoSebelum // Jika transfer tidak mempengaruhi saldo
                 ]);
             }
 
             DB::commit();
 
-            $this->logTransaksi($transaksiDo);
+            // Log final saldo
+            Log::info('Transaksi DO selesai:', [
+                'saldo_awal' => $saldoAwal,
+                'saldo_akhir' => $perusahaan->fresh()->saldo,
+                'cara_bayar' => $transaksiDo->cara_bayar,
+                'nominal' => $transaksiDo->sisa_bayar
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error mencatat transaksi DO ke laporan:', [
@@ -200,6 +217,7 @@ class LaporanKeuanganObserver
         try {
             DB::beginTransaction();
 
+            // Lock perusahaan row untuk update
             $perusahaan = Perusahaan::lockForUpdate()->first();
             if (!$perusahaan) {
                 throw new \Exception('Data perusahaan tidak ditemukan');
@@ -208,7 +226,16 @@ class LaporanKeuanganObserver
             // Catat saldo sebelum transaksi
             $saldoSebelum = $perusahaan->saldo;
 
-            // Catat ke laporan keuangan
+            // Update saldo berdasarkan jenis operasional
+            if ($operasional->operasional === 'pemasukan') {
+                $saldoSesudah = $saldoSebelum + $operasional->nominal;
+                $perusahaan->increment('saldo', $operasional->nominal);
+            } else {
+                $saldoSesudah = $saldoSebelum - $operasional->nominal;
+                $perusahaan->decrement('saldo', $operasional->nominal);
+            }
+
+            // Catat ke laporan keuangan dengan saldo
             $this->createLaporan([
                 'tanggal' => $operasional->tanggal,
                 'jenis_transaksi' => ucfirst($operasional->operasional),
@@ -223,9 +250,7 @@ class LaporanKeuanganObserver
                 'cara_pembayaran' => 'Tunai',
                 'keterangan' => $operasional->keterangan ?: '-',
                 'saldo_sebelum' => $saldoSebelum,
-                'saldo_sesudah' => $operasional->operasional === 'pemasukan'
-                    ? $saldoSebelum + $operasional->nominal
-                    : $saldoSebelum - $operasional->nominal
+                'saldo_sesudah' => $saldoSesudah
             ]);
 
             // Update saldo perusahaan
@@ -236,12 +261,13 @@ class LaporanKeuanganObserver
             }
 
             DB::commit();
+
             // Log perubahan saldo
-            Log::info('Update saldo perusahaan:', [
+            Log::info('Update saldo dari operasional:', [
                 'saldo_sebelum' => $saldoSebelum,
                 'nominal' => $operasional->nominal,
                 'jenis' => $operasional->operasional,
-                'saldo_sesudah' => $perusahaan->fresh()->saldo
+                'saldo_sesudah' => $saldoSesudah
             ]);
         } catch (\Exception $e) {
             DB::rollBack();

@@ -25,6 +25,10 @@ class LaporanKeuangan extends Model
         'pihak_terkait',
         'tipe_pihak',
         'cara_pembayaran',
+        'file_bukti', // Tambahkan ini
+        'saldo_sebelum', // Tambahkan ini
+        'saldo_sesudah', // Tambahkan ini
+        'mempengaruhi_kas', // Tambahkan ini
         'keterangan',
         'created_at',
         'updated_at',
@@ -92,5 +96,23 @@ class LaporanKeuangan extends Model
     public function scopeAffectsCash($query)
     {
         return $query->where('mempengaruhi_kas', true);
+    }
+
+    // Di dalam model LaporanKeuangan
+
+    public function getFormattedNominalAttribute()
+    {
+        return 'Rp ' . number_format($this->nominal, 0, ',', '.');
+    }
+
+    public function getBadgeColorAttribute()
+    {
+        return $this->jenis_transaksi === 'Pemasukan' ? 'success' : 'danger';
+    }
+
+    // Scope untuk filtering by date range
+    public function scopeDateRange($query, $startDate, $endDate)
+    {
+        return $query->whereBetween('tanggal', [$startDate, $endDate]);
     }
 }

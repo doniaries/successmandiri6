@@ -94,6 +94,29 @@ class TransaksiDo extends Model
         $this->updateSaldoPerusahaan();
     }
 
+    // Di Model TransaksiDo
+    public function handleFileUpload($file)
+    {
+        if ($file) {
+            // Simpan file dengan nama unik
+            $fileName = Str::slug($this->nomor) . '-' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('do-files', $fileName, 'public');
+
+            $this->update([
+                'file_do' => $path
+            ]);
+
+            // Catat di log
+            Log::info('File DO uploaded:', [
+                'nomor_do' => $this->nomor,
+                'file_path' => $path
+            ]);
+
+            return $path;
+        }
+        return null;
+    }
+
     public function penjual(): BelongsTo
     {
         return $this->belongsTo(Penjual::class);
@@ -140,39 +163,12 @@ class TransaksiDo extends Model
     //     return $writer->writeString(json_encode($qrData));
     // }
 
+
+    //cetak pdf di transaksi DO
     public function generatePdf()
     {
         try {
             $perusahaan = Perusahaan::first();
-
-            // // Generate QR code
-            // $qrCode = $this->generateQrCode();
-
-            // // CSS tambahan untuk QR code
-            // $extraCss = "
-            // .qr-container {
-            //     text-align: center;
-            // }
-            // .qr-info {
-            //     font-size: 7pt;
-            //     color: #666;
-            //     margin-top: 3px;
-            // }
-            // .qr-verify {
-            //     font-weight: bold;
-            //     font-size: 8pt;
-            //     color: #333;
-            // }
-            // ";
-
-            // HTML untuk QR code
-            // $qrHtml = "
-            // <div class='qr-container'>
-            //     {$qrCode}
-            //     <div class='qr-verify'>SCAN untuk Verifikasi</div>
-            //     <div class='qr-info'>Dokumen ini dapat diverifikasi<br>melalui QR code di atas</div>
-            // </div>
-            // ";
 
             $pdf = PDF::loadView('pdf.transaksi-do', [
                 'transaksi' => $this,
