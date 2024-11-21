@@ -200,17 +200,20 @@ class LaporanKeuanganObserver
         try {
             DB::beginTransaction();
 
-            $perusahaan = Perusahaan::first();
+            $perusahaan = Perusahaan::lockForUpdate()->first();
             if (!$perusahaan) {
                 throw new \Exception('Data perusahaan tidak ditemukan');
             }
+
+            // Catat saldo sebelum transaksi
+            $saldoSebelum = $perusahaan->saldo;
 
             // Catat ke laporan keuangan
             $this->createLaporan([
                 'tanggal' => $operasional->tanggal,
                 'jenis_transaksi' => ucfirst($operasional->operasional),
                 'kategori' => 'Operasional',
-                'sub_kategori' => $operasional->kategori?->label() ?: '-', // Tambahkan null check
+                'sub_kategori' => $operasional->kategori?->label() ?: '-',
                 'nominal' => $operasional->nominal,
                 'sumber_transaksi' => 'Operasional',
                 'referensi_id' => $operasional->id,
@@ -218,10 +221,14 @@ class LaporanKeuanganObserver
                 'pihak_terkait' => $operasional->nama,
                 'tipe_pihak' => $operasional->tipe_nama,
                 'cara_pembayaran' => 'Tunai',
-                'keterangan' => $operasional->keterangan ?: '-'
+                'keterangan' => $operasional->keterangan ?: '-',
+                'saldo_sebelum' => $saldoSebelum,
+                'saldo_sesudah' => $operasional->operasional === 'pemasukan'
+                    ? $saldoSebelum + $operasional->nominal
+                    : $saldoSebelum - $operasional->nominal
             ]);
 
-            // Update saldo
+            // Update saldo perusahaan
             if ($operasional->operasional === 'pemasukan') {
                 $perusahaan->increment('saldo', $operasional->nominal);
             } else {
@@ -229,6 +236,13 @@ class LaporanKeuanganObserver
             }
 
             DB::commit();
+            // Log perubahan saldo
+            Log::info('Update saldo perusahaan:', [
+                'saldo_sebelum' => $saldoSebelum,
+                'nominal' => $operasional->nominal,
+                'jenis' => $operasional->operasional,
+                'saldo_sesudah' => $perusahaan->fresh()->saldo
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;

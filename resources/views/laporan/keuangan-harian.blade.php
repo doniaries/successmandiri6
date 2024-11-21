@@ -105,8 +105,12 @@
 
         /* Signature section */
         .signature-section {
-            margin-top: 30px;
-            width: 100%;
+            margin-top: 4rem;
+            page-break-inside: avoid;
+        }
+
+        .signature-section p {
+            margin: 0.5rem 0;
         }
 
         .signature-container {
@@ -116,8 +120,9 @@
         }
 
         .signature-box {
-            height: 60px;
-            margin: 10px 0;
+            min-height: 6rem;
+            margin: 1rem auto;
+            width: 60%;
         }
 
         /* Float management */
@@ -331,26 +336,31 @@
         </tr>
     </table>
 
-    <!-- Modified footer with signature section -->
-    <div class="signature-section">
+    <div class="mt-8 signature-section">
         <table width="100%">
             <tr>
-                <td width="40%" class="text-center">
-                    {{-- <p>{{ optional($perusahaan)->kota ?? '' }} Kamang, {{ now()->format('d/m/Y') }}</p> --}}
-                    <p>Pimpinan</p>
-                    <div class="signature-box"></div>
-                    <p><u>{{ optional($perusahaan)->pimpinan ?? '.................................' }}</u></p>
+                <!-- Kolom Pimpinan -->
+                <td width="50%" class="text-center align-top">
+                    <p class="mb-20">Pimpinan</p>
+                    <div class="h-24 signature-box"></div>
+                    <p class="inline-block px-8 mt-2 font-bold border-t border-black">
+                        {{ $perusahaan?->pimpinan ?: '.................................' }}
+                    </p>
                 </td>
 
-                <td width="40%" class="text-center">
-                    <p>{{ optional($perusahaan)->kota ?? '' }} Kamang, {{ now()->format('d/m/Y') }}</p>
-                    <p>Kasir</p>
-                    <div class="signature-box"></div>
-                    <p><u>{{ optional($user)->name ?? '.................................' }}</u></p>
+                <!-- Kolom Kasir -->
+                <td width="50%" class="text-center align-top">
+                    <p class="mb-4">{{ $perusahaan?->kota ?: 'Kamang' }}, {{ now()->translatedFormat('d F Y') }}</p>
+                    <p class="mb-20">Kasir</p>
+                    <div class="h-24 signature-box"></div>
+                    <p class="inline-block px-8 mt-2 font-bold border-t border-black">
+                        {{ $user?->name ?: '.................................' }}
+                    </p>
                 </td>
-
             </tr>
         </table>
+    </div>
+
     </div>
 
     <div class="signature-section">

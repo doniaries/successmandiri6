@@ -273,7 +273,7 @@ class LaporanKeuanganResource extends Resource
             ->striped()
             ->paginated([5, 10, 25, 50, 100, 'all'])
             ->deferLoading()
-            ->poll('5s');
+            ->poll('15s');
     }
 
     public static function getRelations(): array
