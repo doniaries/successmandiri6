@@ -156,7 +156,8 @@ class LaporanKeuanganObserver
         // Cek duplikasi dengan kriteria utama
         $exists = LaporanKeuangan::where([
             'kategori' => $data['kategori'],
-            'jenis_transaksi' => $operasional->operasional === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran',
+            // 'jenis_transaksi' => $operasional->operasional === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran',
+            'jenis_transaksi' => $data['jenis_transaksi'],
             'sub_kategori' => $data['sub_kategori'],
             'referensi_id' => $data['referensi_id'],
             'nominal' => $data['nominal']
