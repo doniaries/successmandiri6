@@ -42,7 +42,7 @@ class TransaksiDoResource extends Resource
     public static function getWidgets(): array
     {
         return [
-            // TransaksiDoStatWidget::class,
+            TransaksiDoStatWidget::class,
         ];
     }
 
