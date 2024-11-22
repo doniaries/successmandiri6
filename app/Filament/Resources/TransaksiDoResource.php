@@ -525,10 +525,12 @@ class TransaksiDoResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('cara_bayar')
                     ->label('Cara Bayar')
+                    ->searchable()
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'Tunai' => 'success',
                         'Transfer' => 'info',
+                        'Cair di Luar' => 'warning',
                         default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('created_at')
