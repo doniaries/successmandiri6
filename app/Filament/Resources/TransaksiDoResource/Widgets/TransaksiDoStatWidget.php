@@ -12,12 +12,20 @@ use Illuminate\Support\Facades\DB;
 class TransaksiDoStatWidget extends BaseWidget
 {
     // Konfigurasi widget
-    protected static ?string $heading = 'Ringkasan Transaksi Hari Ini';
+    // protected static ?string $heading = 'Ringkasan Transaksi Hari Ini';
     protected static ?int $sort = 1;
     protected static ?string $pollingInterval = '15s';
 
     // Lazy loading untuk performa
     protected static bool $isLazy = true;
+
+    // Method untuk menggantikan properti heading
+    public function getHeading(): ?string
+    {
+        return 'Ringkasan Transaksi Hari Ini';
+    }
+
+
 
     //update stats saldo
     #[On(['refresh-widgets', 'saldo-updated'])]
@@ -26,23 +34,22 @@ class TransaksiDoStatWidget extends BaseWidget
         $this->getFilteredStats();
     }
 
-    protected function getStats(): array
+    public function getStats(): array
     {
         try {
-            // Optimasi: Single query untuk perusahaan dengan select kolom yang diperlukan
+            // Get perusahaan dengan eager loading yang optimal
             $perusahaan = Perusahaan::select('id', 'name', 'saldo')->first();
-
             if (!$perusahaan) {
                 return $this->getErrorStats('Data perusahaan tidak ditemukan');
             }
 
-            // Get statistik dalam array (fixed toArray issue)
+            // Get statistik
             $stats = $this->getTransaksiStats();
 
             return [
                 // Saldo Stats
                 Stat::make('Saldo Kas', 'Rp ' . number_format($perusahaan->saldo, 0, ',', '.'))
-                    ->description('Update otomatis setiap transaksi')
+                    ->description('Update otomatis setiap 15 detik')
                     ->descriptionIcon('heroicon-m-arrow-path')
                     ->color('success'),
 
