@@ -28,6 +28,26 @@ class ListTransaksiDos extends ListRecords
         ];
     }
 
+    // Handle filter date changes
+    public function updatedTableFilters(): void
+    {
+        $filter = $this->getTableFilters()['created_at'] ?? null;
+        if ($filter) {
+            $this->dispatch('filter-transaksi', [
+                'startDate' => $filter->getState()['created_from'],
+                'endDate' => $filter->getState()['created_to'],
+            ]);
+        }
+    }
+
+    // Handle tab changes
+    public function updatedActiveTab(): void
+    {
+        $this->dispatch('tab-changed', [
+            'tab' => $this->activeTab
+        ]);
+    }
+
 
 
     protected function getHeaderWidgets(): array
@@ -59,20 +79,65 @@ class ListTransaksiDos extends ListRecords
             'tunai' => Tab::make('Tunai')
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'Tunai'))
                 ->icon('heroicon-o-banknotes')
-                ->badge(fn() => $this->getModel()::where('cara_bayar', 'Tunai')->count())
+                ->badge(fn() => $this->getModel()::where('cara_bayar', 'Tunai')
+                    ->when(
+                        request('tableFilters.created_at'),
+                        fn($query) => $query->whereBetween('tanggal', [
+                            request('tableFilters.created_at.created_from'),
+                            request('tableFilters.created_at.created_to')
+                        ])
+                    )->count())
                 ->badgeColor('success'),
 
             'transfer' => Tab::make('Transfer')
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'Transfer'))
                 ->icon('heroicon-o-credit-card')
-                ->badge(fn() => $this->getModel()::where('cara_bayar', 'Transfer')->count())
+                ->badge(fn() => $this->getModel()::where('cara_bayar', 'Transfer')
+                    ->when(
+                        request('tableFilters.created_at'),
+                        fn($query) => $query->whereBetween('tanggal', [
+                            request('tableFilters.created_at.created_from'),
+                            request('tableFilters.created_at.created_to')
+                        ])
+                    )->count())
                 ->badgeColor('info'),
 
-            'cair di luar' => Tab::make('Cair di Luar') // Kapitalisasi nama untuk konsistensi
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'cair di luar')) // Ubah ke cara_bayar
-                ->icon('heroicon-o-check-circle')
-                ->badge(fn() => $this->getModel()::where('cara_bayar', 'cair di luar')->count()) // Ubah ke cara_bayar
-                ->badgeColor('danger'),
+            'cair_luar' => Tab::make('Cair Di Luar')
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'cair di luar'))
+                ->icon('heroicon-o-banknotes')
+                ->badge(fn() => $this->getModel()::where('cara_bayar', 'cair di luar')
+                    ->when(
+                        request('tableFilters.created_at'),
+                        fn($query) => $query->whereBetween('tanggal', [
+                            request('tableFilters.created_at.created_from'),
+                            request('tableFilters.created_at.created_to')
+                        ])
+                    )->count())
+                ->badgeColor('warning'),
         ];
+    }
+
+    protected function getTabCount(string $tab): int
+    {
+        $query = $this->getModel()::query();
+
+        // Apply date filter if exists
+        $dateFilter = $this->getTableFilters()['created_at'] ?? null;
+        if ($dateFilter) {
+            $data = $dateFilter->getState();
+            if (!empty($data['created_from']) && !empty($data['created_to'])) {
+                $query->whereBetween('created_at', [
+                    $data['created_from'],
+                    $data['created_to']
+                ]);
+            }
+        }
+
+        // Apply tab filter
+        if ($tab !== 'semua') {
+            $query->where('cara_bayar', $tab);
+        }
+
+        return $query->count();
     }
 }

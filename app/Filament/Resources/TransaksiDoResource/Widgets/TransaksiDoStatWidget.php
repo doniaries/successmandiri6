@@ -2,187 +2,166 @@
 
 namespace App\Filament\Resources\TransaksiDoResource\Widgets;
 
-use App\Models\TransaksiDo;
-use App\Models\Perusahaan;
+use App\Models\{TransaksiDo, Perusahaan};
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{DB, Log};
+use Livewire\Attributes\On;
 
 class TransaksiDoStatWidget extends BaseWidget
 {
-    // Konfigurasi widget
-    // protected static ?string $heading = 'Ringkasan Transaksi Hari Ini';
     protected static ?int $sort = 1;
     protected static ?string $pollingInterval = '15s';
-
-    // Lazy loading untuk performa
     protected static bool $isLazy = true;
+    protected int | string | array $columnSpan = 'full';
 
-    // Method untuk menggantikan properti heading
-    public function getHeading(): ?string
+    // State untuk filter
+    public $startDate;
+    public $endDate;
+    public $activeTab = 'semua';
+
+    public function mount(): void
     {
-        return 'Ringkasan Transaksi Hari Ini';
+        $this->startDate = now()->subDays(30)->startOfDay();
+        $this->endDate = now()->endOfDay();
     }
 
-
-
-    //update stats saldo
-    #[On(['refresh-widgets', 'saldo-updated'])]
-    public function refresh(): void
+    public function getHeading(): ?string
     {
-        $this->getFilteredStats();
+        return match ($this->activeTab) {
+            'semua' => 'Ringkasan Transaksi',
+            'tunai' => 'Ringkasan Tunai',
+            'transfer' => 'Ringkasan Transfer',
+            'cair di luar' => 'Ringkasan Cair di Luar',
+            default => 'Ringkasan Transaksi'
+        };
+    }
+
+    // Handler filter & tab
+    #[On(['filter-transaksi', 'tab-changed'])]
+    public function handleFilter($data = []): void
+    {
+        if (isset($data['startDate'])) {
+            $this->startDate = Carbon::parse($data['startDate'])->startOfDay();
+        }
+
+        if (isset($data['endDate'])) {
+            $this->endDate = Carbon::parse($data['endDate'])->endOfDay();
+        }
+
+        if (isset($data['tab'])) {
+            $this->activeTab = $data['tab'];
+        }
     }
 
     public function getStats(): array
     {
         try {
-            // Get perusahaan dengan eager loading yang optimal
-            $perusahaan = Perusahaan::select('id', 'name', 'saldo')->first();
-            if (!$perusahaan) {
-                return $this->getErrorStats('Data perusahaan tidak ditemukan');
-            }
+            // Get data perusahaan
+            $perusahaan = Perusahaan::first();
+            $saldoPerusahaan = $perusahaan ? $perusahaan->saldo : 0;
 
-            // Get statistik
-            $stats = $this->getTransaksiStats();
+            // Tentukan warna berdasarkan saldo
+            $colorSaldo = match (true) {
+                $saldoPerusahaan > 10000000 => 'success',
+                $saldoPerusahaan > 5000000 => 'warning',
+                default => 'danger'
+            };
+
+            // Get statistik transaksi
+            $stats = DB::table('transaksi_do')
+                ->whereBetween('tanggal', [
+                    $this->startDate,
+                    $this->endDate
+                ])
+                ->when($this->activeTab !== 'semua', function ($q) {
+                    return $q->where('cara_bayar', $this->activeTab);
+                })
+                ->select([
+                    // Perhitungan aggregate
+                    DB::raw('COUNT(*) as total_transaksi'),
+                    DB::raw('COALESCE(SUM(tonase), 0) as total_tonase'),
+                    DB::raw('COALESCE(SUM(total), 0) as total_nilai'),
+                    DB::raw('COALESCE(SUM(upah_bongkar), 0) as total_upah'),
+                    DB::raw('COALESCE(SUM(biaya_lain), 0) as total_biaya'),
+                    DB::raw('COALESCE(SUM(pembayaran_hutang), 0) as total_hutang'),
+                    DB::raw('COALESCE(SUM(sisa_bayar), 0) as total_bayar'),
+
+                    // Count berdasarkan cara bayar
+                    DB::raw('COUNT(CASE WHEN cara_bayar = "Tunai" THEN 1 END) as count_tunai'),
+                    DB::raw('COUNT(CASE WHEN cara_bayar = "Transfer" THEN 1 END) as count_transfer'),
+                    DB::raw('COUNT(CASE WHEN cara_bayar = "cair di luar" THEN 1 END) as count_cair'),
+
+                    // Total berdasarkan cara bayar
+                    DB::raw('COALESCE(SUM(CASE WHEN cara_bayar = "Tunai" THEN sisa_bayar ELSE 0 END), 0) as bayar_tunai'),
+                    DB::raw('COALESCE(SUM(CASE WHEN cara_bayar = "Transfer" THEN sisa_bayar ELSE 0 END), 0) as bayar_transfer'),
+                    DB::raw('COALESCE(SUM(CASE WHEN cara_bayar = "cair di luar" THEN sisa_bayar ELSE 0 END), 0) as bayar_cair')
+                ])
+                ->first();
+
+            // Convert to array & default 0
+            $data = array_map(function ($value) {
+                return $value ?? 0;
+            }, (array)$stats);
 
             return [
-                // Saldo Stats
-                Stat::make('Saldo Kas', 'Rp ' . number_format($perusahaan->saldo, 0, ',', '.'))
-                    ->description('Update otomatis setiap 15 detik')
-                    ->descriptionIcon('heroicon-m-arrow-path')
-                    ->color('success'),
-
-                // Transaction Stats
-                Stat::make('Total Transaksi DO', "{$stats['total_transaksi']} DO")
+                // Stat 1: Saldo Perusahaan & Info Transaksi
+                Stat::make('Saldo Perusahaan', 'Rp ' . number_format($saldoPerusahaan, 0, ',', '.'))
                     ->description(sprintf(
-                        "Total Tonase: %s Kg",
-                        number_format($stats['total_tonase'], 0, ',', '.')
+                        "%d Transaksi | %s Kg\nTunai: %d | Transfer: %d | Cair: %d",
+                        $data['total_transaksi'],
+                        number_format($data['total_tonase'], 0, ',', '.'),
+                        $data['count_tunai'],
+                        $data['count_transfer'],
+                        $data['count_cair']
                     ))
-                    ->descriptionIcon('heroicon-m-truck')
-                    ->color('info'),
+                    ->descriptionIcon('heroicon-o-building-library')
+                    ->chart([7, 4, 6, 5, 7, 6, 5])
+                    ->color($colorSaldo), // Gunakan string langsung, bukan closure
 
-                // Income Stats
-                Stat::make(
-                    'Total Pemasukan',
-                    'Rp ' . number_format($stats['total_pemasukan'], 0, ',', '.')
-                )
-                    ->description($this->formatPemasukanDescription($stats))
-                    ->descriptionIcon('heroicon-m-arrow-trending-up')
-                    ->color('success'),
+                // Stat 2: Nilai & Detail Transaksi
+                Stat::make('Total Nilai', sprintf('Rp %s', number_format($data['total_nilai'], 0, ',', '.')))
+                    ->description(sprintf(
+                        "Upah: Rp %s\nBiaya: Rp %s\nHutang: Rp %s",
+                        number_format($data['total_upah'], 0, ',', '.'),
+                        number_format($data['total_biaya'], 0, ',', '.'),
+                        number_format($data['total_hutang'], 0, ',', '.')
+                    ))
+                    ->descriptionIcon('heroicon-m-banknotes')
+                    ->color('warning'),
 
-                // Expense Stats
-                Stat::make(
-                    'Total Pengeluaran',
-                    'Rp ' . number_format($stats['total_pengeluaran'], 0, ',', '.')
-                )
-                    ->description($this->formatPengeluaranDescription($stats))
-                    ->descriptionIcon('heroicon-m-arrow-trending-down')
-                    ->color('danger'),
+                // Stat 3: Detail Pembayaran
+                Stat::make('Total Pembayaran', sprintf('Rp %s', number_format($data['total_bayar'], 0, ',', '.')))
+                    ->description(sprintf(
+                        "Tunai: Rp %s\nTransfer: Rp %s\nCair: Rp %s",
+                        number_format($data['bayar_tunai'], 0, ',', '.'),
+                        number_format($data['bayar_transfer'], 0, ',', '.'),
+                        number_format($data['bayar_cair'], 0, ',', '.')
+                    ))
+                    ->descriptionIcon('heroicon-m-credit-card')
+                    ->color('success')
+                    ->chart([3, 5, 4, 6, 3, 5, 4])
             ];
         } catch (\Exception $e) {
-            \Log::error('Error in TransaksiDoStatWidget:', [
-                'error' => $e->getMessage()
+            Log::error('Error TransaksiDoStatWidget:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
 
-            return $this->getErrorStats('Terjadi kesalahan saat memuat data');
+            return [
+                Stat::make('Error', 'Terjadi kesalahan saat memuat data')
+                    ->description('Silakan refresh halaman')
+                    ->descriptionIcon('heroicon-m-exclamation-triangle')
+                    ->color('danger')
+            ];
         }
     }
 
-    protected function getTransaksiStats(): array
+    // Refresh event handler
+    #[On(['refresh-widget'])]
+    public function refresh(): void
     {
-        // Optimasi: Gunakan collection get() dan langsung transform ke array
-        return DB::table('transaksi_do')
-            ->whereDate('tanggal', Carbon::today())
-            ->select([
-                DB::raw('COUNT(*) as total_transaksi'),
-                DB::raw('COALESCE(SUM(tonase), 0) as total_tonase'),
-                DB::raw('COALESCE(SUM(upah_bongkar), 0) as upah_bongkar'),
-                DB::raw('COALESCE(SUM(biaya_lain), 0) as biaya_lain'),
-                DB::raw('COALESCE(SUM(pembayaran_hutang), 0) as pembayaran_hutang'),
-                DB::raw('COALESCE(SUM(upah_bongkar + biaya_lain + pembayaran_hutang), 0) as total_pemasukan'),
-                // Update query untuk cara bayar
-                DB::raw('COALESCE(SUM(CASE WHEN cara_bayar = "Tunai" THEN sisa_bayar ELSE 0 END), 0) as total_tunai'),
-                DB::raw('COALESCE(SUM(CASE WHEN cara_bayar = "Transfer" THEN sisa_bayar ELSE 0 END), 0) as total_transfer'),
-                DB::raw('COALESCE(SUM(CASE WHEN cara_bayar = "Cair di Luar" THEN sisa_bayar ELSE 0 END), 0) as total_cair_di_luar'),
-                DB::raw('COALESCE(SUM(sisa_bayar), 0) as total_pengeluaran'),
-                DB::raw('COUNT(CASE WHEN cara_bayar = "Tunai" THEN 1 END) as tunai_count'),
-                DB::raw('COUNT(CASE WHEN cara_bayar = "Transfer" THEN 1 END) as transfer_count'),
-                DB::raw('COUNT(CASE WHEN cara_bayar = "Cair di Luar" THEN 1 END) as cair_di_luar_count'),
-            ])
-            ->get()
-            ->map(function ($item) {
-                return (array) $item;
-            })
-            ->first();
-    }
-
-    protected function formatPemasukanDescription(array $stats): string
-    {
-        $components = [];
-
-        if ($stats['upah_bongkar'] > 0) {
-            $components[] = sprintf(
-                "Upah Bongkar: Rp %s",
-                number_format($stats['upah_bongkar'], 0, ',', '.')
-            );
-        }
-
-        if ($stats['biaya_lain'] > 0) {
-            $components[] = sprintf(
-                "Biaya Lain: Rp %s",
-                number_format($stats['biaya_lain'], 0, ',', '.')
-            );
-        }
-
-        if ($stats['pembayaran_hutang'] > 0) {
-            $components[] = sprintf(
-                "Bayar Hutang: Rp %s",
-                number_format($stats['pembayaran_hutang'], 0, ',', '.')
-            );
-        }
-
-        return empty($components) ? 'Belum ada pemasukan' : implode("\n", $components);
-    }
-
-    protected function formatPengeluaranDescription(array $stats): string
-    {
-        $components = [];
-
-        if ($stats['total_tunai'] > 0) {
-            $components[] = sprintf(
-                "Tunai (%d DO): Rp %s",
-                $stats['tunai_count'],
-                number_format($stats['total_tunai'], 0, ',', '.')
-            );
-        }
-
-        if ($stats['total_transfer'] > 0) {
-            $components[] = sprintf(
-                "Transfer (%d DO): Rp %s",
-                $stats['transfer_count'],
-                number_format($stats['total_transfer'], 0, ',', '.')
-            );
-        }
-
-        if ($stats['total_cair_di_luar'] > 0) {
-            $components[] = sprintf(
-                "Cair di Luar (%d DO): Rp %s",
-                $stats['cair_di_luar_count'],
-                number_format($stats['total_cair_di_luar'], 0, ',', '.')
-            );
-        }
-
-        return empty($components) ? 'Belum ada pengeluaran' : implode("\n", $components);
-    }
-
-    protected function getErrorStats(string $message): array
-    {
-        return [
-            Stat::make('Error', $message)
-                ->description('Terjadi kesalahan')
-                ->descriptionIcon('heroicon-m-exclamation-triangle')
-                ->color('danger')
-        ];
+        $this->getStats();
     }
 }

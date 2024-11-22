@@ -32,6 +32,7 @@ class TransaksiDoResource extends Resource
     protected static ?string $navigationLabel = 'Transaksi DO';
     protected static ?string $modelLabel = 'Transaksi DO';
     protected static ?string $pluralModelLabel = 'Transaksi DO';
+    protected static ?string $pollingInterval = '15s';
     protected static ?int $navigationSort = 1;
 
 
