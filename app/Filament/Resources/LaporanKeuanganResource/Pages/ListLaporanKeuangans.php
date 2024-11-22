@@ -23,7 +23,7 @@ class ListLaporanKeuangans extends ListRecords
     {
         return [
             // LaporanKeuanganDoStatsWidget::class,
-            TransaksiDoStatWidget::make(),
+            // TransaksiDoStatWidget::make(),
         ];
     }
 }
