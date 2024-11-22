@@ -26,6 +26,7 @@ use App\Services\LaporanKeuanganService;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\LaporanKeuanganResource\Pages;
 use App\Filament\Resources\LaporanKeuanganResource\RelationManagers;
+use App\Filament\Resources\LaporanKeuanganResource\Widgets\LaporanKeuanganDoStatsWidget;
 
 class LaporanKeuanganResource extends Resource
 {
@@ -305,6 +306,13 @@ class LaporanKeuanganResource extends Resource
             ]);
     }
 
+
+    public static function getWidgets(): array
+    {
+        return [
+            LaporanKeuanganDoStatsWidget::class,
+        ];
+    }
     public static function getNavigationBadgeColor(): ?string
     {
         return 'primary';
