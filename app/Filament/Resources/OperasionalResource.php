@@ -32,12 +32,12 @@ use Closure;
 // Local Imports
 use App\Enums\KategoriOperasional;
 use App\Filament\Resources\OperasionalResource\Pages;
-use App\Filament\Resources\OperasionalResource\Traits\HasOperationalHelpers;
+// use App\Filament\Resources\OperasionalResource\Traits\HasOperationalHelpers;
 
 class OperasionalResource extends Resource
 {
 
-    use HasOperationalHelpers;
+    // use HasOperationalHelpers;
 
 
     protected static ?string $model = Operasional::class;
@@ -179,7 +179,6 @@ class OperasionalResource extends Resource
                                 Forms\Components\Textarea::make('keterangan')
                                     ->label('Keterangan')
                                     ->rows(1),
-
                                 Forms\Components\FileUpload::make('file_bukti')
                                     ->label('Upload Bukti')
                                     ->image()

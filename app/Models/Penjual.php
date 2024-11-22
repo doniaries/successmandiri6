@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\{Operasional, TransaksiDo, LaporanKeuangan, RiwayatPembayaranHutang};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Penjual extends Model
@@ -51,6 +52,12 @@ class Penjual extends Model
         } else {
             $this->decrement('hutang', $amount);
         }
+    }
+
+    //relation ship penjual dengan operasional
+    public function operasional(): HasMany
+    {
+        return $this->hasMany(Operasional::class);
     }
 
     protected static function boot()

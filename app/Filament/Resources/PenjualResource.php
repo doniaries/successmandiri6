@@ -3,22 +3,26 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
-use App\Models\Penjual;
 use Filament\Tables;
+use App\Models\Penjual;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Filament\Forms\Components\Section;
 use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Section;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\PenjualResource\RelationManagers;
-use Illuminate\Support\Collection;
-use App\Filament\Resources\PenjualResource\Pages;
 use Filament\Tables\Pagination\Pagination;
+use App\Filament\Resources\PenjualResource\Pages;
+use App\Filament\Resources\PenjualResource\RelationManagers;
 use App\Filament\Resources\PenjualResource\Widgets\PenjualStatsOverview;
 use App\Filament\Resources\PenjualResource\RelationManagers\RiwayatHutangPinjamanRelationManager;
+use App\Filament\Resources\PenjualResource\RelationManagers\RiwayatPembayaranHutangPinjamanRelationManager;
+// use Filament\Forms;
+// use Filament\Tables;
+use App\Filament\Resources\PenjualResource\RelationManagers\RiwayatPembayaranHutangRelationManager;
 
 class PenjualResource extends Resource
 {
@@ -41,6 +45,7 @@ class PenjualResource extends Resource
     {
         return [
             RiwayatHutangPinjamanRelationManager::class,
+            RiwayatPembayaranHutangRelationManager::class,
         ];
     }
 
@@ -153,145 +158,145 @@ class PenjualResource extends Resource
                 Tables\Actions\ViewAction::make(),
 
                 // Tambah Action untuk input hutang baru
-                Action::make('tambah_hutang')
-                    ->label('Tambah Hutang')
-                    ->icon('heroicon-o-plus-circle')
-                    ->color('danger')
-                    ->form([
-                        Forms\Components\DateTimePicker::make('tanggal')
-                            ->label('Tanggal')
-                            ->native(false)
-                            ->timezone('Asia/Jakarta')
-                            ->displayFormat('d/m/Y H:i')
-                            ->required()
-                            ->default(now()),
+                // Action::make('tambah_hutang')
+                //     ->label('Tambah Hutang')
+                //     ->icon('heroicon-o-plus-circle')
+                //     ->color('danger')
+                //     ->form([
+                //         Forms\Components\DateTimePicker::make('tanggal')
+                //             ->label('Tanggal')
+                //             ->native(false)
+                //             ->timezone('Asia/Jakarta')
+                //             ->displayFormat('d/m/Y H:i')
+                //             ->required()
+                //             ->default(now()),
 
-                        Forms\Components\TextInput::make('nominal')
-                            ->label('Nominal')
-                            ->required()
-                            ->numeric()
-                            ->prefix('Rp')
-                            ->currencyMask(
-                                thousandSeparator: ',',
-                                decimalSeparator: '.',
-                                precision: 0
-                            ),
+                //         Forms\Components\TextInput::make('nominal')
+                //             ->label('Nominal')
+                //             ->required()
+                //             ->numeric()
+                //             ->prefix('Rp')
+                //             ->currencyMask(
+                //                 thousandSeparator: ',',
+                //                 decimalSeparator: '.',
+                //                 precision: 0
+                //             ),
 
-                        Forms\Components\Textarea::make('keterangan')
-                            ->label('Keterangan')
-                            ->required(),
-                    ])
-                    ->action(function (Penjual $record, array $data): void {
-                        try {
-                            DB::beginTransaction();
+                //         Forms\Components\Textarea::make('keterangan')
+                //             ->label('Keterangan')
+                //             ->required(),
+                //     ])
+                //     ->action(function (Penjual $record, array $data): void {
+                //         try {
+                //             DB::beginTransaction();
 
-                            // Format nominal
-                            $nominal = (int)str_replace([',', '.'], '', $data['nominal']);
+                //             // Format nominal
+                //             $nominal = (int)str_replace([',', '.'], '', $data['nominal']);
 
-                            // Update hutang penjual
-                            $hutangSebelum = $record->hutang;
-                            $record->increment('hutang', $nominal);
+                //             // Update hutang penjual
+                //             $hutangSebelum = $record->hutang;
+                //             $record->increment('hutang', $nominal);
 
 
 
-                            DB::commit();
+                //             DB::commit();
 
-                            Notification::make()
-                                ->title('Hutang Berhasil Ditambahkan')
-                                ->success()
-                                ->body(
-                                    "Hutang awal: Rp " . number_format($hutangSebelum, 0, ',', '.') . "\n" .
-                                        "Penambahan: Rp " . number_format($nominal, 0, ',', '.') . "\n" .
-                                        "Total hutang: Rp " . number_format($record->fresh()->hutang, 0, ',', '.')
-                                )
-                                ->send();
-                        } catch (\Exception $e) {
-                            DB::rollBack();
-                            Notification::make()
-                                ->title('Error')
-                                ->danger()
-                                ->body('Terjadi kesalahan: ' . $e->getMessage())
-                                ->send();
-                        }
-                    }),
+                //             Notification::make()
+                //                 ->title('Hutang Berhasil Ditambahkan')
+                //                 ->success()
+                //                 ->body(
+                //                     "Hutang awal: Rp " . number_format($hutangSebelum, 0, ',', '.') . "\n" .
+                //                         "Penambahan: Rp " . number_format($nominal, 0, ',', '.') . "\n" .
+                //                         "Total hutang: Rp " . number_format($record->fresh()->hutang, 0, ',', '.')
+                //                 )
+                //                 ->send();
+                //         } catch (\Exception $e) {
+                //             DB::rollBack();
+                //             Notification::make()
+                //                 ->title('Error')
+                //                 ->danger()
+                //                 ->body('Terjadi kesalahan: ' . $e->getMessage())
+                //                 ->send();
+                //         }
+                //     }),
 
                 // Action untuk bayar hutang
-                Action::make('bayar_hutang')
-                    ->label('Bayar Hutang')
-                    ->icon('heroicon-o-banknotes')
-                    ->color('success')
-                    ->hidden(fn(Penjual $record): bool => $record->hutang <= 0)
-                    ->form([
-                        Forms\Components\DateTimePicker::make('tanggal')
-                            ->label('Tanggal')
-                            ->required()
-                            ->default(now()),
+                // Action::make('bayar_hutang')
+                //     ->label('Bayar Hutang')
+                //     ->icon('heroicon-o-banknotes')
+                //     ->color('success')
+                //     ->hidden(fn(Penjual $record): bool => $record->hutang <= 0)
+                //     ->form([
+                //         Forms\Components\DateTimePicker::make('tanggal')
+                //             ->label('Tanggal')
+                //             ->required()
+                //             ->default(now()),
 
-                        Forms\Components\TextInput::make('nominal')
-                            ->label('Nominal')
-                            ->required()
-                            ->numeric()
-                            ->prefix('Rp')
-                            ->currencyMask(
-                                thousandSeparator: ',',
-                                decimalSeparator: '.',
-                                precision: 0
-                            )
-                            ->live()
-                            ->afterStateUpdated(function ($state, $record, Forms\Set $set) {
-                                $nominal = (int)str_replace([',', '.'], '', $state);
-                                if ($nominal > $record->hutang) {
-                                    $set('nominal', number_format($record->hutang, 0, ',', ','));
-                                    Notification::make()
-                                        ->warning()
-                                        ->title('Pembayaran disesuaikan')
-                                        ->body('Nominal pembayaran disesuaikan dengan total hutang')
-                                        ->send();
-                                }
-                            }),
+                //         Forms\Components\TextInput::make('nominal')
+                //             ->label('Nominal')
+                //             ->required()
+                //             ->numeric()
+                //             ->prefix('Rp')
+                //             ->currencyMask(
+                //                 thousandSeparator: ',',
+                //                 decimalSeparator: '.',
+                //                 precision: 0
+                //             )
+                //             ->live()
+                //             ->afterStateUpdated(function ($state, $record, Forms\Set $set) {
+                //                 $nominal = (int)str_replace([',', '.'], '', $state);
+                //                 if ($nominal > $record->hutang) {
+                //                     $set('nominal', number_format($record->hutang, 0, ',', ','));
+                //                     Notification::make()
+                //                         ->warning()
+                //                         ->title('Pembayaran disesuaikan')
+                //                         ->body('Nominal pembayaran disesuaikan dengan total hutang')
+                //                         ->send();
+                //                 }
+                //             }),
 
-                        Forms\Components\Textarea::make('keterangan')
-                            ->label('Keterangan')
-                            ->required(),
-                    ])
-                    ->action(function (Penjual $record, array $data): void {
-                        try {
-                            DB::beginTransaction();
+                //         Forms\Components\Textarea::make('keterangan')
+                //             ->label('Keterangan')
+                //             ->required(),
+                //     ])
+                //     ->action(function (Penjual $record, array $data): void {
+                //         try {
+                //             DB::beginTransaction();
 
-                            // Format nominal
-                            $nominal = (int)str_replace([',', '.'], '', $data['nominal']);
+                //             // Format nominal
+                //             $nominal = (int)str_replace([',', '.'], '', $data['nominal']);
 
-                            // Validasi pembayaran tidak melebihi hutang
-                            if ($nominal > $record->hutang) {
-                                throw new \Exception('Pembayaran melebihi total hutang');
-                            }
+                //             // Validasi pembayaran tidak melebihi hutang
+                //             if ($nominal > $record->hutang) {
+                //                 throw new \Exception('Pembayaran melebihi total hutang');
+                //             }
 
-                            // Update hutang penjual
-                            $hutangSebelum = $record->hutang;
-                            $record->decrement('hutang', $nominal);
+                //             // Update hutang penjual
+                //             $hutangSebelum = $record->hutang;
+                //             $record->decrement('hutang', $nominal);
 
 
 
-                            DB::commit();
+                //             DB::commit();
 
-                            Notification::make()
-                                ->title('Pembayaran Hutang Berhasil')
-                                ->success()
-                                ->body(
-                                    "Hutang awal: Rp " . number_format($hutangSebelum, 0, ',', '.') . "\n" .
-                                        "Pembayaran: Rp " . number_format($nominal, 0, ',', '.') . "\n" .
-                                        "Sisa hutang: Rp " . number_format($record->fresh()->hutang, 0, ',', '.')
-                                )
-                                ->send();
-                        } catch (\Exception $e) {
-                            DB::rollBack();
-                            Notification::make()
-                                ->title('Error')
-                                ->danger()
-                                ->body('Terjadi kesalahan: ' . $e->getMessage())
-                                ->send();
-                        }
-                    }),
+                //             Notification::make()
+                //                 ->title('Pembayaran Hutang Berhasil')
+                //                 ->success()
+                //                 ->body(
+                //                     "Hutang awal: Rp " . number_format($hutangSebelum, 0, ',', '.') . "\n" .
+                //                         "Pembayaran: Rp " . number_format($nominal, 0, ',', '.') . "\n" .
+                //                         "Sisa hutang: Rp " . number_format($record->fresh()->hutang, 0, ',', '.')
+                //                 )
+                //                 ->send();
+                //         } catch (\Exception $e) {
+                //             DB::rollBack();
+                //             Notification::make()
+                //                 ->title('Error')
+                //                 ->danger()
+                //                 ->body('Terjadi kesalahan: ' . $e->getMessage())
+                //                 ->send();
+                //         }
+                // }),
             ])
             ->paginated([5, 10, 25, 50, 100, 'all'])
             ->deferLoading()

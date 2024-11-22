@@ -17,4 +17,9 @@ class ViewPenjual extends ViewRecord
             RiwayatHutangPinjamanRelationManager::class,
         ];
     }
+
+    // protected function hasCombinedRelationManagerTabsWithContent(): bool
+    // {
+    //     return true;
+    // }
 }
