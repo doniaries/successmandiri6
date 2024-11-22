@@ -33,11 +33,11 @@ class LaporanKeuanganDoStatsWidget extends BaseWidget
         $this->getFilteredStats();
     }
 
-    //  heading
-    // protected function getHeading(): ?string
-    // {
-    //     return 'Ringkasan Laporan Keuangan';
-    // }
+     heading
+    protected function getHeading(): ?string
+    {
+        return 'Ringkasan Laporan Keuangan';
+    }
 
     // Main stats getter
     protected function getStats(): array
