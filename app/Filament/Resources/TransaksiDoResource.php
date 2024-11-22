@@ -75,6 +75,7 @@ class TransaksiDoResource extends Resource
                             Forms\Components\DateTimePicker::make('tanggal')
                                 ->label('Tanggal')
                                 ->hint('Pilih Tanggal')
+                                ->hintColor('primary')
                                 ->autofocus()
                                 ->format('Y-m-d H:i:s')
                                 ->native(false)
