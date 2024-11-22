@@ -79,7 +79,7 @@ class TransaksiDoResource extends Resource
                                 ->displayFormat('d/m/Y H:i:s')
                                 ->default(Carbon::now()) // Menggunakan Carbon untuk nilai default
                                 ->required()
-                                ->disabled()
+                                // ->disabled()
                                 ->dehydrated(),
 
                         ])
