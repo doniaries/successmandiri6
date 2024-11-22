@@ -33,7 +33,7 @@ class LaporanKeuanganDoStatsWidget extends BaseWidget
         $this->getFilteredStats();
     }
 
-     heading
+    //heading
     protected function getHeading(): ?string
     {
         return 'Ringkasan Laporan Keuangan';
