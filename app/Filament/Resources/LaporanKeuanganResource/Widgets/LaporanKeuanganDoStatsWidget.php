@@ -12,7 +12,6 @@ use Livewire\Attributes\On;
 class LaporanKeuanganDoStatsWidget extends BaseWidget
 {
     // Widget configuration
-    // protected static ?string $heading = 'Ringkasan Laporan Keuangan';
     protected static ?int $sort = 1;
     protected static ?string $pollingInterval = '15s';
 
