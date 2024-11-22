@@ -35,6 +35,11 @@ class LaporanKeuanganDoStatsWidget extends BaseWidget
     }
 
 
+    protected function getHeading(): ?string
+    {
+        return 'Ringkasan Laporan Keuangan';
+    }
+
     // Main stats getter
     protected function getStats(): array
     {
