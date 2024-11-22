@@ -8,6 +8,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
 
 class TransaksiDoStatWidget extends BaseWidget
 {
@@ -15,7 +16,6 @@ class TransaksiDoStatWidget extends BaseWidget
     protected static ?string $heading = 'Ringkasan Transaksi Hari Ini';
     protected static ?int $sort = 1;
     protected static ?string $pollingInterval = '15s';
-
     // Lazy loading untuk performa
     protected static bool $isLazy = true;
 
