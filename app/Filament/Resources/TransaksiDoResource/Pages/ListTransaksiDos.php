@@ -68,12 +68,11 @@ class ListTransaksiDos extends ListRecords
                 ->badge(fn() => $this->getModel()::where('cara_bayar', 'Transfer')->count())
                 ->badgeColor('info'),
 
-            'cair di luar' => Tab::make('cair di luar')
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('status_bayar', 'cair di luar'))
+            'cair di luar' => Tab::make('Cair di Luar') // Kapitalisasi nama untuk konsistensi
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'cair di luar')) // Ubah ke cara_bayar
                 ->icon('heroicon-o-check-circle')
-                ->badge(fn() => $this->getModel()::where('status_bayar', 'cair di luar')->count())
+                ->badge(fn() => $this->getModel()::where('cara_bayar', 'cair di luar')->count()) // Ubah ke cara_bayar
                 ->badgeColor('danger'),
-
         ];
     }
 }

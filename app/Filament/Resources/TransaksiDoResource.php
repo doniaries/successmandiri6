@@ -577,7 +577,11 @@ class TransaksiDoResource extends Resource
 
                 Tables\Filters\TrashedFilter::make(),
             ])
-
+            ->filtersTriggerAction(
+                fn(Tables\Actions\Action $action) => $action
+                    ->button()
+                    ->label('Filter Tanggal')
+            )
             ->actions([
                 Action::make('print')
                     ->label('Print')

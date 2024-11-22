@@ -226,8 +226,8 @@
         </tfoot>
     </table>
 
-    <!-- Bagian B: Transaksi DO -->
-    <h4 class="section-title">B. Transaksi DO</h4>
+    <!-- Bagian B: Transaksi DO dipisah menjadi 2 bagian -->
+    <h4 class="section-title">B1. Transaksi DO Tunai</h4>
     <table class="data-table">
         <thead>
             <tr>
@@ -241,10 +241,10 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($transaksiDo as $do)
+            @forelse($transaksiDo->where('cara_pembayaran', 'Tunai') as $do)
                 <tr>
                     <td>{{ Carbon\Carbon::parse($do->tanggal)->format('d/m/y H:i') }}</td>
-                    <td>{{ $do->nomor_referensi }}</td> <!-- Ganti dari $do->nomor -->
+                    <td>{{ $do->nomor_referensi }}</td>
                     <td>
                         <span class="badge badge-{{ $do->jenis_transaksi === 'Pemasukan' ? 'success' : 'danger' }}">
                             {{ $do->jenis_transaksi }}
@@ -257,14 +257,60 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" class="text-center">Tidak ada transaksi DO</td>
+                    <td colspan="7" class="text-center">Tidak ada transaksi DO tunai</td>
                 </tr>
             @endforelse
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="6" class="text-right"><strong>Total Transaksi DO</strong></td>
-                <td class="text-right"><strong>{{ number_format($totalTransaksiDo, 0, ',', '.') }}</strong></td>
+                <td colspan="6" class="text-right"><strong>Total Transaksi DO Tunai</strong></td>
+                <td class="text-right">
+                    <strong>{{ number_format($transaksiDo->where('cara_pembayaran', 'Tunai')->sum('nominal'), 0, ',', '.') }}</strong>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <h4 class="section-title">B2. Transaksi DO Non Tunai</h4>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Tanggal</th>
+                <th>No. DO</th>
+                <th>Jenis</th>
+                <th>Kategori</th>
+                <th>Penjual</th>
+                <th>Cara Bayar</th>
+                <th class="text-right">Nominal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($transaksiDo->whereIn('cara_pembayaran', ['Transfer', 'cair di luar']) as $do)
+                <tr>
+                    <td>{{ Carbon\Carbon::parse($do->tanggal)->format('d/m/y H:i') }}</td>
+                    <td>{{ $do->nomor_referensi }}</td>
+                    <td>
+                        <span class="badge badge-{{ $do->jenis_transaksi === 'Pemasukan' ? 'success' : 'danger' }}">
+                            {{ $do->jenis_transaksi }}
+                        </span>
+                    </td>
+                    <td>{{ $do->sub_kategori }}</td>
+                    <td>{{ $do->pihak_terkait }}</td>
+                    <td>{{ $do->cara_pembayaran }}</td>
+                    <td class="text-right">{{ number_format($do->nominal, 0, ',', '.') }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7" class="text-center">Tidak ada transaksi DO non tunai</td>
+                </tr>
+            @endforelse
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="6" class="text-right"><strong>Total Transaksi DO Non Tunai</strong></td>
+                <td class="text-right">
+                    <strong>{{ number_format($transaksiDo->whereIn('cara_pembayaran', ['Transfer', 'cair di luar'])->sum('nominal'), 0, ',', '.') }}</strong>
+                </td>
             </tr>
         </tfoot>
     </table>
@@ -362,8 +408,18 @@
             @endif
             @if ($detailPengeluaran['do'] > 0)
                 <tr>
-                    <td>&nbsp;&nbsp;- Transaksi DO</td>
-                    <td class="text-right text-danger">Rp {{ number_format($detailPengeluaran['do'], 0, ',', '.') }}
+                    <td colspan="2"><strong>&nbsp;&nbsp;- Transaksi DO:</strong></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;• Tunai</td>
+                    <td class="text-right text-danger">Rp
+                        {{ number_format($transaksiDo->where('cara_pembayaran', 'Tunai')->where('jenis_transaksi', 'Pengeluaran')->sum('nominal'), 0, ',', '.') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;• Non Tunai</td>
+                    <td class="text-right text-danger">Rp
+                        {{ number_format($transaksiDo->whereIn('cara_pembayaran', ['Transfer', 'cair di luar'])->where('jenis_transaksi', 'Pengeluaran')->sum('nominal'),0,',','.') }}
                     </td>
                 </tr>
             @endif
