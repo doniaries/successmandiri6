@@ -20,6 +20,12 @@ class TransaksiDoStatWidget extends BaseWidget
     protected static bool $isLazy = true;
 
 
+    // Gunakan method getHeading() sebagai gantinya
+    protected function getHeading(): ?string
+    {
+        return 'Ringkasan Transaksi Hari Ini';
+    }
+
     //update stats saldo
     //update stats saldo
     #[On(['refresh-widgets', 'saldo-updated'])]
