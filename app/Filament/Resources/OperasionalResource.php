@@ -2,20 +2,44 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\KategoriOperasional; // Import enum yang sudah dibuat
+// Model Imports
 use App\Models\{Operasional, Penjual, Pekerja, User};
+
+// Filament Core Imports
 use Filament\Forms;
-use App\Filament\Resources\OperasionalResource\Pages;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+
+// Filament UI Components
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Badge;
+use Filament\Forms\Components\Group;
+
+// Support & Database
 use Filament\Support\Colors\Color;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Closure;
+
+// Local Imports
+use App\Enums\KategoriOperasional;
+use App\Filament\Resources\OperasionalResource\Pages;
+use App\Filament\Resources\OperasionalResource\Traits\HasOperationalHelpers;
 
 class OperasionalResource extends Resource
 {
+
+    use HasOperationalHelpers;
+
+
     protected static ?string $model = Operasional::class;
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?string $navigationLabel = 'Operasional';
@@ -26,39 +50,35 @@ class OperasionalResource extends Resource
     //     return static::getModel()::count();
     // }
 
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Informasi Transaksi')
-                    ->description('Input informasi dasar transaksi')
+                Forms\Components\Section::make()
                     ->schema([
+                        // Grid untuk informasi dasar
                         Forms\Components\Grid::make()
                             ->schema([
                                 Forms\Components\DateTimePicker::make('tanggal')
                                     ->label('Tanggal')
+                                    ->native(false)
                                     ->timezone('Asia/Jakarta')
                                     ->displayFormat('d/m/Y H:i')
                                     ->default(now())
                                     ->required(),
 
-                                // Operasional akan otomatis terisi dari kategori
                                 Forms\Components\Select::make('operasional')
-                                    ->label('Jenis Operasional')
+                                    ->label('Jenis')
                                     ->options(Operasional::JENIS_OPERASIONAL)
                                     ->required()
                                     ->live()
-                                    ->afterStateUpdated(
-                                        fn($state, Forms\Set $set) =>
-                                        $set('kategori', null)
-                                    ),
+                                    ->afterStateUpdated(fn($state, Forms\Set $set) => $set('kategori', null)),
 
-                                // Kategori berdasarkan jenis operasional
                                 Forms\Components\Select::make('kategori')
                                     ->label('Kategori')
                                     ->options(function ($get) {
-                                        $jenis = $get('operasional');
-                                        return match ($jenis) {
+                                        return match ($get('operasional')) {
                                             'pemasukan' => KategoriOperasional::forPemasukan(),
                                             'pengeluaran' => KategoriOperasional::forPengeluaran(),
                                             default => []
@@ -69,59 +89,76 @@ class OperasionalResource extends Resource
                                     ->visible(fn($get) => filled($get('operasional')))
                             ])->columns(3),
 
+                        // Grid untuk pemilihan pihak dan nominal
                         Forms\Components\Grid::make()
                             ->schema([
                                 Forms\Components\Select::make('tipe_nama')
-                                    ->label('Tipe Pihak')
+                                    ->label('Pihak')
                                     ->options([
                                         'penjual' => 'Penjual',
-                                        'user' => 'Karyawan',
-                                        'pekerja' => 'Pekerja'
+                                        'pekerja' => 'Pekerja',
+                                        'user' => 'Karyawan'
                                     ])
                                     ->required()
                                     ->live()
+                                    ->visible(fn($get) => filled($get('kategori')))
                                     ->afterStateUpdated(fn($state, Forms\Set $set) => [
                                         $set('penjual_id', null),
-                                        $set('user_id', null),
-                                        $set('pekerja_id', null)
+                                        $set('pekerja_id', null),
+                                        $set('user_id', null)
                                     ]),
 
-                                // Dynamic relation based on tipe_nama
-                                Forms\Components\Select::make('penjual_id')
-                                    ->label('Nama Penjual')
-                                    ->relationship('penjual', 'nama')
-                                    ->searchable()
-                                    ->preload()
-                                    ->visible(fn($get) => $get('tipe_nama') === 'penjual'),
+                                // Dynamic select untuk pihak terkait
+                                Forms\Components\Group::make()
+                                    ->schema([
+                                        // Select Penjual
+                                        Forms\Components\Select::make('penjual_id')
+                                            ->label('Pilih Penjual')
+                                            ->relationship('penjual', 'nama')
+                                            ->searchable()
+                                            ->preload()
+                                            ->live()
+                                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                                if ($state) {
+                                                    $penjual = Penjual::find($state);
+                                                    $set('info_hutang', "Sisa Hutang: Rp " . number_format($penjual?->hutang ?? 0, 0, ',', '.'));
+                                                }
+                                            })
+                                            ->visible(fn($get) => $get('tipe_nama') === 'penjual'),
 
-                                Forms\Components\Select::make('user_id')
-                                    ->label('Nama Karyawan')
-                                    ->relationship('user', 'name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->visible(fn($get) => $get('tipe_nama') === 'user'),
+                                        // Select Pekerja
+                                        Forms\Components\Select::make('pekerja_id')
+                                            ->label('Pilih Pekerja')
+                                            ->relationship('pekerja', 'nama')
+                                            ->searchable()
+                                            ->preload()
+                                            ->live()
+                                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                                if ($state) {
+                                                    $pekerja = Pekerja::find($state);
+                                                    $set('info_hutang', "Sisa Hutang: Rp " . number_format($pekerja?->hutang ?? 0, 0, ',', '.'));
+                                                }
+                                            })
+                                            ->visible(fn($get) => $get('tipe_nama') === 'pekerja'),
 
-                                Forms\Components\Select::make('pekerja_id')
-                                    ->label('Nama Pekerja')
-                                    ->relationship('pekerja', 'nama')
-                                    ->createOptionForm([
-                                        Forms\Components\TextInput::make('nama')
-                                            ->label('Nama Pekerja')
-                                            ->minLength(3)
-                                            ->required(),
-                                        Forms\Components\TextInput::make('alamat')
-                                            ->label('Alamat')
-                                            ->required(),
-                                        Forms\Components\TextInput::make('telepon')
-                                            ->label('Nomor Kontak')
-                                            ->tel()
-                                            ->required(),
+                                        // Select User/Karyawan
+                                        Forms\Components\Select::make('user_id')
+                                            ->label('Pilih Karyawan')
+                                            ->relationship('user', 'name')
+                                            ->searchable()
+                                            ->preload()
+                                            ->visible(fn($get) => $get('tipe_nama') === 'user'),
 
-                                    ])
-                                    ->searchable()
-                                    ->live()
-                                    ->preload()
-                                    ->visible(fn($get) => $get('tipe_nama') === 'pekerja'),
+                                        // Info Hutang (hanya muncul untuk pinjaman)
+                                        Forms\Components\Placeholder::make('info_hutang')
+                                            ->content(fn($get) => $get('info_hutang'))
+                                            ->visible(
+                                                fn($get) =>
+                                                $get('operasional') === 'pengeluaran' &&
+                                                    $get('kategori') === 'pinjaman' &&
+                                                    filled($get('info_hutang'))
+                                            )
+                                    ]),
 
                                 Forms\Components\TextInput::make('nominal')
                                     ->label('Nominal')
@@ -136,26 +173,22 @@ class OperasionalResource extends Resource
                                     ),
                             ])->columns(2),
 
+                        // Keterangan dan Bukti
                         Forms\Components\Grid::make()
                             ->schema([
                                 Forms\Components\Textarea::make('keterangan')
                                     ->label('Keterangan')
-                                    ->rows(3),
+                                    ->rows(1),
 
                                 Forms\Components\FileUpload::make('file_bukti')
                                     ->label('Upload Bukti')
                                     ->image()
-                                    ->disk('public')  // Tambahkan ini
+                                    ->disk('public')
                                     ->directory('bukti-operasional')
-                                    ->preserveFilenames()
-                                    ->imageEditor() // Tambahkan ini
-                                    ->imageEditorMode(2) // Tambahkan ini
-                                    ->openable() // Tambahkan ini
-                                    ->downloadable() // Tambahkan ini
-                                    ->columnSpanFull()
+                                    ->imageEditor()
+                                    ->openable()
                             ])->columns(2)
-                    ])
-                    ->columnSpanFull()
+                    ])->columns(1)
             ]);
     }
 
@@ -237,6 +270,8 @@ class OperasionalResource extends Resource
             'edit' => Pages\EditOperasional::route('/{record}/edit'),
         ];
     }
+
+
 
     public static function getEloquentQuery(): Builder
     {
