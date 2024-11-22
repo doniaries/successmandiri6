@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransaksiDoResource\Pages;
-// use App\Filament\Resources\TransaksiDoResource\Widgets\TransaksiDoStatWidget;
+use App\Filament\Resources\TransaksiDoResource\Widgets\TransaksiDoStatWidget;
 use Filament\Tables\Enums\ActionsPosition;
 
 // use Barryvdh\DomPDF\Facade\Pdf;
@@ -43,7 +43,7 @@ class TransaksiDoResource extends Resource
     public static function getWidgets(): array
     {
         return [
-            // TransaksiDoStatWidget::class,
+            TransaksiDoStatWidget::class,
         ];
     }
 
