@@ -546,6 +546,7 @@ class TransaksiDoResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->striped()
+            ->defaultPaginationPageOption(5)
             ->paginated([5, 10, 25, 50, 100, 'all'])
             ->deferLoading()
             ->poll('5s')
