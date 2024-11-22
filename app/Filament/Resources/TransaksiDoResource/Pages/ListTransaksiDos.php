@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\TransaksiDoResource\Pages;
 
 use App\Filament\Resources\TransaksiDoResource;
-use App\Filament\Resources\TransaksiDoResource\Widgets\TransaksiDoStatWidget;
+// use App\Filament\Resources\TransaksiDoResource\Widgets\TransaksiDoStatWidget;
 use App\Models\Operasional;
 use App\Models\TransaksiDo;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +33,7 @@ class ListTransaksiDos extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            TransaksiDoStatWidget::make(),
+            // TransaksiDoStatWidget::make(),
         ];
     }
 
