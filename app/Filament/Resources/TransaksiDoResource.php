@@ -180,8 +180,11 @@ class TransaksiDoResource extends Resource
                                         ->label('Nomor Polisi'),
                                     Forms\Components\TextInput::make('tonase')
                                         ->label('Tonase (Netto)')
+                                        ->hintIcon('heroicon-m-exclamation-triangle')
+                                        ->hintColor('primary')
+                                        ->hint('angka tanpa titik')
                                         ->required()
-                                        ->numeric()
+                                        // ->numeric()
                                         ->suffix('Kg')
                                         ->live(onBlur: true)
                                         ->afterStateUpdated(fn($state, Forms\Get $get, Forms\Set $set) =>

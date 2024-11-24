@@ -59,7 +59,7 @@ class TransaksiDo extends Model
     // MASIH DIPAKAI - Update casting untuk kolom baru
     protected $casts = [
         'tanggal' => 'datetime',
-        'tonase' => 'decimal:2',
+        'tonase' => 'decimal:0',
         'harga_satuan' => 'decimal:0',
         'total' => 'decimal:0',
         'upah_bongkar' => 'integer',

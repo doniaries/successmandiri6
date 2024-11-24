@@ -138,9 +138,10 @@ class LaporanKeuanganResource extends Resource
                                 Forms\Components\DatePicker::make('start_date')
                                     ->label('Dari Tanggal')
                                     ->required()
+                                    ->default(now())
                                     ->displayFormat('d/m/Y')
-                                    ->native(false)
-                                    ->default(now()->startOfMonth()),
+                                    // ->default(now()->startOfMonth()),
+                                    ->native(false),
                                 Forms\Components\DatePicker::make('end_date')
                                     ->label('Sampai Tanggal')
                                     ->required()
@@ -276,9 +277,9 @@ class LaporanKeuanganResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\ForceDeleteBulkAction::make(),
+                    // Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ])
             ->defaultSort('created_at', 'desc')
