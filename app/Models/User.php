@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Filament\Panel;
+use App\Models\Perusahaan;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Filament\Models\Contracts\FilamentUser;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -22,6 +25,7 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'perusahan_id',
         'is_active',
     ];
 
@@ -57,5 +61,11 @@ class User extends Authenticatable implements FilamentUser
     {
         // Verifikasi akses ke panel admin
         return $this->is_active && $this->email; // Pastikan user aktif dan memiliki email
+    }
+
+    // Definisikan relasi dengan type hinting yang benar
+    public function perusahaan(): BelongsTo
+    {
+        return $this->belongsTo(Perusahaan::class, 'perusahaan_id');
     }
 }

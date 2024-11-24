@@ -116,6 +116,7 @@ class PerusahaanResource extends Resource
                     ->weight('5')
                     ->badge()
                     ->money('IDR')
+                    ->alignRight()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('alamat')
                     ->sortable(),
