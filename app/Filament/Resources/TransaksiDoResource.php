@@ -156,6 +156,11 @@ class TransaksiDoResource extends Resource
                                             }
                                         }),
 
+                                    Forms\Components\TextInput::make('supir')
+                                        ->label('Supir')
+                                        ->required()
+                                        ->minLength(2)
+                                        ->maxLength(20),
                                     Forms\Components\TextInput::make('nomor_polisi')
                                         ->placeholder('BA 1234 K')
                                         ->label('Nomor Polisi'),
@@ -184,7 +189,7 @@ class TransaksiDoResource extends Resource
                                         ->afterStateUpdated(fn($state, Forms\Get $get, Forms\Set $set) =>
                                         static::hitungTotal($state, $get, $set)),
                                 ])
-                                ->columns(2),
+                                ->columns(3),
                         ])
                         ->columnSpan(2),
 
@@ -298,7 +303,10 @@ class TransaksiDoResource extends Resource
 
                                     Forms\Components\TextInput::make('keterangan_biaya_lain')
                                         ->label('Keterangan Biaya Lain')
-                                        ->placeholder('uang jalan + ...'),
+                                        // ->visible(fn($get) => $get('biaya_lain') === 'biaya_lain')
+                                        ->hint('*jika ada')
+                                        ->hintColor('primary')
+                                        ->placeholder('misal:uang jalan'),
                                     Forms\Components\Select::make('status_bayar')
                                         ->label('Status Bayar')
                                         ->options([
@@ -423,11 +431,9 @@ class TransaksiDoResource extends Resource
                     ->label('Penjual')
                     ->searchable()
                     ->sortable(),
-
-                Tables\Columns\TextColumn::make('nomor_polisi')
-                    ->label('Nomor Polisi')
+                Tables\Columns\TextColumn::make('supir')
+                    ->label('Supir')
                     ->searchable(),
-
                 Tables\Columns\TextColumn::make('tonase')
                     ->label('Tonase')
                     ->suffix(' Kg')

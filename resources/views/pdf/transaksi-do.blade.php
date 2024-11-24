@@ -93,6 +93,11 @@
             <td>{{ $transaksi->penjual->nama }}</td>
         </tr>
         <tr>
+            <td>Nama Supir</td>
+            <td>{{ $transaksi->supir }}</td>
+        </tr>
+
+        <tr>
             <td>Nomor Polisi</td>
             <td>{{ $transaksi->nomor_polisi }}</td>
         </tr>

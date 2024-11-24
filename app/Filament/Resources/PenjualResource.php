@@ -27,19 +27,12 @@ use App\Filament\Resources\PenjualResource\RelationManagers\RiwayatPembayaranHut
 class PenjualResource extends Resource
 {
     protected static ?string $model = Penjual::class;
-    protected static ?string $navigationGroup = 'Master Data';
+    // protected static ?string $navigationGroup = 'Master Data';
     protected static ?string $navigationIcon = 'heroicon-o-users';
     // protected static ?string $navigationGroup = 'Master Data';
     protected static ?int $navigationSort = 4;
 
 
-    // public static function getWidgets(): array
-    // {
-    //     return [
-    //         PenjualStatsOverview::class,
-    //         PenjualHutangTertinggiWidget::class,
-    //     ];
-    // }
 
     public static function getRelations(): array
     {
@@ -67,13 +60,13 @@ class PenjualResource extends Resource
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('telepon')
-                            ->label('Nomor Telepon')
                             ->tel()
-                            ->maxLength(255),
+                            ->label('Nomor Telepon'),
+
 
                         Forms\Components\TextInput::make('hutang')
                             ->label('Total Hutang')
-                            ->disabled()
+                            // ->disabled()
                             ->dehydrated()
                             ->prefix('Rp')
                             ->numeric()
@@ -83,17 +76,17 @@ class PenjualResource extends Resource
                                 decimalSeparator: '.',
                                 precision: 0
                             ),
-                        Forms\Components\Repeater::make('payment_history')
-                            ->label('Riwayat Pembayaran')
-                            ->relationship('paymentHistory')
-                            ->schema([
-                                Forms\Components\TextInput::make('pembayaran_hutang')
-                                    ->label('Pembayaran Hutang')
-                                    ->required(),
-                                Forms\Components\DatePicker::make('created_at')
-                                    ->label('Tanggal Pembayaran')
-                                    ->required(),
-                            ])
+                        // Forms\Components\Repeater::make('payment_history')
+                        //     ->label('Riwayat Pembayaran')
+                        //     ->relationship('paymentHistory')
+                        //     ->schema([
+                        //         Forms\Components\TextInput::make('pembayaran_hutang')
+                        //             ->label('Pembayaran Hutang')
+                        //             ->required(),
+                        //         Forms\Components\DatePicker::make('created_at')
+                        //             ->label('Tanggal Pembayaran')
+                        //             ->required(),
+                        //     ])
                     ])
                     ->columns(2)
             ]);
@@ -137,21 +130,21 @@ class PenjualResource extends Resource
             ])
             ->filters([
 
-                Tables\Filters\SelectFilter::make('hutang_status')
-                    ->label('Status Hutang')
-                    ->options([
-                        'dengan_hutang' => 'Dengan Hutang',
-                        'tanpa_hutang' => 'Tanpa Hutang',
-                    ])
-                    ->query(function (Builder $query, array $data) {
-                        return $query->when($data['value'], function (Builder $query, string $value) {
-                            return match ($value) {
-                                'dengan_hutang' => $query->where('hutang', '>', 0),
-                                'tanpa_hutang' => $query->where('hutang', '=', 0),
-                                default => $query
-                            };
-                        });
-                    }),
+                // Tables\Filters\SelectFilter::make('hutang_status')
+                //     ->label('Status Hutang')
+                //     ->options([
+                //         'dengan_hutang' => 'Dengan Hutang',
+                //         'tanpa_hutang' => 'Tanpa Hutang',
+                //     ])
+                //     ->query(function (Builder $query, array $data) {
+                //         return $query->when($data['value'], function (Builder $query, string $value) {
+                //             return match ($value) {
+                //                 'dengan_hutang' => $query->where('hutang', '>', 0),
+                //                 'tanpa_hutang' => $query->where('hutang', '=', 0),
+                //                 default => $query
+                //             };
+                //         });
+                //     }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

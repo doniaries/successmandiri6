@@ -26,9 +26,11 @@ class TransaksiDo extends Model
 
 
     protected $fillable = [
+        'id',
         'nomor',
         'tanggal',
         'penjual_id',
+        'supir',
         'nomor_polisi',
         'tonase',
         'harga_satuan',

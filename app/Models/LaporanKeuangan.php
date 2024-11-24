@@ -14,6 +14,7 @@ class LaporanKeuangan extends Model
     protected $table = 'laporan_keuangan';
 
     protected $fillable = [
+        'id',
         'tanggal',
         'jenis_transaksi', // Sesuaikan dengan kolom di database
         'kategori',        // Sesuaikan nama kolom

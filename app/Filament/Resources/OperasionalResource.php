@@ -164,6 +164,7 @@ class OperasionalResource extends Resource
                                     ->label('Nominal')
                                     ->required()
                                     ->numeric()
+                                    ->visible(fn($get) => $get('tipe_nama') === 'tipe_nama')
                                     ->prefix('Rp')
                                     ->live(onBlur: true)
                                     ->currencyMask(
@@ -178,9 +179,11 @@ class OperasionalResource extends Resource
                             ->schema([
                                 Forms\Components\Textarea::make('keterangan')
                                     ->label('Keterangan')
+                                    ->visible(fn($get) => $get('nominal') === 'nominal')
                                     ->rows(1),
                                 Forms\Components\FileUpload::make('file_bukti')
                                     ->label('Upload Bukti')
+                                    ->visible(fn($get) => $get('keterangan') === 'keterangan')
                                     ->image()
                                     ->disk('public')
                                     ->directory('bukti-operasional')

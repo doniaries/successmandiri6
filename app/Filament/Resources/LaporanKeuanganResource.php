@@ -90,16 +90,17 @@ class LaporanKeuanganResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nominal')
                     ->numeric()
+                    ->prefix('Rp. ')
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->money('IDR')
+                            ->prefix('Rp. ')
                     ])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('sumber_transaksi')
                     ->label('dari')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('referensi_id')
-                    ->numeric()
+                    // ->numeric()
                     ->hidden()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nomor_referensi')
@@ -266,7 +267,7 @@ class LaporanKeuanganResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->filtersFormColumns(2)
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -293,8 +294,9 @@ class LaporanKeuanganResource extends Resource
     {
         return [
             'index' => Pages\ListLaporanKeuangans::route('/'),
-            'create' => Pages\CreateLaporanKeuangan::route('/create'),
-            'edit' => Pages\EditLaporanKeuangan::route('/{record}/edit'),
+            // 'create' => Pages\CreateLaporanKeuangan::route('/create'),
+            // 'edit' => Pages\EditLaporanKeuangan::route('/{record}/edit'),
+            'view' => Pages\ViewLaporanKeuangan::route('/{record}'),
         ];
     }
 
@@ -305,7 +307,11 @@ class LaporanKeuanganResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
-
+    // Override canCreate untuk mencegah pembuatan data
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function getWidgets(): array
     {
