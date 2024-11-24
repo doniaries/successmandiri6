@@ -56,6 +56,7 @@ class UserResource extends Resource
                                 Forms\Components\TextInput::make('password')
                                     ->label('Password')
                                     ->hint('masukan password baru jika ingin diubah')
+                                    ->hintColor('primary')
                                     ->password()
                                     ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
                                     ->required(fn(string $operation): bool => $operation === 'create')
