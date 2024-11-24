@@ -20,8 +20,7 @@ use App\Filament\Resources\PenjualResource\RelationManagers;
 use App\Filament\Resources\PenjualResource\Widgets\PenjualStatsOverview;
 use App\Filament\Resources\PenjualResource\RelationManagers\RiwayatHutangPinjamanRelationManager;
 use App\Filament\Resources\PenjualResource\RelationManagers\RiwayatPembayaranHutangPinjamanRelationManager;
-// use Filament\Forms;
-// use Filament\Tables;
+
 use App\Filament\Resources\PenjualResource\RelationManagers\RiwayatPembayaranHutangRelationManager;
 
 class PenjualResource extends Resource
@@ -29,7 +28,6 @@ class PenjualResource extends Resource
     protected static ?string $model = Penjual::class;
     // protected static ?string $navigationGroup = 'Master Data';
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    // protected static ?string $navigationGroup = 'Master Data';
     protected static ?int $navigationSort = 4;
 
 
@@ -49,6 +47,9 @@ class PenjualResource extends Resource
         return $form
             ->schema([
                 Section::make('Informasi Penjual')
+                    ->description(fn($context) => $context === 'create' ?
+                        'Input data penjual baru & hutang awal' :
+                        'Edit informasi penjual')
                     ->schema([
                         Forms\Components\TextInput::make('nama')
                             ->label('Nama Penjual')
@@ -63,10 +64,13 @@ class PenjualResource extends Resource
                             ->tel()
                             ->label('Nomor Telepon'),
 
-
+                        // Hutang awal hanya muncul saat create
                         Forms\Components\TextInput::make('hutang')
-                            ->label('Total Hutang')
-                            // ->disabled()
+                            ->label(fn($context) => $context === 'create' ?
+                                'Hutang Awal' : 'Total Hutang')
+                            ->helperText(fn($context) => $context === 'create' ?
+                                'Masukkan hutang awal jika ada. Input ini hanya bisa dilakukan sekali saat pendaftaran penjual.' : '')
+                            ->disabled(fn($context) => $context !== 'create')
                             ->dehydrated()
                             ->prefix('Rp')
                             ->numeric()
@@ -76,17 +80,6 @@ class PenjualResource extends Resource
                                 decimalSeparator: '.',
                                 precision: 0
                             ),
-                        // Forms\Components\Repeater::make('payment_history')
-                        //     ->label('Riwayat Pembayaran')
-                        //     ->relationship('paymentHistory')
-                        //     ->schema([
-                        //         Forms\Components\TextInput::make('pembayaran_hutang')
-                        //             ->label('Pembayaran Hutang')
-                        //             ->required(),
-                        //         Forms\Components\DatePicker::make('created_at')
-                        //             ->label('Tanggal Pembayaran')
-                        //             ->required(),
-                        //     ])
                     ])
                     ->columns(2)
             ]);
@@ -110,17 +103,29 @@ class PenjualResource extends Resource
                     ->label('Telepon')
                     ->searchable(),
 
+                // Tables\Columns\TextColumn::make('hutang')
+                //     ->label('Total Hutang')
+                //     ->money('IDR')
+                //     ->alignment('right')
+                //     ->sortable()
+                //     ->color(fn($state) => $state > 0 ? 'danger' : 'success')
+                //     ->weight('bold')
+                //     ->summarize([
+                //         Tables\Columns\Summarizers\Sum::make()
+                //             ->money('IDR')
+                //     ]),
+
+                // Tampilkan hutang awal di tooltip/hover
                 Tables\Columns\TextColumn::make('hutang')
                     ->label('Total Hutang')
+                    ->tooltip(fn($record) =>
+                    "Hutang Awal: Rp " . number_format($record->getOriginal('hutang'), 0, ',', '.'))
                     ->money('IDR')
                     ->alignment('right')
                     ->sortable()
                     ->color(fn($state) => $state > 0 ? 'danger' : 'success')
-                    ->weight('bold')
-                    ->summarize([
-                        Tables\Columns\Summarizers\Sum::make()
-                            ->money('IDR')
-                    ]),
+                    ->weight('bold'),
+
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Terdaftar')
@@ -150,7 +155,7 @@ class PenjualResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
 
-                // Tambah Action untuk input hutang baru
+                /* Tambah Action untuk input hutang baru*/
                 // Action::make('tambah_hutang')
                 //     ->label('Tambah Hutang')
                 //     ->icon('heroicon-o-plus-circle')
@@ -213,7 +218,8 @@ class PenjualResource extends Resource
                 //         }
                 //     }),
 
-                // Action untuk bayar hutang
+                /* Action untuk bayar hutang */
+
                 // Action::make('bayar_hutang')
                 //     ->label('Bayar Hutang')
                 //     ->icon('heroicon-o-banknotes')
@@ -289,7 +295,7 @@ class PenjualResource extends Resource
                 //                 ->body('Terjadi kesalahan: ' . $e->getMessage())
                 //                 ->send();
                 //         }
-                // }),
+                //     }),
             ])
             ->paginated([5, 10, 25, 50, 100, 'all'])
             ->deferLoading()

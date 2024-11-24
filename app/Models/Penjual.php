@@ -64,16 +64,24 @@ class Penjual extends Model
     {
         parent::boot();
 
-        static::updating(function ($penjual) {
-            if ($penjual->isDirty('hutang')) {
-                \Log::info('Perubahan Hutang Penjual:', [
+        // Log hutang awal saat create
+        static::creating(function ($penjual) {
+            if ($penjual->hutang > 0) {
+                \Log::info('Input Hutang Awal Penjual:', [
                     'penjual' => $penjual->nama,
-                    'hutang_lama' => $penjual->getOriginal('hutang'),
-                    'hutang_baru' => $penjual->hutang,
-                    'selisih' => $penjual->hutang - $penjual->getOriginal('hutang')
+                    'hutang_awal' => $penjual->hutang,
+                    'tanggal' => now(),
+                    'user' => auth()->user()->name ?? 'System'
                 ]);
             }
         });
+
+        // // Cegah perubahan hutang langsung dari form edit
+        // static::updating(function ($penjual) {
+        //     if ($penjual->isDirty('hutang') && !$penjual->wasRecentlyCreated) {
+        //         throw new \Exception('Hutang hanya bisa diubah melalui transaksi.');
+        //     }
+        // });
     }
 
     // Scopes

@@ -160,13 +160,22 @@ class LaporanKeuanganResource extends Resource
                             // Get laporan data dari service
                             $laporanService = app(LaporanKeuanganService::class);
                             $laporanData = $laporanService->getLaporanData($startDate, $endDate);
+
+                            // Get perusahaan data
+                            $perusahaan = \App\Models\Perusahaan::firstOrFail();
+
+                            // Hitung saldo awal (saldo saat ini dikurangi mutasi periode ini)
+                            $saldoAwal = $perusahaan->saldo - ($laporanData['totalPemasukan'] - $laporanData['totalPengeluaran']);
+
+
                             // Prepare additional data
                             $viewData = array_merge($laporanData, [
                                 'startDate' => $startDate,
                                 'endDate' => $endDate,
-                                'perusahaan' => \App\Models\Perusahaan::firstOrFail(),
+                                'perusahaan' => $perusahaan,
+                                'saldoAwal' => $saldoAwal, // Tambahkan saldo awal
+                                'saldoAkhir' => $perusahaan->saldo, // Gunakan saldo terkini
                                 'user' => auth()->user(),
-                                // Format data untuk badges dan styling
                                 'jenisTransaksi' => [
                                     'Pemasukan' => 'success',
                                     'Pengeluaran' => 'danger'
@@ -194,10 +203,6 @@ class LaporanKeuanganResource extends Resource
                             $totalPengeluaran = $transaksi
                                 ->where('jenis_transaksi', 'Pengeluaran')
                                 ->sum('nominal');
-
-                            // Get perusahaan & calculate saldo
-                            $perusahaan = \App\Models\Perusahaan::firstOrFail();
-                            $saldoAkhir = $perusahaan->saldo + $totalPemasukan - $totalPengeluaran;
 
                             // Generate PDF
                             $pdf = Pdf::loadView('laporan.keuangan-harian', $viewData);

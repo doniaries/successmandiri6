@@ -113,29 +113,43 @@ class TransaksiDoResource extends Resource
                                                 ->label('Nama Penjual')
                                                 ->required()
                                                 ->maxLength(255),
-
                                             Forms\Components\TextInput::make('alamat')
                                                 ->label('Alamat')
                                                 ->maxLength(255),
-
                                             Forms\Components\TextInput::make('telepon')
-                                                ->label('Nomor Telepon')
                                                 ->tel()
-                                                ->maxLength(255),
-
+                                                ->label('Nomor Telepon'),
+                                            // Hutang awal hanya muncul saat create
                                             Forms\Components\TextInput::make('hutang')
-                                                ->label('Total Hutang')
-                                                ->disabled()
-                                                ->dehydrated()
+                                                ->label('Hutang Awal') // Ubah label
+                                                ->helperText('Masukkan hutang awal jika ada. Input ini hanya bisa dilakukan sekali saat pendaftaran penjual.')
                                                 ->prefix('Rp')
                                                 ->numeric()
                                                 ->default(0)
+                                                ->live(onBlur: true) // Tambahkan live update
                                                 ->currencyMask(
-                                                    thousandSeparator: ',',
-                                                    decimalSeparator: '.',
+                                                    thousandSeparator: '.',
+                                                    decimalSeparator: ',',
                                                     precision: 0
-                                                ),
+                                                )
+                                                ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                                    // Update sisa hutang saat hutang awal berubah
+                                                    $set('hutang_awal', $state);
+                                                    $set('sisa_hutang_penjual', $state);
+                                                    $set('pembayaran_hutang', 0);
+                                                }),
                                         ])
+                                        ->createOptionAction(function (Forms\Components\Actions\Action $action) {
+                                            return $action
+                                                ->modalHeading('Tambah Penjual Baru')
+                                                ->modalWidth('lg')
+                                                ->successNotification(
+                                                    Notification::make()
+                                                        ->success()
+                                                        ->title('Penjual Berhasil Ditambahkan')
+                                                        ->body('Data penjual dan hutang awal berhasil disimpan.')
+                                                );
+                                        })
                                         ->afterStateUpdated(function ($state, Forms\Set $set) {
                                             if ($state) {
                                                 // Get fresh data penjual
@@ -558,6 +572,7 @@ class TransaksiDoResource extends Resource
             ->defaultPaginationPageOption(5)
             ->paginated([5, 10, 25, 50, 100, 'all'])
             ->deferLoading()
+            ->reorderable()
             ->poll('5s')
             ->persistSortInSession()
             ->filters([

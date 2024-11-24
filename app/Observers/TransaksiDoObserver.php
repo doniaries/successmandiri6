@@ -148,57 +148,63 @@ class TransaksiDoObserver
         try {
             DB::beginTransaction();
 
-            CacheService::clearTransaksiCache($transaksiDo->penjual_id);
-
-            $dataPembatalan = [
-                'nomor_do' => $transaksiDo->nomor,
-                'pembayaran_hutang' => $transaksiDo->pembayaran_hutang,
-                'cara_bayar' => $transaksiDo->cara_bayar,
-                'laporan_keuangan' => []
-            ];
-
-            // Kembalikan hutang penjual
-            if ($transaksiDo->pembayaran_hutang > 0 && $transaksiDo->penjual) {
-                $hutangSebelum = $transaksiDo->penjual->hutang;
-                $transaksiDo->penjual->increment('hutang', $transaksiDo->pembayaran_hutang);
-                $hutangSesudah = $transaksiDo->penjual->fresh()->hutang;
+            $perusahaan = Perusahaan::lockForUpdate()->first();
+            if (!$perusahaan) {
+                throw new \Exception('Data perusahaan tidak ditemukan');
             }
 
-            // Proses pembatalan laporan keuangan
+            // Ambil semua laporan keuangan terkait
             $laporanKeuangan = LaporanKeuangan::where([
                 'sumber_transaksi' => 'DO',
                 'referensi_id' => $transaksiDo->id
             ])->get();
 
+            // Kembalikan saldo berdasarkan jenis transaksi
             foreach ($laporanKeuangan as $laporan) {
-                $dataPembatalan['laporan_keuangan'][] = [
-                    'id' => $laporan->id,
-                    'jenis_transaksi' => $laporan->jenis_transaksi,
-                    'nominal' => $laporan->nominal,
-                    'kategori' => $laporan->kategori,
-                    'sub_kategori' => $laporan->sub_kategori
-                ];
+                if ($laporan->mempengaruhi_kas) {
+                    if ($laporan->jenis_transaksi === 'Pemasukan') {
+                        // Kurangi saldo untuk pembatalan pemasukan
+                        $perusahaan->decrement('saldo', $laporan->nominal);
+                    } else {
+                        // Tambah saldo untuk pembatalan pengeluaran
+                        $perusahaan->increment('saldo', $laporan->nominal);
+                    }
+                }
             }
 
-            // Hapus laporan terkait
+            // Catat log perubahan saldo
+            Log::info('Pembatalan TransaksiDO - Saldo dikembalikan:', [
+                'nomor_do' => $transaksiDo->nomor,
+                'saldo_akhir' => $perusahaan->fresh()->saldo
+            ]);
+
+            // Kembalikan hutang penjual jika ada pembayaran hutang
+            if ($transaksiDo->pembayaran_hutang > 0 && $transaksiDo->penjual) {
+                $transaksiDo->penjual->increment('hutang', $transaksiDo->pembayaran_hutang);
+                Log::info('Hutang penjual dikembalikan:', [
+                    'penjual' => $transaksiDo->penjual->nama,
+                    'nominal' => $transaksiDo->pembayaran_hutang
+                ]);
+            }
+
+            // Hapus langsung laporan keuangan terkait (tanpa soft delete)
             LaporanKeuangan::where([
                 'sumber_transaksi' => 'DO',
                 'referensi_id' => $transaksiDo->id
             ])->delete();
 
+            // Bersihkan cache
+            CacheService::clearTransaksiCache($transaksiDo->penjual_id);
+
             DB::commit();
 
+            // Tampilkan notifikasi
             $this->sendDeleteNotification($transaksiDo);
-
-            Log::info('TransaksiDO Berhasil Dibatalkan:', $dataPembatalan);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error Pembatalan TransaksiDO:', [
                 'error' => $e->getMessage(),
-                'data' => [
-                    'transaksi' => $transaksiDo->toArray(),
-                    'laporan_keuangan' => isset($laporanKeuangan) ? $laporanKeuangan->toArray() : null
-                ]
+                'transaksi' => $transaksiDo->toArray()
             ]);
             throw $e;
         }
@@ -313,24 +319,35 @@ class TransaksiDoObserver
     {
         $message = "DO #{$transaksiDo->nomor} telah dibatalkan\n\n";
 
+        // Info saldo kas
+        if ($transaksiDo->cara_bayar === 'Tunai') {
+            $totalPemasukan = $transaksiDo->upah_bongkar + $transaksiDo->biaya_lain + $transaksiDo->pembayaran_hutang;
+            $totalPengeluaran = $transaksiDo->sisa_bayar;
+
+            $message .= "Perubahan Saldo Kas:\n";
+            if ($totalPemasukan > 0) {
+                $message .= "- Pemasukan dibatalkan: Rp " . number_format($totalPemasukan, 0, ',', '.') . "\n";
+            }
+            if ($totalPengeluaran > 0) {
+                $message .= "- Pengeluaran dibatalkan: Rp " . number_format($totalPengeluaran, 0, ',', '.') . "\n";
+            }
+        }
+
+        // Info hutang
         if ($transaksiDo->pembayaran_hutang > 0) {
-            $message .= "Info Hutang:\n";
+            $message .= "\nInfo Hutang:\n";
             $message .= "- Hutang dikembalikan: Rp " . number_format($transaksiDo->pembayaran_hutang, 0, ',', '.') . "\n";
             if ($transaksiDo->penjual) {
                 $message .= "- Hutang terkini: Rp " . number_format($transaksiDo->penjual->hutang, 0, ',', '.') . "\n";
             }
         }
 
-        // Tambahkan info cara bayar
-        $message .= "\nCara Bayar: {$transaksiDo->cara_bayar}";
-        if ($transaksiDo->cara_bayar === 'Tunai') {
-            $message .= "\nSaldo kas telah dikembalikan.";
-        }
-
         Notification::make()
             ->title('Transaksi DO Dibatalkan')
             ->body($message)
             ->warning()
+            ->icon('heroicon-o-trash')
+            ->duration(5000)
             ->send();
     }
 

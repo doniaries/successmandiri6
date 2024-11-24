@@ -13,6 +13,13 @@ return [
     | This will allow your users to receive real-time notifications.
     |
     */
+    'auth' => [
+        'messages' => [
+            'failed' => 'User tidak ditemukan',
+        ],
+    ],
+
+
 
     'broadcasting' => [
 

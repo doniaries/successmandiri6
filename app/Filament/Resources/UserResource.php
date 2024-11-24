@@ -29,7 +29,6 @@ class UserResource extends Resource
                 Forms\Components\Section::make('Informasi Pengguna')
                     ->description('Kelola informasi pengguna dan akses')
                     ->schema([
-                        // Select Perusahaan
                         Forms\Components\Select::make('perusahaan_id')
                             ->label('Perusahaan')
                             ->relationship('perusahaan', 'name')
@@ -48,31 +47,35 @@ class UserResource extends Resource
                             ->email()
                             ->required()
                             ->unique(ignoreRecord: true)
-                            ->maxLength(255),
+                            ->maxLength(20),
 
-                        // Password section
-                        Forms\Components\Section::make('Password')
-                            ->schema([
-                                Forms\Components\TextInput::make('password')
-                                    ->label('Password')
-                                    ->hint('masukan password baru jika ingin diubah')
-                                    ->hintColor('primary')
-                                    ->password()
-                                    ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
-                                    ->required(fn(string $operation): bool => $operation === 'create')
-                                    ->minLength(8)
-                                    ->maxLength(255)
-                                    ->same('passwordConfirmation')
-                                    ->dehydrated(fn($state) => filled($state)),
+                        Forms\Components\TextInput::make('password')
+                            ->label('Password')
+                            ->password()
+                            ->revealable(true)
+                            ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
+                            ->required(fn(string $operation): bool => $operation === 'create')
+                            ->minLength(8)
+                            ->maxLength(255)
+                            ->same('passwordConfirmation')
+                            ->dehydrated(fn($state) => filled($state))
+                            ->live(true),
 
-                                Forms\Components\TextInput::make('passwordConfirmation')
-                                    ->label('Konfirmasi Password')
-                                    ->password()
-                                    ->required(fn(string $operation): bool => $operation === 'create')
-                                    ->minLength(8)
-                                    ->maxLength(255)
-                                    ->dehydrated(false),
-                            ])->columns(2),
+                        Forms\Components\TextInput::make('passwordConfirmation')
+                            ->label('Konfirmasi Password')
+                            ->password()
+                            ->revealable(true)
+                            ->required(
+                                fn(string $operation, ?Forms\Get $get): bool =>
+                                $operation === 'create' || filled($get('password'))
+                            )
+                            ->visible(
+                                fn(string $operation, ?Forms\Get $get): bool =>
+                                $operation === 'create' || filled($get('password'))
+                            )
+                            ->minLength(8)
+                            ->maxLength(255)
+                            ->dehydrated(false),
 
                         Forms\Components\Toggle::make('is_active')
                             ->label('Status Aktif')
@@ -83,6 +86,7 @@ class UserResource extends Resource
             ]);
     }
 
+    // Rest of the class remains the same...
     public static function table(Table $table): Table
     {
         return $table
@@ -104,9 +108,13 @@ class UserResource extends Resource
                     ->copyMessage('Email disalin')
                     ->copyMessageDuration(1500),
 
-                Tables\Columns\IconColumn::make('is_active')
+                // Tables\Columns\IconColumn::make('is_active')
+                //     ->label('Status')
+                //     ->boolean()
+                //     ->sortable(),
+
+                Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Status')
-                    ->boolean()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
@@ -176,7 +184,6 @@ class UserResource extends Resource
             ]);
     }
 
-    // Global search
     public static function getGlobalSearchResultDetails($record): array
     {
         return [
