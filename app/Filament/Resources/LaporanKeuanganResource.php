@@ -104,7 +104,7 @@ class LaporanKeuanganResource extends Resource
                     ->hidden()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nomor_referensi')
-                    ->label('Nomor DO')
+                    ->label('Nomor')
                     ->badge()
                     ->copyable()
                     ->copyMessage('Nomor DO berhasil disalin')

@@ -178,6 +178,8 @@
                 <td width="100">Dibuat Oleh</td>
                 <td width="10">:</td>
                 <td>{{ $user->name }}</td>
+            </tr>
+            <tr>
                 <td width="100">Tanggal Cetak</td>
                 <td width="10">:</td>
                 <td>{{ now()->format('d/m/Y H:i') }}</td>
@@ -196,7 +198,7 @@
         </table>
     </div>
 
-    !-- Section A: Transaksi Saldo -->
+    {{-- !-- Section A: Transaksi Saldo --> --}}
     @if (isset($transaksiSaldo) && count($transaksiSaldo) > 0)
         <h4 class="section-title">A. Tambah Saldo</h4>
         <table class="data-table">

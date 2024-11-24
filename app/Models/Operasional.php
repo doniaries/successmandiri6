@@ -39,6 +39,12 @@ class Operasional extends Model
         'pengeluaran' => 'Pengeluaran',
     ];
 
+    // Tambahkan property
+    protected $hidden = [
+        'max_pembayaran',
+        'hutang_awal',
+        'info_hutang'
+    ];
 
     // Relations
     public function penjual(): BelongsTo // [EDIT] Tambah return type
@@ -98,5 +104,11 @@ class Operasional extends Model
                 $operasional->operasional = $operasional->kategori->getJenisOperasional();
             }
         });
+    }
+
+    // Tambahkan accessor untuk memformat hutang
+    public function getFormattedHutangAttribute(): string
+    {
+        return 'Rp ' . number_format($this->hutang_awal ?? 0, 0, ',', '.');
     }
 }

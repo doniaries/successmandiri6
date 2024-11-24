@@ -23,8 +23,37 @@ class OperasionalObserver
         try {
             DB::beginTransaction();
 
-            // 1. Catat ke laporan keuangan
-            $this->createLaporanKeuangan($operasional);
+            // Dapatkan data pihak terkait
+            $pihakTerkait = match ($operasional->tipe_nama) {
+                'penjual' => $operasional->penjual?->nama,
+                'user' => $operasional->user?->name,
+                'pekerja' => $operasional->pekerja?->nama,
+                default => null
+            };
+
+            $subKategori = $operasional->kategori === 'bayar_hutang'
+                ? "Pembayaran Hutang {$operasional->tipe_nama}"
+                : ($operasional->kategori?->label() ?? '-');
+
+            // SINGLE Create laporan keuangan
+            LaporanKeuangan::create([
+                'tanggal' => $operasional->tanggal,
+                'jenis_transaksi' => ucfirst($operasional->operasional),
+                'kategori' => 'Operasional',
+                'sub_kategori' => $subKategori,
+                'nominal' => $operasional->nominal,
+                'sumber_transaksi' => 'Operasional',
+                'referensi_id' => $operasional->id,
+                'nomor_referensi' => sprintf('OP-%s', str_pad($operasional->id, 5, '0', STR_PAD_LEFT)),
+                'pihak_terkait' => $pihakTerkait,
+                'tipe_pihak' => $operasional->tipe_nama,
+                'cara_pembayaran' => 'Tunai',
+                'keterangan' => $operasional->keterangan
+                    ? "{$operasional->keterangan}" . ($operasional->kategori === 'bayar_hutang' ? ' - Pembayaran Hutang' : '')
+                    : ($operasional->kategori === 'bayar_hutang' ? 'Pembayaran Hutang' : '-'),
+                'mempengaruhi_kas' => true,
+                'saldo_sebelum' => optional(Perusahaan::first())->saldo ?? 0,
+            ]);
 
             // 2. Proses perubahan hutang jika ada
             if ($operasional->kategori === 'bayar_hutang' || $operasional->kategori === 'pinjaman') {
@@ -36,7 +65,7 @@ class OperasionalObserver
 
             DB::commit();
 
-            // Notifikasi sukses
+            // 4. Notifikasi sukses
             $this->showTransactionNotification($operasional, 'created');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -191,34 +220,35 @@ class OperasionalObserver
     }
 
     // Helper Methods
+    // Modifikasi method processHutang
     private function processHutang(Operasional $operasional): void
     {
-        if (!in_array($operasional->kategori, ['bayar_hutang', 'pinjaman'])) {
-            return;
-        }
+        if ($operasional->kategori === 'bayar_hutang') {
+            $pihak = match ($operasional->tipe_nama) {
+                'penjual' => $operasional->penjual,
+                'pekerja' => $operasional->pekerja,
+                default => null
+            };
 
-        $pihak = match ($operasional->tipe_nama) {
-            'penjual' => $operasional->penjual,
-            'pekerja' => $operasional->pekerja,
-            default => null
-        };
+            if (!$pihak) {
+                throw new \Exception('Data pihak terkait tidak ditemukan');
+            }
 
-        if (!$pihak) {
-            throw new \Exception('Data pihak terkait tidak ditemukan');
-        }
+            // Validasi pembayaran tidak melebihi hutang
+            if ($operasional->nominal > $pihak->hutang) {
+                throw new \Exception('Pembayaran melebihi total hutang');
+            }
 
-        if ($operasional->kategori === 'pinjaman') {
-            $pihak->increment('hutang', $operasional->nominal);
-        } else {
+            // Kurangi hutang
             $pihak->decrement('hutang', $operasional->nominal);
-        }
 
-        Log::info('Hutang diproses:', [
-            'tipe' => $operasional->tipe_nama,
-            'pihak' => $pihak->nama ?? 'unknown',
-            'kategori' => $operasional->kategori,
-            'nominal' => $operasional->nominal
-        ]);
+            Log::info('Hutang dibayar:', [
+                'tipe' => $operasional->tipe_nama,
+                'pihak' => $pihak->nama,
+                'nominal' => $operasional->nominal,
+                'sisa_hutang' => $pihak->fresh()->hutang
+            ]);
+        }
     }
 
     private function rollbackHutang($operasional): void
