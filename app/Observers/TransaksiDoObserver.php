@@ -162,50 +162,125 @@ class TransaksiDoObserver
         }
     }
 
+    // TransaksiDoObserver.php
+
+    // Perbaikan method createNonCashTransactionReports
     protected function createNonCashTransactionReports(TransaksiDo $transaksiDo)
     {
-        // Definisi komponen untuk transaksi non-tunai
-        $components = [
-            [
-                'jenis' => 'Pemasukan',
-                'kategori' => 'Upah Bongkar',
-                'nominal' => $transaksiDo->upah_bongkar
-            ],
-            [
-                'jenis' => 'Pemasukan',
-                'kategori' => 'Biaya Lain',
-                'nominal' => $transaksiDo->biaya_lain
-            ],
-            [
-                'jenis' => 'Pemasukan',
-                'kategori' => 'Bayar Hutang',
-                'nominal' => $transaksiDo->pembayaran_hutang
-            ],
-            [
-                'jenis' => 'Pengeluaran',
-                'kategori' => 'Pembayaran DO',
-                'nominal' => $transaksiDo->sisa_bayar
-            ]
-        ];
+        try {
+            DB::beginTransaction();
 
-        foreach ($components as $component) {
-            if ($component['nominal'] > 0) {
+            // Get perusahaan with lock
+            $perusahaan = Perusahaan::lockForUpdate()->first();
+            if (!$perusahaan) {
+                throw new \Exception("Data perusahaan tidak ditemukan");
+            }
+
+            // 1. Catat upah bongkar dan biaya lain sebagai pemasukan tunai
+            $pemasukanTunai = $transaksiDo->upah_bongkar + $transaksiDo->biaya_lain;
+            if ($pemasukanTunai > 0) {
                 $this->createLaporanKeuangan([
                     'tanggal' => $transaksiDo->tanggal,
-                    'jenis_transaksi' => $component['jenis'],
-                    'kategori' => 'DO', // Konsisten untuk kategori
-                    'sub_kategori' => $component['kategori'],
-                    'nominal' => $component['nominal'],
+                    'jenis_transaksi' => 'Pemasukan',
+                    'kategori' => 'DO',
+                    'sub_kategori' => 'Pemasukan Tunai',
+                    'nominal' => $pemasukanTunai,
                     'sumber_transaksi' => 'DO',
                     'referensi_id' => $transaksiDo->id,
                     'nomor_referensi' => $transaksiDo->nomor,
                     'pihak_terkait' => $transaksiDo->penjual->nama,
-                    'tipe_pihak' => 'Penjual',
-                    'cara_pembayaran' => $transaksiDo->cara_bayar,
-                    'mempengaruhi_kas' => false,
-                    'keterangan' => "Transaksi DO #{$transaksiDo->nomor} ({$transaksiDo->cara_bayar})"
+                    'tipe_pihak' => 'penjual',
+                    'cara_pembayaran' => 'Tunai',
+                    'mempengaruhi_kas' => true,
+                    'keterangan' => "Pemasukan tunai (upah & biaya) DO #{$transaksiDo->nomor}"
                 ]);
+
+                // Update saldo perusahaan
+                $perusahaan->increment('saldo', $pemasukanTunai);
             }
+
+            // 2. Catat pembayaran hutang sebagai pemasukan tunai
+            if ($transaksiDo->pembayaran_hutang > 0) {
+                $this->createLaporanKeuangan([
+                    'tanggal' => $transaksiDo->tanggal,
+                    'jenis_transaksi' => 'Pemasukan',
+                    'kategori' => 'DO',
+                    'sub_kategori' => 'Bayar Hutang',
+                    'nominal' => $transaksiDo->pembayaran_hutang,
+                    'sumber_transaksi' => 'DO',
+                    'referensi_id' => $transaksiDo->id,
+                    'nomor_referensi' => $transaksiDo->nomor,
+                    'pihak_terkait' => $transaksiDo->penjual->nama,
+                    'tipe_pihak' => 'penjual',
+                    'cara_pembayaran' => 'Tunai',
+                    'mempengaruhi_kas' => true,
+                    'keterangan' => "Pembayaran hutang DO #{$transaksiDo->nomor}"
+                ]);
+
+                // Update saldo perusahaan
+                $perusahaan->increment('saldo', $transaksiDo->pembayaran_hutang);
+            }
+
+            // 3. Catat sisa bayar sebagai pemasukan non-tunai
+            if ($transaksiDo->sisa_bayar > 0) {
+                // Catat pemasukan sisa bayar
+                $this->createLaporanKeuangan([
+                    'tanggal' => $transaksiDo->tanggal,
+                    'jenis_transaksi' => 'Pemasukan',
+                    'kategori' => 'DO',
+                    'sub_kategori' => 'Sisa Bayar DO',
+                    'nominal' => $transaksiDo->sisa_bayar,
+                    'sumber_transaksi' => 'DO',
+                    'referensi_id' => $transaksiDo->id,
+                    'nomor_referensi' => $transaksiDo->nomor,
+                    'pihak_terkait' => $transaksiDo->penjual->nama,
+                    'tipe_pihak' => 'penjual',
+                    'cara_pembayaran' => $transaksiDo->cara_bayar,
+                    'mempengaruhi_kas' => true,
+                    'keterangan' => "Pemasukan {$transaksiDo->cara_bayar} DO #{$transaksiDo->nomor}"
+                ]);
+
+                // Update saldo perusahaan (pemasukan)
+                $perusahaan->increment('saldo', $transaksiDo->sisa_bayar);
+
+                // Catat pengeluaran sisa bayar
+                $this->createLaporanKeuangan([
+                    'tanggal' => $transaksiDo->tanggal,
+                    'jenis_transaksi' => 'Pengeluaran',
+                    'kategori' => 'DO',
+                    'sub_kategori' => 'Pembayaran DO',
+                    'nominal' => $transaksiDo->sisa_bayar,
+                    'sumber_transaksi' => 'DO',
+                    'referensi_id' => $transaksiDo->id,
+                    'nomor_referensi' => $transaksiDo->nomor,
+                    'pihak_terkait' => $transaksiDo->penjual->nama,
+                    'tipe_pihak' => 'penjual',
+                    'cara_pembayaran' => $transaksiDo->cara_bayar,
+                    'mempengaruhi_kas' => true,
+                    'keterangan' => "Pembayaran DO via {$transaksiDo->cara_bayar}"
+                ]);
+
+                // Update saldo perusahaan (pengeluaran)
+                $perusahaan->decrement('saldo', $transaksiDo->sisa_bayar);
+            }
+
+            DB::commit();
+
+            Log::info('Transaksi non-tunai berhasil dicatat:', [
+                'nomor_do' => $transaksiDo->nomor,
+                'pemasukan_tunai' => $pemasukanTunai,
+                'pembayaran_hutang' => $transaksiDo->pembayaran_hutang,
+                'sisa_bayar' => $transaksiDo->sisa_bayar,
+                'cara_bayar' => $transaksiDo->cara_bayar,
+                'saldo_akhir' => $perusahaan->fresh()->saldo
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error mencatat transaksi non-tunai:', [
+                'error' => $e->getMessage(),
+                'transaksi' => $transaksiDo->toArray()
+            ]);
+            throw $e;
         }
     }
 

@@ -206,7 +206,7 @@ class TransaksiDoResource extends Resource
                                         ->afterStateUpdated(fn($state, Forms\Get $get, Forms\Set $set) =>
                                         static::hitungTotal($state, $get, $set)),
                                 ])
-                                ->columns(3),
+                                ->columns(2),
                         ])
                         ->columnSpan(2),
 
