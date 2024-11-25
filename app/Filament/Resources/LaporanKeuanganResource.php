@@ -218,6 +218,8 @@ class LaporanKeuanganResource extends Resource
                         } catch (\Exception $e) {
                             Notification::make()
                                 ->danger()
+                                ->duration(3000) // Set durasi 3 detik
+                                ->persistent(false) // Notifikasi akan otomatis hilang
                                 ->title('Error')
                                 ->body('Gagal membuat laporan: ' . $e->getMessage())
                                 ->send();

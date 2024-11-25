@@ -146,6 +146,8 @@ class TransaksiDoResource extends Resource
                                                 ->successNotification(
                                                     Notification::make()
                                                         ->success()
+                                                        ->duration(3000) // Set durasi 3 detik
+                                                        ->persistent(false) // Notifikasi akan otomatis hilang
                                                         ->title('Penjual Berhasil Ditambahkan')
                                                         ->body('Data penjual dan hutang awal berhasil disimpan.')
                                                 );
@@ -293,6 +295,8 @@ class TransaksiDoResource extends Resource
                                                 // Perbaikan format notifikasi
                                                 Notification::make()
                                                     ->warning()
+                                                    ->duration(3000) // Set durasi 3 detik
+                                                    ->persistent(false) // Notifikasi akan otomatis hilang
                                                     ->title('Pembayaran Hutang')  // Title lebih deskriptif
                                                     ->body(sprintf(
                                                         'Pembayaran disesuaikan menjadi Rp %s sesuai total hutang',

@@ -74,7 +74,8 @@ class CreateTransaksiDo extends CreateRecord
                 ->title('Error Validasi Data')
                 ->body($e->getMessage())
                 ->danger()
-                ->persistent()
+                ->duration(3000)
+                ->persistent(false)
                 ->send();
 
             throw $e;
@@ -105,7 +106,8 @@ class CreateTransaksiDo extends CreateRecord
                             "Sisa hutang: Rp " . number_format($record->sisa_hutang_penjual, 0, ',', '.')
                     )
                     ->success()
-                    ->persistent()
+                    ->duration(3000)
+                    ->persistent(false)
                     ->send();
             }
 
@@ -118,6 +120,8 @@ class CreateTransaksiDo extends CreateRecord
                         "Sisa bayar: Rp " . number_format($record->sisa_bayar, 0, ',', '.')
                 )
                 ->success()
+                ->duration(2000) // Set durasi 3 detik
+                ->persistent(false) // Notifikasi akan otomatis hilang
                 ->send();
 
             DB::commit();
@@ -128,7 +132,8 @@ class CreateTransaksiDo extends CreateRecord
                 ->title('Error')
                 ->body('Terjadi kesalahan: ' . $e->getMessage())
                 ->danger()
-                ->persistent()
+                ->duration(3000) // Set durasi 3 detik
+                ->persistent(false) // Notifikasi akan otomatis hilang
                 ->send();
 
             throw $e;

@@ -104,6 +104,8 @@ class RiwayatSaldoRelationManager extends RelationManager
 
                             Notification::make()
                                 ->success()
+                                ->duration(3000) // Set durasi 3 detik
+                                ->persistent(false) // Notifikasi akan otomatis hilang
                                 ->title('Transaksi Dibatalkan')
                                 ->body(sprintf(
                                     "Pembatalan tambah saldo Rp %s berhasil.\nSaldo terkini: Rp %s",
@@ -116,6 +118,8 @@ class RiwayatSaldoRelationManager extends RelationManager
 
                             Notification::make()
                                 ->danger()
+                                ->duration(3000) // Set durasi 3 detik
+                                ->persistent(false) // Notifikasi akan otomatis hilang
                                 ->title('Gagal Membatalkan')
                                 ->body('Terjadi kesalahan: ' . $e->getMessage())
                                 ->send();

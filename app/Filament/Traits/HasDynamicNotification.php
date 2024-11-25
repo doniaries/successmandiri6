@@ -35,7 +35,7 @@ trait HasDynamicNotification
             ->success()
             ->title("Data {$modelLabel} berhasil ditambahkan")
             ->body("{$modelLabel} {$recordName} telah ditambahkan ke database.")
-            ->duration(5000);
+            ->duration(3000);
     }
 
     protected function getSavedNotification(): ?Notification
@@ -47,7 +47,7 @@ trait HasDynamicNotification
             ->success()
             ->title("Data {$modelLabel} diperbarui")
             ->body("{$modelLabel} {$recordName} berhasil diperbarui.")
-            ->duration(5000);
+            ->duration(3000);
     }
 
     protected function getDeletedNotification(): ?Notification
@@ -60,7 +60,7 @@ trait HasDynamicNotification
             ->color('danger')
             ->title("Data {$modelLabel} dihapus")
             ->body("{$modelLabel} {$recordName} telah dihapus.")
-            ->duration(5000);
+            ->duration(3000);
     }
 
     protected function getRestoredNotification(): ?Notification
@@ -72,7 +72,7 @@ trait HasDynamicNotification
             ->success()
             ->title("Data {$modelLabel} dipulihkan")
             ->body("{$modelLabel} {$recordName} telah dipulihkan.")
-            ->duration(5000);
+            ->duration(4000);
     }
 
     protected function getForceDeletedNotification(): ?Notification
@@ -84,7 +84,7 @@ trait HasDynamicNotification
             ->success()
             ->title("Data {$modelLabel} dihapus permanen")
             ->body("{$modelLabel} {$recordName} telah dihapus secara permanen.")
-            ->duration(5000);
+            ->duration(3000);
     }
 
     // Helper untuk header actions
@@ -104,7 +104,7 @@ trait HasDynamicNotification
                 ->success()
                 ->title("Data {$modelLabel} dipulihkan")
                 ->body("{$modelLabel} {$recordName} telah dipulihkan.")
-                ->duration(5000),
+                ->duration(3000),
 
             'forceDelete' => Notification::make()
                 ->success()

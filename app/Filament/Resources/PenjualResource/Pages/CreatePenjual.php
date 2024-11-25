@@ -21,6 +21,8 @@ class CreatePenjual extends CreateRecord
     {
         return Notification::make()
             ->success()
+            ->duration(3000) // Set durasi 3 detik
+            ->persistent(false) // Notifikasi akan otomatis hilang
             ->title('Penjual berhasil ditambahkan')
             ->body('Data penjual baru telah berhasil disimpan');
     }

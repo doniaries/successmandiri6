@@ -195,6 +195,8 @@ class OperasionalResource extends Resource
                                                             $set('nominal', number_format($maxPembayaran, 0, ',', '.'));
                                                             Notification::make()
                                                                 ->warning()
+                                                                ->duration(3000) // Set durasi 3 detik
+                                                                ->persistent(false) // Notifikasi akan otomatis hilang
                                                                 ->title('⚠️ Pembayaran Disesuaikan')
                                                                 ->body('Nominal pembayaran disesuaikan dengan total hutang')
                                                                 ->send();

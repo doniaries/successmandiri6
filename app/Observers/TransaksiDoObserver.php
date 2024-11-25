@@ -517,6 +517,8 @@ class TransaksiDoObserver
         Notification::make()
             ->title('Transaksi DO Berhasil')
             ->body($message)
+            ->duration(2000) // Set durasi 3 detik
+            ->persistent(false) // Notifikasi akan otomatis hilang
             ->success()
             ->send();
     }
@@ -547,7 +549,8 @@ class TransaksiDoObserver
             ->title('Transaksi DO Dibatalkan')
             ->body($message)
             ->warning()
-            ->duration(5000)
+            ->duration(3000)
+            ->persistent(false)
             ->send();
     }
 

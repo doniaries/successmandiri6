@@ -242,6 +242,8 @@ class PerusahaanResource extends Resource
                             Notification::make()
                                 ->title('Berhasil Tambah Saldo')
                                 ->success()
+                                ->duration(3000) // Set durasi 3 detik
+                                ->persistent(false) // Notifikasi akan otomatis hilang
                                 ->body(sprintf(
                                     "Saldo bertambah Rp %s\nCara bayar: %s\nSaldo akhir: Rp %s",
                                     number_format($nominal, 0, ',', '.'),

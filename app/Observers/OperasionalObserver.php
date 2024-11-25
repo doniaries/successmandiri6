@@ -474,7 +474,7 @@ class OperasionalObserver
             ->icon($this->getNotificationIcon($type))  // Tambahkan icon
             ->iconColor($type)  // Gunakan warna sesuai type
             ->body($message ?: $body)  // Body wajib di Filament 3
-            ->persistent()
+            ->persistent(false)
             ->duration(5000)    // Durasi tampil 5 detik
             ->send();
     }
@@ -493,8 +493,8 @@ class OperasionalObserver
             ->iconColor('danger')
             ->body("Terjadi kesalahan saat {$action} transaksi: " . $e->getMessage()) // Tambahkan pesan error langsung di body
             ->danger()
-            ->persistent()
-            ->duration(10000) // Durasi lebih lama untuk error (10 detik)
+            ->persistent(false)
+            ->duration(3000) // Durasi lebih lama untuk error (10 detik)
             ->send();
     }
 
