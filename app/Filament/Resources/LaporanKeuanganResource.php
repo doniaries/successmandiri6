@@ -106,10 +106,12 @@ class LaporanKeuanganResource extends Resource
                 Tables\Columns\TextColumn::make('nomor_referensi')
                     ->label('Nomor')
                     ->badge()
+                    ->sortable()
                     ->copyable()
                     ->copyMessage('Nomor DO berhasil disalin')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('pihak_terkait')
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tipe_pihak'),
                 Tables\Columns\TextColumn::make('cara_pembayaran')

@@ -241,10 +241,11 @@ class OperasionalObserver
     // Modifikasi method processHutang
     private function processHutang(Operasional $operasional): void
     {
+        // Perbaikan: Cek kategori bayar_hutang dahulu
         if ($operasional->kategori === 'bayar_hutang') {
             DB::beginTransaction();
             try {
-                // 1. Dapatkan pihak terkait (dengan lock)
+                // 1. Dapatkan pihak dengan lock
                 $pihak = match ($operasional->tipe_nama) {
                     'penjual' => Penjual::lockForUpdate()->find($operasional->penjual_id),
                     'pekerja' => Pekerja::lockForUpdate()->find($operasional->pekerja_id),
@@ -255,38 +256,23 @@ class OperasionalObserver
                     throw new \Exception("Data {$operasional->tipe_nama} tidak ditemukan");
                 }
 
-                // 2. Ambil & validasi hutang sebelum update
-                $hutangSebelum = $pihak->hutang;
-
-                Log::info('Hutang sebelum proses:', [
-                    'pihak' => $pihak->nama,
-                    'hutang_awal' => $hutangSebelum,
-                    'pembayaran' => $operasional->nominal
-                ]);
-
-                if ($operasional->nominal > $hutangSebelum) {
+                // 2. Validasi hutang
+                if ($operasional->nominal > $pihak->hutang) {
                     throw new \Exception(
                         "Pembayaran Rp " . number_format($operasional->nominal, 0, ',', '.') .
-                            " melebihi total hutang Rp " . number_format($hutangSebelum, 0, ',', '.')
+                            " melebihi total hutang Rp " . number_format($pihak->hutang, 0, ',', '.')
                     );
                 }
 
-                // 3. Hitung & update hutang baru
-                $hutangBaru = $hutangSebelum - $operasional->nominal;
+                // 3. Update hutang langsung di database untuk atomic operation
+                $hutangSebelum = $pihak->hutang;
+                $hutangBaru = max(0, $hutangSebelum - $operasional->nominal);
 
-                // Update menggunakan query builder untuk memastikan perubahan
                 DB::table($pihak->getTable())
                     ->where('id', $pihak->id)
                     ->update(['hutang' => $hutangBaru]);
 
-                // 4. Refresh model dan verifikasi perubahan
-                $pihak->refresh();
-
-                if ($pihak->hutang !== $hutangBaru) {
-                    throw new \Exception('Gagal mengupdate hutang - nilai tidak sesuai');
-                }
-
-                // 5. Catat riwayat jika fitur tersedia
+                // 4. Catat riwayat pembayaran jika available
                 if (method_exists($pihak, 'riwayatPembayaran')) {
                     $pihak->riwayatPembayaran()->create([
                         'tanggal' => $operasional->tanggal,
@@ -297,23 +283,21 @@ class OperasionalObserver
                     ]);
                 }
 
-                // 6. Log hasil akhir
-                Log::info('Hutang berhasil diupdate:', [
+                // 5. Log perubahan
+                Log::info('Hutang berhasil dibayar:', [
                     'pihak' => $pihak->nama,
                     'tipe' => $operasional->tipe_nama,
                     'hutang_awal' => $hutangSebelum,
                     'pembayaran' => $operasional->nominal,
-                    'hutang_akhir' => $pihak->hutang,
-                    'operasional_id' => $operasional->id
+                    'hutang_akhir' => $hutangBaru
                 ]);
 
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollBack();
-                Log::error('Error saat proses hutang:', [
+                Log::error('Error proses pembayaran hutang:', [
                     'error' => $e->getMessage(),
-                    'operasional_id' => $operasional->id,
-                    'pihak' => $operasional->nama ?? null
+                    'operasional' => $operasional->toArray()
                 ]);
                 throw $e;
             }
