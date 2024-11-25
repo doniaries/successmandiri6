@@ -35,12 +35,23 @@ class TransaksiDoObserver
                 $this->validateCompanyBalance($transaksiDo);
             }
 
+            // 5. Update hutang penjual jika ada pembayaran
+            if ($transaksiDo->pembayaran_hutang > 0) {
+                $penjual = Penjual::findOrFail($transaksiDo->penjual_id);
+                $penjual->updateHutang($transaksiDo->pembayaran_hutang, 'subtract');
+
+                // Update sisa hutang di transaksi
+                $transaksiDo->sisa_hutang_penjual = $penjual->hutang;
+            }
+
             Log::info('Data DO Siap Disimpan:', [
                 'nomor' => $transaksiDo->nomor,
                 'cara_bayar' => $transaksiDo->cara_bayar,
                 'total' => $transaksiDo->total,
                 'pemasukan_tunai' => $totalPemasukan,
                 'sisa_bayar' => $transaksiDo->sisa_bayar,
+                'pembayaran_hutang' => $transaksiDo->pembayaran_hutang,
+                'sisa_hutang' => $transaksiDo->sisa_hutang_penjual,
                 'mempengaruhi_saldo' => $transaksiDo->cara_bayar === 'Tunai'
             ]);
         } catch (\Exception $e) {
@@ -287,21 +298,34 @@ class TransaksiDoObserver
 
     public function updating(TransaksiDo $transaksiDo)
     {
-        // Validasi pembayaran hutang
+        // Ambil data sebelum update
+        $oldTransaksi = TransaksiDo::find($transaksiDo->id);
+
+        // Jika pembayaran hutang berubah
         if ($transaksiDo->isDirty('pembayaran_hutang')) {
-            if ($transaksiDo->pembayaran_hutang > $transaksiDo->hutang_awal) {
-                throw new \Exception("Pembayaran hutang tidak boleh melebihi hutang awal");
+            $penjual = Penjual::findOrFail($transaksiDo->penjual_id);
+
+            // Kembalikan pembayaran hutang lama
+            if ($oldTransaksi->pembayaran_hutang > 0) {
+                $penjual->updateHutang($oldTransaksi->pembayaran_hutang, 'add');
+            }
+
+            // Validasi pembayaran hutang baru
+            if ($transaksiDo->pembayaran_hutang > $penjual->hutang) {
+                throw new \Exception("Pembayaran hutang tidak boleh melebihi hutang yang tersisa");
+            }
+
+            // Kurangi dengan pembayaran baru
+            if ($transaksiDo->pembayaran_hutang > 0) {
+                $penjual->updateHutang($transaksiDo->pembayaran_hutang, 'subtract');
+                $transaksiDo->sisa_hutang_penjual = $penjual->hutang;
             }
         }
 
         // Validasi perubahan cara bayar
         if ($transaksiDo->isDirty('cara_bayar')) {
-            // Jika berubah ke Tunai, cek saldo
             if ($transaksiDo->cara_bayar === 'Tunai') {
-                $perusahaan = Perusahaan::first();
-                if ($transaksiDo->sisa_bayar > $perusahaan->saldo) {
-                    throw new \Exception("Saldo tidak cukup untuk pembayaran tunai");
-                }
+                $this->validateCompanyBalance($transaksiDo);
             }
         }
     }
@@ -331,19 +355,30 @@ class TransaksiDoObserver
         try {
             DB::beginTransaction();
 
-            $perusahaan = Perusahaan::lockForUpdate()->first();
-            if (!$perusahaan) {
-                throw new \Exception('Data perusahaan tidak ditemukan');
+            // 1. Jika ada pembayaran hutang, kembalikan hutang penjual
+            if ($transaksiDo->pembayaran_hutang > 0 && $transaksiDo->penjual) {
+                $transaksiDo->penjual->updateHutang($transaksiDo->pembayaran_hutang, 'add');
+
+                Log::info('Hutang penjual dikembalikan:', [
+                    'penjual' => $transaksiDo->penjual->nama,
+                    'penambahan_hutang' => $transaksiDo->pembayaran_hutang,
+                    'hutang_sekarang' => $transaksiDo->penjual->hutang
+                ]);
             }
 
-            // 1. Kembalikan saldo untuk pembayaran tunai
+            // 2. Kembalikan saldo untuk pembayaran tunai
             if ($transaksiDo->cara_bayar === 'Tunai') {
-                // Tambahkan saldo untuk pembatalan pengeluaran (sisa bayar)
+                $perusahaan = Perusahaan::lockForUpdate()->first();
+                if (!$perusahaan) {
+                    throw new \Exception('Data perusahaan tidak ditemukan');
+                }
+
+                // Tambah saldo dari pembatalan pengeluaran
                 if ($transaksiDo->sisa_bayar > 0) {
                     $perusahaan->increment('saldo', $transaksiDo->sisa_bayar);
                 }
 
-                // Kurangi saldo untuk pembatalan pemasukan
+                // Kurangi saldo dari pembatalan pemasukan
                 $totalPemasukan = $transaksiDo->upah_bongkar +
                     $transaksiDo->biaya_lain +
                     $transaksiDo->pembayaran_hutang;
@@ -351,27 +386,6 @@ class TransaksiDoObserver
                 if ($totalPemasukan > 0) {
                     $perusahaan->decrement('saldo', $totalPemasukan);
                 }
-
-                // Log perubahan saldo
-                Log::info('Saldo dikembalikan setelah pembatalan DO:', [
-                    'no_do' => $transaksiDo->nomor,
-                    'pembatalan_pemasukan' => $totalPemasukan,
-                    'pembatalan_pengeluaran' => $transaksiDo->sisa_bayar,
-                    'saldo_akhir' => $perusahaan->fresh()->saldo
-                ]);
-            }
-
-            // 2. Kembalikan hutang penjual jika ada pembayaran hutang
-            if ($transaksiDo->pembayaran_hutang > 0 && $transaksiDo->penjual) {
-                $hutangSebelum = $transaksiDo->penjual->hutang;
-                $transaksiDo->penjual->increment('hutang', $transaksiDo->pembayaran_hutang);
-
-                Log::info('Hutang penjual dikembalikan:', [
-                    'penjual' => $transaksiDo->penjual->nama,
-                    'hutang_sebelum' => $hutangSebelum,
-                    'penambahan' => $transaksiDo->pembayaran_hutang,
-                    'hutang_sesudah' => $transaksiDo->penjual->fresh()->hutang
-                ]);
             }
 
             // 3. Hapus laporan keuangan terkait
@@ -380,7 +394,7 @@ class TransaksiDoObserver
                 'referensi_id' => $transaksiDo->id
             ])->delete();
 
-            // 4. Bersihkan cache
+            // 4. Clear cache
             CacheService::clearTransaksiCache($transaksiDo->penjual_id);
 
             DB::commit();
