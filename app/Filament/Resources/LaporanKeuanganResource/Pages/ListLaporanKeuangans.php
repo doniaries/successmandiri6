@@ -54,7 +54,7 @@ class ListLaporanKeuangans extends ListRecords
     public function getTabs(): array
     {
         return [
-            'semua' => Tab::make('Semua Transaksi')
+            'semua' => Tab::make('Semua Laporan')
                 ->icon('heroicon-o-clipboard-document-list')
                 ->badge($this->getTabCount('semua'))
                 ->modifyQueryUsing(fn(Builder $query) => $query)
