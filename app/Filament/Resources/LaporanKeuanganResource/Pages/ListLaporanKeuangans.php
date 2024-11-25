@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources\LaporanKeuanganResource\Pages;
 
-use App\Filament\Resources\LaporanKeuanganResource;
+use Filament\Actions;
 // use App\Filament\Resources\LaporanKeuanganResource\Widgets\LaporanKeuanganDoStatsWidget;
 // use App\Filament\Resources\TransaksiDoResource\Widgets\TransaksiDoStatWidget;
-use Filament\Actions;
-use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
-use Filament\Resources\Pages\ListRecords\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Resources\Pages\ListRecords\Tab;
+use App\Filament\Resources\LaporanKeuanganResource;
+use App\Filament\Resources\TransaksiDoResource\Widgets\TransaksiDoStatWidget;
 
 class ListLaporanKeuangans extends ListRecords
 {
@@ -26,8 +27,8 @@ class ListLaporanKeuangans extends ListRecords
     {
         return [
             // LaporanKeuanganDoStatsWidget::class,
-            LaporanKeuanganResource\Widgets\LaporanKeuanganDoStatsWidget::class,
-            // TransaksiDoStatWidget::make(),
+            // LaporanKeuanganResource\Widgets\LaporanKeuanganDoStatsWidget::class,
+            TransaksiDoStatWidget::make(),
         ];
     }
 

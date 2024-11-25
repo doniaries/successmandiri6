@@ -163,43 +163,49 @@
 
 <body>
     <div class="header">
-        <img src="{{ asset('images/success.png') }}" alt="Logo {{ $perusahaan->name ?? 'CV SUCCESS MANDIRI' }}"
-            style="max-height: 50px; margin-bottom: 8px;" />
-        <h2>{{ optional($perusahaan)->name ?? 'Nama Perusahaan' }}</h2>
+        @if ($perusahaan->logo)
+            <img src="{{ asset($perusahaan->logo) }}" alt="Logo {{ $perusahaan->name }}"
+                style="max-height: 50px; margin-bottom: 8px;" />
+        @endif
+        <h2>{{ $perusahaan->name }}</h2>
         <h3>Laporan Keuangan Harian</h3>
         <p>Periode: {{ Carbon\Carbon::parse($startDate)->format('d/m/Y') }} -
             {{ Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</p>
     </div>
 
-    <!-- Info Section -->
+    <!-- Info Section dengan null check -->
     <div class="info-section">
         <table>
             <tr>
-                <td width="100">Dibuat Oleh</td>
+                <td width="120">Dibuat Oleh</td>
                 <td width="10">:</td>
-                <td>{{ $user->name }}</td>
+                <td>{{ $user->name ?? '-' }}</td>
             </tr>
             <tr>
-                <td width="100">Tanggal Cetak</td>
-                <td width="10">:</td>
+                <td>Tanggal Cetak</td>
+                <td>:</td>
                 <td>{{ now()->format('d/m/Y H:i') }}</td>
             </tr>
             <tr>
-                <td>Saldo Awal</td>
+                <td>Total Saldo & Piutang</td>
                 <td>:</td>
-                <td colspan="4">Rp {{ number_format($saldoAwal ?? 0, 0, ',', '.') }}</td>
+                <td>Rp {{ number_format(($perusahaan->saldo ?? 0) + ($totalHutangPenjual ?? 0), 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td>Saldo Terkini</td>
+                <td>Saldo Perusahaan</td>
                 <td>:</td>
-                <td colspan="4" class="text-success">Rp {{ number_format($perusahaan->saldo ?? 0, 0, ',', '.') }}
-                </td>
+                <td>Rp {{ number_format($perusahaan->saldo ?? 0, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td>Total Piutang</td>
+                <td>:</td>
+                <td>Rp {{ number_format($totalHutangPenjual ?? 0, 0, ',', '.') }}</td>
             </tr>
         </table>
     </div>
 
-    {{-- !-- Section A: Transaksi Saldo --> --}}
-    @if (isset($transaksiSaldo) && count($transaksiSaldo) > 0)
+    <!-- Section A: Transaksi Saldo dengan null check -->
+    @if (!empty($transaksiSaldo) && $transaksiSaldo->count() > 0)
         <h4 class="section-title">A. Tambah Saldo</h4>
         <table class="data-table">
             <thead>
@@ -232,8 +238,8 @@
         </table>
     @endif
 
-    <!-- Section B1: Transaksi DO Tunai -->
-    @if (isset($transaksiDo))
+    <!-- Section B: Transaksi DO dengan null check -->
+    @if (!empty($transaksiDo) && $transaksiDo->count() > 0)
         <h4 class="section-title">B1. Transaksi DO Tunai</h4>
         <table class="data-table">
             <thead>
@@ -335,56 +341,59 @@
         </table>
     @endif
 
-    <!-- Bagian C: Transaksi Operasional -->
-    <h4 class="section-title">C. Transaksi Operasional</h4>
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Tanggal</th>
-                <th>Jenis</th>
-                <th>Kategori</th>
-                <th>Pihak</th>
-                <th>Keterangan</th>
-                <th class="text-right">Nominal</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($transaksiOperasional as $operasional)
+    <!-- Section C: Transaksi Operasional dengan null check -->
+    @if (!empty($transaksiOperasional))
+        <h4 class="section-title">C. Transaksi Operasional</h4>
+        <table class="data-table">
+            <thead>
                 <tr>
-                    <td>{{ Carbon\Carbon::parse($operasional->tanggal)->format('d/m/y H:i') }}</td>
-                    <td>
-                        <span
-                            class="badge badge-{{ $operasional->jenis_transaksi === 'Pemasukan' ? 'success' : 'danger' }}">
-                            {{ ucfirst($operasional->jenis_transaksi) }}
-                        </span>
+                    <th>Tanggal</th>
+                    <th>Jenis</th>
+                    <th>Kategori</th>
+                    <th>Pihak</th>
+                    <th>Keterangan</th>
+                    <th class="text-right">Nominal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($transaksiOperasional as $operasional)
+                    <tr>
+                        <td>{{ optional(Carbon\Carbon::parse($operasional->tanggal))->format('d/m/y H:i') }}</td>
+                        <td>
+                            <span
+                                class="badge badge-{{ $operasional->jenis_transaksi === 'Pemasukan' ? 'success' : 'danger' }}">
+                                {{ ucfirst($operasional->jenis_transaksi ?? '-') }}
+                            </span>
+                        </td>
+                        <td>{{ $operasional->sub_kategori ?? '-' }}</td>
+                        <td>{{ $operasional->pihak_terkait ?? '-' }}</td>
+                        <td>{{ $operasional->keterangan ?? '-' }}</td>
+                        <td class="text-right">{{ number_format($operasional->nominal ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center">Tidak ada transaksi operasional</td>
+                    </tr>
+                @endforelse
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5" class="text-right"><strong>Total Operasional</strong></td>
+                    <td class="text-right"><strong>{{ number_format($totalOperasional ?? 0, 0, ',', '.') }}</strong>
                     </td>
-                    <td>{{ $operasional->sub_kategori }}</td>
-                    <td>{{ $operasional->pihak_terkait }}</td>
-                    <td>{{ $operasional->keterangan }}</td>
-                    <td class="text-right">{{ number_format($operasional->nominal, 0, ',', '.') }}</td>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="6" class="text-center">Tidak ada transaksi operasional</td>
-                </tr>
-            @endforelse
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="5" class="text-right"><strong>Total Operasional</strong></td>
-                <td class="text-right"><strong>{{ number_format($totalOperasional, 0, ',', '.') }}</strong></td>
-            </tr>
-        </tfoot>
-    </table>
+            </tfoot>
+        </table>
+    @endif
 
-    <!-- Bagian D: Ringkasan Kas -->
+    <!-- Ringkasan Kas dengan null check -->
     <h4 class="section-title">D. Ringkasan Kas</h4>
-    <table class="summary-table" style="border-collapse: collapse; width: 40%;">
-        <!-- Saldo Awal -->
+    <table class="summary-table">
+        <!-- Posisi Saldo -->
         <tr style="border-bottom: 1px solid #ddd;">
             <td style="padding: 8px;"><strong>Saldo Awal</strong></td>
             <td style="text-align: right; padding: 8px;">
-                <strong>Rp {{ number_format($saldoAwal, 0, ',', '.') }}</strong>
+                <strong>Rp {{ number_format($saldoAwal ?? 0, 0, ',', '.') }}</strong>
             </td>
         </tr>
 
@@ -443,7 +452,7 @@
         <tr style="border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
             <td style="padding: 8px;"><strong>Total Pemasukan</strong></td>
             <td style="text-align: right; padding: 8px;">
-                <strong class="text-success">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</strong>
+                <strong class="text-success">Rp {{ number_format($totalPemasukan ?? 0, 0, ',', '.') }}</strong>
             </td>
         </tr>
 
@@ -489,15 +498,25 @@
         <tr style="border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
             <td style="padding: 8px;"><strong>Total Pengeluaran</strong></td>
             <td style="text-align: right; padding: 8px;">
-                <strong class="text-danger">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</strong>
+                <strong class="text-danger">Rp {{ number_format($totalPengeluaran ?? 0, 0, ',', '.') }}</strong>
             </td>
         </tr>
 
-        <!-- Saldo Akhir -->
+        <!-- Saldo Akhir: Perhitungan yang diperbaiki -->
         <tr style="background-color: #f8f9fa;">
             <td style="padding: 12px;"><strong>Saldo Akhir</strong></td>
             <td style="text-align: right; padding: 12px;">
-                <strong>Rp {{ number_format($saldoAkhir, 0, ',', '.') }}</strong>
+                <strong>Rp
+                    {{ number_format(($saldoAwal ?? 0) + ($totalPemasukan ?? 0) - ($totalPengeluaran ?? 0), 0, ',', '.') }}</strong>
+            </td>
+        </tr>
+
+        <!-- Total Saldo & Piutang -->
+        <tr style="background-color: #e9ecef;">
+            <td style="padding: 12px;"><strong>Total Saldo & Piutang</strong></td>
+            <td style="text-align: right; padding: 12px;">
+                <strong>Rp
+                    {{ number_format(($saldoAwal ?? 0) + ($totalPemasukan ?? 0) - ($totalPengeluaran ?? 0) + ($totalHutangPenjual ?? 0), 0, ',', '.') }}</strong>
             </td>
         </tr>
     </table>
@@ -508,7 +527,8 @@
             <td style="width: 60%">
                 <p style="margin: 0;">* Catatan:</p>
                 <p style="margin: 0;">- Seluruh nominal dalam Rupiah</p>
-                <p style="margin: 0;">- Dicetak oleh: {{ $user->name }} pada {{ now()->format('d/m/Y H:i') }}</p>
+                <p style="margin: 0;">- Dicetak oleh: {{ $user->name }} pada {{ now()->format('d/m/Y H:i') }}
+                </p>
             </td>
             <td style="width: 20%; text-align: center;">
                 <p style="margin-bottom: 40px;">Kasir</p>
