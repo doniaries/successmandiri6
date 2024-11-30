@@ -28,6 +28,7 @@ use App\Filament\Resources\PerusahaanResource\Pages;
 use Illuminate\Database\Eloquent\Factories\Relationship;
 use App\Filament\Resources\PerusahaanResource\RelationManagers;
 use Filament\Tables\Columns\ImageColumn;
+use App\Enums\TipeNama;
 
 class PerusahaanResource extends Resource
 {
@@ -221,6 +222,7 @@ class PerusahaanResource extends Resource
                                 'tanggal' => $data['tanggal'],
                                 'jenis_transaksi' => 'Pemasukan',
                                 'kategori' => 'Saldo',
+                                'tipe_pihak' => TipeNama::USER->value,
                                 'sub_kategori' => 'Tambah Saldo',
                                 'nominal' => $nominal,
                                 'sumber_transaksi' => 'Perusahaan',

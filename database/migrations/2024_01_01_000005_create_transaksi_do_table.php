@@ -25,8 +25,8 @@ return new class extends Migration
             $table->decimal('sisa_hutang_penjual', 12, 0);
             $table->decimal('sisa_bayar', 15, 0);
             $table->string('file_do')->nullable();
-            $table->enum('cara_bayar', ['Tunai', 'Transfer'])->default('Tunai');
-            $table->enum('status_bayar', ['Belum Lunas', 'Lunas']);
+            $table->enum('cara_bayar', ['Tunai', 'Transfer', 'Cair di Luar', 'Belum Bayar'])->default('Tunai');
+            // $table->enum('status_bayar', ['Belum Lunas', 'Lunas']);
             $table->text('catatan')->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -53,6 +53,7 @@ class PenjualResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('nama')
                             ->label('Nama Penjual')
+                            ->unique(ignoreRecord: true)
                             ->required()
                             ->maxLength(255),
 

@@ -6,6 +6,7 @@ use App\Models\{Operasional, TransaksiDo};
 use App\Traits\{LaporanKeuanganTrait, DokumentasiTrait};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Enums\TipeNama;
 
 class LaporanKeuangan extends Model
 {
@@ -27,9 +28,6 @@ class LaporanKeuangan extends Model
         'tipe_pihak',
         'cara_pembayaran',
         'file_bukti', // Tambahkan ini
-        // 'saldo_sebelum', // Tambahkan ini
-        // 'saldo_sesudah', // Tambahkan ini
-        // 'mempengaruhi_kas', // Tambahkan ini
         'keterangan',
         'created_at',
         'updated_at',
@@ -41,7 +39,8 @@ class LaporanKeuangan extends Model
         'nominal' => 'decimal:0',
         'saldo_sebelum' => 'decimal:0',
         'saldo_sesudah' => 'decimal:0',
-        'mempengaruhi_kas' => 'boolean'
+        'mempengaruhi_kas' => 'boolean',
+        'tipe_pihak' => TipeNama::class
     ];
 
     // Tambahkan konstanta di model LaporanKeuangan

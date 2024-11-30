@@ -247,41 +247,70 @@ class LaporanKeuanganObserver
      */
     private function createLaporan(array $data): ?LaporanKeuangan
     {
-        // Cek duplikasi dengan kriteria utama
-        $exists = LaporanKeuangan::where([
-            'kategori' => $data['kategori'],
-            // 'jenis_transaksi' => $operasional->operasional === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran',
-            'jenis_transaksi' => $data['jenis_transaksi'],
-            'sub_kategori' => $data['sub_kategori'],
-            'referensi_id' => $data['referensi_id'],
-            'nominal' => $data['nominal']
-        ])->exists();
+        try {
+            // 1. Validasi data wajib
+            $requiredFields = [
+                'tanggal',
+                'jenis_transaksi',
+                'kategori',
+                'sub_kategori',
+                'nominal',
+                'sumber_transaksi',
+                'referensi_id',
+                'nomor_referensi',
+                'pihak_terkait',
+                'tipe_pihak',
+                'cara_pembayaran',
+                'keterangan'
+            ];
 
-        if ($exists) {
-            Log::info('Mencegah duplikasi transaksi:', array_merge($data, [
-                'reason' => 'Transaksi dengan kriteria yang sama sudah ada'
-            ]));
-            return null;
+            foreach ($requiredFields as $field) {
+                if (!isset($data[$field])) {
+                    throw new \Exception("Field {$field} wajib diisi pada laporan keuangan");
+                }
+            }
+
+            // 2. Cek duplikasi dengan kriteria yang lebih spesifik
+            $exists = LaporanKeuangan::where([
+                'kategori' => $data['kategori'],
+                'jenis_transaksi' => $data['jenis_transaksi'],
+                'sub_kategori' => $data['sub_kategori'],
+                'referensi_id' => $data['referensi_id'],
+                'nominal' => $data['nominal'],
+                // Perbaikan: Gunakan langsung value dari data
+                'tipe_pihak' => $data['tipe_pihak'], // Hapus $tipeNama->value
+            ])->exists();
+
+            if ($exists) {
+                Log::info('Mencegah duplikasi transaksi:', array_merge($data, [
+                    'reason' => 'Transaksi dengan kriteria yang sama sudah ada'
+                ]));
+                return null;
+            }
+
+            // 3. Tambahkan created_at dan updated_at
+            $data['created_at'] = now();
+            $data['updated_at'] = now();
+
+            // 4. Create laporan dengan error handling
+            $laporan = LaporanKeuangan::create($data);
+
+            Log::info('Laporan Keuangan berhasil dibuat:', [
+                'id' => $laporan->id,
+                'referensi' => $data['nomor_referensi'],
+                'jenis' => $data['jenis_transaksi'],
+                'kategori' => $data['kategori'],
+                'nominal' => $data['nominal']
+            ]);
+
+            return $laporan;
+        } catch (\Exception $e) {
+            Log::error('Error membuat Laporan Keuangan:', [
+                'error' => $e->getMessage(),
+                'data' => $data
+            ]);
+            throw $e;
         }
-
-        return LaporanKeuangan::create($data);
-    }
-
-    /**
-     * Log transaksi untuk tracking
-     */
-    private function logTransaksi(TransaksiDo $transaksiDo): void
-    {
-        Log::info('Transaksi DO berhasil dicatat:', [
-            'nomor' => $transaksiDo->nomor,
-            'penjual' => $transaksiDo->penjual->nama,
-            'upah_bongkar' => $transaksiDo->upah_bongkar,
-            'biaya_lain' => $transaksiDo->biaya_lain,
-            'pembayaran_hutang' => $transaksiDo->pembayaran_hutang,
-            'sisa_bayar' => $transaksiDo->sisa_bayar,
-            'cara_bayar' => $transaksiDo->cara_bayar,
-            'status' => 'success'
-        ]);
     }
 
     /**

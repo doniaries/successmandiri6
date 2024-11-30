@@ -35,6 +35,7 @@ trait HasDynamicNotification
             ->success()
             ->title("Data {$modelLabel} berhasil ditambahkan")
             ->body("{$modelLabel} {$recordName} telah ditambahkan ke database.")
+            ->persistent(false)
             ->duration(3000);
     }
 
@@ -47,6 +48,7 @@ trait HasDynamicNotification
             ->success()
             ->title("Data {$modelLabel} diperbarui")
             ->body("{$modelLabel} {$recordName} berhasil diperbarui.")
+            ->persistent(false)
             ->duration(3000);
     }
 
@@ -60,6 +62,7 @@ trait HasDynamicNotification
             ->color('danger')
             ->title("Data {$modelLabel} dihapus")
             ->body("{$modelLabel} {$recordName} telah dihapus.")
+            ->persistent(false)
             ->duration(3000);
     }
 
@@ -72,6 +75,7 @@ trait HasDynamicNotification
             ->success()
             ->title("Data {$modelLabel} dipulihkan")
             ->body("{$modelLabel} {$recordName} telah dipulihkan.")
+            ->persistent(false)
             ->duration(4000);
     }
 
@@ -84,6 +88,7 @@ trait HasDynamicNotification
             ->success()
             ->title("Data {$modelLabel} dihapus permanen")
             ->body("{$modelLabel} {$recordName} telah dihapus secara permanen.")
+            ->persistent(false)
             ->duration(3000);
     }
 
@@ -98,6 +103,8 @@ trait HasDynamicNotification
                 ->success()
                 ->title("Data {$modelLabel} dihapus")
                 ->body("{$modelLabel} {$recordName} telah dihapus.")
+                ->color('danger')
+                ->persistent(false)
                 ->duration(5000),
 
             'restore' => Notification::make()
@@ -110,6 +117,8 @@ trait HasDynamicNotification
                 ->success()
                 ->title("Data {$modelLabel} dihapus permanen")
                 ->body("{$modelLabel} {$recordName} telah dihapus secara permanen.")
+                ->color('danger')
+                ->persistent(false)
                 ->duration(5000),
         ];
     }

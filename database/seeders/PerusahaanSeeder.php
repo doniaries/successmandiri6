@@ -35,27 +35,27 @@ class PerusahaanSeeder extends Seeder
         ]);
 
         // Create additional perusahaan
-        Perusahaan::create([
-            'name' => 'Koperasi Success Mandiri',
-            'alamat' => 'Sungai Moran, Nagari Kamang',
-            'telepon' => '+62 852-7845-1122',
-            'pimpinan' => 'Yondra',
-            'npwp' => '12.345.678.9-124.000',
-            'saldo' => 150000000,
-            'is_active' => true,
+        // Perusahaan::create([
+        //     'name' => 'Koperasi Success Mandiri',
+        //     'alamat' => 'Sungai Moran, Nagari Kamang',
+        //     'telepon' => '+62 852-7845-1122',
+        //     'pimpinan' => 'Yondra',
+        //     'npwp' => '12.345.678.9-124.000',
+        //     'saldo' => 150000000,
+        //     'is_active' => true,
 
-        ]);
+        // ]);
 
-        Perusahaan::create([
-            'name' => 'CV SUCCESS',
-            'alamat' => 'Sungai Moran, Nagari Kamang',
-            'telepon' => '+62 813-6677-8899',
-            'pimpinan' => 'Yondra',
-            'npwp' => '12.345.678.9-125.000',
-            'saldo' => 120000000,
-            'is_active' => true,
+        // Perusahaan::create([
+        //     'name' => 'CV SUCCESS',
+        //     'alamat' => 'Sungai Moran, Nagari Kamang',
+        //     'telepon' => '+62 813-6677-8899',
+        //     'pimpinan' => 'Yondra',
+        //     'npwp' => '12.345.678.9-125.000',
+        //     'saldo' => 120000000,
+        //     'is_active' => true,
 
-        ]);
+        // ]);
 
         // Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1');

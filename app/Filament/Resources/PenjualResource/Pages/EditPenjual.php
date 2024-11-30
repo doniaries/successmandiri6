@@ -17,4 +17,9 @@ class EditPenjual extends EditRecord
             RiwayatHutangPinjamanRelationManager::class,
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

@@ -7,7 +7,7 @@ enum KategoriOperasional: string
 {
     case PINJAMAN = 'pinjaman';
     case BAYAR_HUTANG = 'bayar_hutang';
-    case GAJI = 'gaji';
+    case PIJAK_GAS = 'pijakan_gas';
     case UANG_JALAN = 'uang_jalan';
     case BAHAN_BAKAR = 'bahan_bakar';
     case PERAWATAN = 'perawatan';
@@ -18,7 +18,7 @@ enum KategoriOperasional: string
         return match ($this) {
             self::PINJAMAN => 'Pinjaman',
             self::BAYAR_HUTANG => 'Bayar Hutang',
-            self::GAJI => 'Gaji',
+            self::PIJAK_GAS => 'Pijak Gas',
             self::UANG_JALAN => 'Uang Jalan',
             self::BAHAN_BAKAR => 'Bahan Bakar',
             self::PERAWATAN => 'Perawatan',
@@ -55,8 +55,8 @@ enum KategoriOperasional: string
     {
         return [
             self::PINJAMAN->value => self::PINJAMAN->label(),
-            self::GAJI->value => self::GAJI->label(),
             self::UANG_JALAN->value => self::UANG_JALAN->label(),
+            self::PIJAK_GAS->value => self::PIJAK_GAS->label(),
             self::BAHAN_BAKAR->value => self::BAHAN_BAKAR->label(),
             self::PERAWATAN->value => self::PERAWATAN->label(),
             self::LAIN_LAIN->value => self::LAIN_LAIN->label(),

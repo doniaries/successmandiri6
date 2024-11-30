@@ -3,29 +3,31 @@
 namespace App\Filament\Resources;
 
 // Model Imports
-use App\Models\{Operasional, Penjual, Pekerja, User};
+use Closure;
 
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Enums\TipeNama;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use App\Enums\KategoriOperasional;
+use Filament\Support\Colors\Color;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Badge;
 use Filament\Forms\Components\Group;
-use Filament\Support\Colors\Color;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\DateTimePicker;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Closure;
-use App\Enums\KategoriOperasional;
 use App\Filament\Resources\OperasionalResource\Pages;
+use App\Models\{Operasional, Penjual, Pekerja, User};
+use App\Enums\TipePihak;
 // use App\Filament\Resources\OperasionalResource\Traits\HasOperationalHelpers;
 
 class OperasionalResource extends Resource
@@ -106,13 +108,12 @@ class OperasionalResource extends Resource
                                         Forms\Components\Select::make('tipe_nama')
                                             ->label('Pilih Tipe Pihak')
                                             ->helperText('Pilih jenis pihak terkait transaksi')
-                                            ->options([
-                                                'penjual' => '🏢 Penjual',
-                                                'pekerja' => '👷 Pekerja',
-                                                'user' => '👨‍💼 Karyawan'
-                                            ])
+                                            ->options(collect(TipeNama::cases())->mapWithKeys(fn($tipe) => [
+                                                $tipe->value => $tipe->getLabel()
+                                            ]))
                                             ->required()
                                             ->live()
+                                            ->enum(TipeNama::class)
                                             ->visible(fn($get) => filled($get('kategori')))
                                             ->afterStateUpdated(fn($state, Forms\Set $set) => [
                                                 $set('penjual_id', null),
@@ -128,6 +129,69 @@ class OperasionalResource extends Resource
                                                 ->label('Pilih Penjual')
                                                 ->relationship('penjual', 'nama')
                                                 ->searchable()
+                                                ->createOptionForm([
+                                                    Forms\Components\TextInput::make('nama')
+                                                        ->label('Nama Penjual')
+                                                        ->required()
+                                                        ->maxLength(255),
+                                                    Forms\Components\TextInput::make('alamat')
+                                                        ->label('Alamat')
+                                                        ->maxLength(255),
+                                                    Forms\Components\TextInput::make('telepon')
+                                                        ->tel()
+                                                        ->label('Nomor Telepon'),
+                                                    // Hutang awal hanya muncul saat create
+                                                    Forms\Components\TextInput::make('hutang')
+                                                        ->label('Hutang Awal') // Ubah label
+                                                        ->helperText('Masukkan hutang awal jika ada. Input ini hanya bisa dilakukan sekali saat pendaftaran penjual.')
+                                                        ->prefix('Rp')
+                                                        ->numeric()
+                                                        ->default(0)
+                                                        ->live(onBlur: true) // Tambahkan live update
+                                                        ->currencyMask(
+                                                            thousandSeparator: '.',
+                                                            decimalSeparator: ',',
+                                                            precision: 0
+                                                        )
+                                                        ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                                            // Update sisa hutang saat hutang awal berubah
+                                                            $set('hutang_awal', $state);
+                                                            $set('sisa_hutang_penjual', $state);
+                                                            $set('pembayaran_hutang', 0);
+                                                        }),
+                                                ])
+                                                ->createOptionAction(function (Forms\Components\Actions\Action $action) {
+                                                    return $action
+                                                        ->modalHeading('Tambah Penjual Baru')
+                                                        ->modalWidth('lg')
+                                                        ->successNotification(
+                                                            Notification::make()
+                                                                ->success()
+                                                                ->duration(3000) // Set durasi 3 detik
+                                                                ->persistent(false) // Notifikasi akan otomatis hilang
+                                                                ->title('Penjual Berhasil Ditambahkan')
+                                                                ->body('Data penjual dan hutang awal berhasil disimpan.')
+                                                        );
+                                                })
+                                                ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                                    if ($state) {
+                                                        // Get fresh data penjual
+                                                        $penjual = Penjual::find($state);
+                                                        if ($penjual) {
+                                                            // Set hutang_awal dari data penjual
+                                                            $set('hutang_awal', $penjual->hutang);
+                                                            // Set sisa hutang awal sama dengan hutang_awal
+                                                            $set('sisa_hutang_penjual', $penjual->hutang);
+                                                            // Reset pembayaran hutang
+                                                            $set('pembayaran_hutang', 0);
+                                                        } else {
+                                                            // Reset semua field terkait hutang
+                                                            $set('hutang_awal', 0);
+                                                            $set('sisa_hutang_penjual', 0);
+                                                            $set('pembayaran_hutang', 0);
+                                                        }
+                                                    }
+                                                })
                                                 ->preload()
                                                 ->live()
                                                 ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {

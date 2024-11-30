@@ -174,7 +174,7 @@ class TransaksiDoResource extends Resource
 
                                     Forms\Components\TextInput::make('supir')
                                         ->label('Supir')
-                                        ->required()
+                                        // ->required()
                                         ->minLength(2)
                                         ->maxLength(20),
                                     Forms\Components\TextInput::make('nomor_polisi')
@@ -208,7 +208,7 @@ class TransaksiDoResource extends Resource
                                         ->afterStateUpdated(fn($state, Forms\Get $get, Forms\Set $set) =>
                                         static::hitungTotal($state, $get, $set)),
                                 ])
-                                ->columns(2),
+                                ->columns(3),
                         ])
                         ->columnSpan(2),
 
@@ -328,15 +328,15 @@ class TransaksiDoResource extends Resource
                                         ->hint('*jika ada')
                                         ->hintColor('primary')
                                         ->placeholder('misal:uang jalan'),
-                                    Forms\Components\Select::make('status_bayar')
-                                        ->label('Status Bayar')
-                                        ->options([
-                                            'Lunas' => 'Lunas',
-                                            'Belum Lunas' => 'Belum Lunas',
+                                    // Forms\Components\Select::make('status_bayar')
+                                    //     ->label('Status Bayar')
+                                    //     ->options([
+                                    //         'Lunas' => 'Lunas',
+                                    //         'Belum Lunas' => 'Belum Lunas',
 
-                                        ])
-                                        ->default('Lunas')
-                                        ->required(),
+                                    //     ])
+                                    //     ->default('Lunas')
+                                    //     ->required(),
                                     Forms\Components\Select::make('cara_bayar')
                                         ->label('Cara Bayar')
                                         ->options(TransaksiDo::CARA_BAYAR)
@@ -349,10 +349,6 @@ class TransaksiDoResource extends Resource
                                                 $set('_tmp_bypass_saldo_check', true);
                                             }
                                         }),
-
-                                    Forms\Components\TextInput::make('catatan')
-                                        ->label('Catatan'),
-
                                     Forms\Components\FileUpload::make('file_do')
                                         ->label('Upload File DO')
                                         ->disk('public') // Tambahkan ini
@@ -361,8 +357,9 @@ class TransaksiDoResource extends Resource
                                         ->acceptedFileTypes(['application/pdf', 'image/*'])
                                         ->openable() // Tambahkan ini
                                         ->downloadable() // Tambahkan ini
-                                        ->previewable() // Tambahkan ini untuk PDF
-                                        ->columnSpanFull(),
+                                        ->previewable(), // Tambahkan ini untuk PDF
+                                    Forms\Components\TextInput::make('catatan')
+                                        ->label('Catatan'),
 
 
                                 ])
@@ -447,7 +444,16 @@ class TransaksiDoResource extends Resource
                     ->badge()
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
-
+                Tables\Columns\TextColumn::make('cara_bayar')
+                    ->label('Cara Bayar')
+                    ->searchable()
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'Tunai' => 'success',
+                        'Transfer' => 'info',
+                        'Cair di Luar' => 'warning',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('penjual.nama')
                     ->label('Penjual')
                     ->searchable()
@@ -547,24 +553,15 @@ class TransaksiDoResource extends Resource
                     ])
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('status_bayar')
-                    ->label('Status Bayar')
-                    ->badge()
-                    ->color(fn(string $state): string => match ($state) {
-                        'Lunas' => 'success',
-                        'Belum Lunas' => 'warning',
-                        default => 'gray',
-                    }),
-                Tables\Columns\TextColumn::make('cara_bayar')
-                    ->label('Cara Bayar')
-                    ->searchable()
-                    ->badge()
-                    ->color(fn(string $state): string => match ($state) {
-                        'Tunai' => 'success',
-                        'Transfer' => 'info',
-                        'Cair di Luar' => 'warning',
-                        default => 'gray',
-                    }),
+                // Tables\Columns\TextColumn::make('status_bayar')
+                //     ->label('Status Bayar')
+                //     ->badge()
+                //     ->color(fn(string $state): string => match ($state) {
+                //         'Lunas' => 'success',
+                //         'Belum Lunas' => 'warning',
+                //         default => 'gray',
+                //     }),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->searchable()

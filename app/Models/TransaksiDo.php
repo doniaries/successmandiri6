@@ -44,7 +44,7 @@ class TransaksiDo extends Model
         'sisa_bayar',
         'file_do',
         'cara_bayar',
-        'status_bayar',
+        // 'status_bayar',
         'catatan',
     ];
 
@@ -68,7 +68,7 @@ class TransaksiDo extends Model
         'pembayaran_hutang' => 'decimal:0',   // Updated
         'sisa_hutang_penjual' => 'decimal:0', // Updated
         'sisa_bayar' => 'decimal:0',
-        'status_bayar' => 'string',
+        // 'status_bayar' => 'string',
     ];
 
     protected $attributes = [
@@ -79,13 +79,14 @@ class TransaksiDo extends Model
         'pembayaran_hutang' => 0,     // Updated
         'sisa_hutang_penjual' => 0,   // Updated
         'sisa_bayar' => 0,
-        'status_bayar' => 'Belum Lunas',
+        // 'status_bayar' => 'Belum Lunas',
     ];
 
     const CARA_BAYAR = [
         'Tunai' => 'Tunai',           // Mempengaruhi saldo kas
         'Transfer' => 'Transfer',      // Tidak mempengaruhi saldo kas
-        'cair di luar' => 'cair di luar'  // Tidak mempengaruhi saldo kas
+        'cair di luar' => 'cair di luar', // Tidak mempengaruhi saldo kas
+        // 'belum bayar' => 'Belum Bayar',
     ];
 
     // Panggil method dari trait

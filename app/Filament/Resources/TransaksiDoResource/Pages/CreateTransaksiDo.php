@@ -97,32 +97,32 @@ class CreateTransaksiDo extends CreateRecord
                 }
 
                 // Tampilkan notifikasi detail
-                Notification::make()
-                    ->title('Pembayaran Hutang Berhasil')
-                    ->body(
-                        "DO #{$record->nomor}\n" .
-                            "Hutang awal: Rp " . number_format($record->hutang_awal, 0, ',', '.') . "\n" .
-                            "Pembayaran: Rp " . number_format($record->pembayaran_hutang, 0, ',', '.') . "\n" .
-                            "Sisa hutang: Rp " . number_format($record->sisa_hutang_penjual, 0, ',', '.')
-                    )
-                    ->success()
-                    ->duration(3000)
-                    ->persistent(false)
-                    ->send();
+                // Notification::make()
+                //     ->title('Pembayaran Hutang Berhasil')
+                //     ->body(
+                //         "DO #{$record->nomor}\n" .
+                //             "Hutang awal: Rp " . number_format($record->hutang_awal, 0, ',', '.') . "\n" .
+                //             "Pembayaran: Rp " . number_format($record->pembayaran_hutang, 0, ',', '.') . "\n" .
+                //             "Sisa hutang: Rp " . number_format($record->sisa_hutang_penjual, 0, ',', '.')
+                //     )
+                //     ->success()
+                //     ->duration(3000)
+                //     ->persistent(false)
+                //     ->send();
             }
 
             // Notifikasi transaksi berhasil
-            Notification::make()
-                ->title('Transaksi DO Berhasil')
-                ->body(
-                    "DO #{$record->nomor}\n" .
-                        "Total: Rp " . number_format($record->total, 0, ',', '.') . "\n" .
-                        "Sisa bayar: Rp " . number_format($record->sisa_bayar, 0, ',', '.')
-                )
-                ->success()
-                ->duration(2000) // Set durasi 3 detik
-                ->persistent(false) // Notifikasi akan otomatis hilang
-                ->send();
+            // Notification::make()
+            //     ->title('Transaksi DO Berhasil')
+            //     ->body(
+            //         "DO #{$record->nomor}\n" .
+            //             "Total: Rp " . number_format($record->total, 0, ',', '.') . "\n" .
+            //             "Sisa bayar: Rp " . number_format($record->sisa_bayar, 0, ',', '.')
+            //     )
+            //     ->success()
+            //     ->duration(3000) // Set durasi 3 detik
+            //     ->persistent(false) // Notifikasi akan otomatis hilang
+            //     ->send();
 
             DB::commit();
         } catch (\Exception $e) {

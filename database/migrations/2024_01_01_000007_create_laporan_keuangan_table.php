@@ -22,7 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('referensi_id')->comment('ID dari tabel sumber (transaksi_do/operasional)');
             $table->string('nomor_referensi', 50)->nullable()->comment('Nomor DO jika dari transaksi DO');
             $table->string('pihak_terkait', 100)->nullable()->comment('Nama penjual/user terkait');
-            $table->enum('tipe_pihak', ['penjual', 'user'])->nullable();
+            $table->enum('tipe_pihak', ['penjual', 'pekerja', 'user']);
             $table->string('cara_pembayaran', 20)->nullable()->comment('Tunai/Transfer/cair di luar');
             $table->text('keterangan')->nullable();
             $table->timestamps();

@@ -51,56 +51,59 @@ class ListLaporanKeuangans extends ListRecords
         ]);
     }
 
-    public function getTabs(): array
-    {
-        return [
-            'semua' => Tab::make('Semua Laporan')
-                ->icon('heroicon-o-clipboard-document-list')
-                ->badge($this->getTabCount('semua'))
-                ->modifyQueryUsing(fn(Builder $query) => $query)
-                ->badgeColor('primary'),
+    // public function getTabs(): array
+    // {
+    //     return [
+    //         'semua' => Tab::make('Semua Laporan')
+    //             ->icon('heroicon-o-clipboard-document-list')
+    //             ->badge($this->getTabCount('semua'))
+    //             ->modifyQueryUsing(fn(Builder $query) => $query)
+    //             ->badgeColor('primary'),
 
-            'tunai' => Tab::make('Tunai')
-                ->icon('heroicon-o-banknotes')
-                ->badge($this->getTabCount('Tunai'))
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'Tunai'))
-                ->badgeColor('success'),
+    //         'tunai' => Tab::make('Tunai')
+    //             ->icon('heroicon-o-banknotes')
+    //             ->badge($this->getTabCount('Tunai'))
+    //             ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'Tunai'))
+    //             ->badgeColor('success'),
 
-            'transfer' => Tab::make('Transfer')
-                ->icon('heroicon-o-credit-card')
-                ->badge($this->getTabCount('Transfer'))
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'Transfer'))
-                ->badgeColor('info'),
+    //         'transfer' => Tab::make('Transfer')
+    //             ->icon('heroicon-o-credit-card')
+    //             ->badge($this->getTabCount('Transfer'))
+    //             ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'Transfer'))
+    //             ->badgeColor('info'),
 
-            'cair_di_luar' => Tab::make('Cair di Luar')
-                ->icon('heroicon-o-check-circle')
-                ->badge($this->getTabCount('cair di luar'))
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'cair di luar'))
-                ->badgeColor('warning'),
-        ];
-    }
+    //         'cair_di_luar' => Tab::make('Cair di Luar')
+    //             ->icon('heroicon-o-check-circle')
+    //             ->badge($this->getTabCount('cair di luar'))
+    //             ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'cair di luar'))
+    //             ->badgeColor('warning'),
+    //     ];
+    // }
 
-    protected function getTabCount(string $tab): int
-    {
-        $query = $this->getModel()::query();
+    // protected function getTabCount(string $tab): int
+    // {
+    //     $query = $this->getModel()::query();
 
-        // Apply date filter if exists
-        $dateFilter = $this->getTableFilters()['date_range'] ?? null;
-        if ($dateFilter) {
-            $data = $dateFilter->getState();
-            if (!empty($data['dari_tanggal']) && !empty($data['sampai_tanggal'])) {
-                $query->whereBetween('tanggal', [
-                    $data['dari_tanggal'],
-                    $data['sampai_tanggal']
-                ]);
-            }
-        }
+    //     // Apply date filter if exists
+    //     $dateFilter = $this->getTableFilters()['date_range'] ?? null;
+    //     if ($dateFilter) {
+    //         $data = $dateFilter->getState();
+    //         if (!empty($data['dari_tanggal']) && !empty($data['sampai_tanggal'])) {
+    //             $query->whereBetween('tanggal', [
+    //                 $data['dari_tanggal'],
+    //                 $data['sampai_tanggal']
+    //             ]);
+    //         }
+    //     }
 
-        // Apply tab filter
-        if ($tab !== 'semua') {
-            $query->where('cara_pembayaran', $tab);
-        }
+    //     // Apply tab filter
+    //     if ($tab !== 'semua') {
+    //         $query->where('cara_pembayaran', $tab);
+    //     }
 
-        return $query->count();
-    }
+    //     return $query->count();
+    // }
+
+
+
 }

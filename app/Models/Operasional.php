@@ -30,6 +30,7 @@ class Operasional extends Model
         'tanggal' => 'datetime', // [EDIT] Ubah ke datetime untuk tampilan jam
         'nominal' => 'decimal:0',
         'kategori' => KategoriOperasional::class, // [TAMBAH] Cast ke Enum
+        'tipe_nama' => 'string',
     ];
 
     // [HAPUS] $dates karena sudah tercover oleh SoftDeletes dan casts

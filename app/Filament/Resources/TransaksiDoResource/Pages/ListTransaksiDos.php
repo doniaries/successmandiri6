@@ -48,8 +48,6 @@ class ListTransaksiDos extends ListRecords
         ]);
     }
 
-
-
     protected function getHeaderWidgets(): array
     {
         return [

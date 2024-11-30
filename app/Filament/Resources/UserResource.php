@@ -39,11 +39,13 @@ class UserResource extends Resource
 
                         Forms\Components\TextInput::make('name')
                             ->label('Nama Lengkap')
+                            ->unique(ignoreRecord: true)
                             ->required()
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('email')
                             ->label('Email')
+                            ->unique(ignoreRecord: true)
                             ->email()
                             ->required()
                             ->unique(ignoreRecord: true)
