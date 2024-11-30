@@ -3,61 +3,66 @@
 namespace App\Filament\Resources\PerusahaanResource\Widgets;
 
 use App\Models\Perusahaan;
-use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
-
+use Livewire\Attributes\On;
 
 class PerusahaanStatsWidget extends BaseWidget
 {
     protected static ?string $pollingInterval = '15s';
+    protected static bool $isLazy = true;
     protected int | string | array $columnSpan = 'full';
 
-    public function getStats(): array
+    protected function getStats(): array
     {
-        $perusahaan = Perusahaan::first();
+        try {
+            // Hitung saldo dari tabel laporan_keuangan
+            $saldoMasuk = DB::table('laporan_keuangan')
+                ->whereNull('deleted_at')
+                ->where('jenis_transaksi', 'Pemasukan')
+                ->sum('nominal');
 
-        // Get today's saldo mutations
-        $today = Carbon::today();
-        $mutations = DB::table('laporan_keuangan')
-            ->whereDate('tanggal', $today)
-            ->select([
-                DB::raw('COALESCE(SUM(CASE WHEN jenis_transaksi = "Pemasukan" THEN nominal ELSE 0 END), 0) as total_in'),
-                DB::raw('COALESCE(SUM(CASE WHEN jenis_transaksi = "Pengeluaran" THEN nominal ELSE 0 END), 0) as total_out'),
-                DB::raw('COUNT(*) as total_transactions')
-            ])
-            ->first();
+            $saldoKeluar = DB::table('laporan_keuangan')
+                ->whereNull('deleted_at')
+                ->where('jenis_transaksi', 'Pengeluaran')
+                ->sum('nominal');
 
-        return [
-            Stat::make('Saldo Perusahaan', 'Rp ' . number_format($perusahaan?->saldo ?? 0, 0, ',', '.'))
-                ->description('Saldo terkini')
-                ->descriptionIcon('heroicon-m-banknotes')
-                ->color($this->getSaldoColor($perusahaan?->saldo ?? 0)),
+            $sisaSaldo = $saldoMasuk - $saldoKeluar;
 
-            Stat::make('Mutasi Hari Ini', "Rp " . number_format(abs($mutations->total_in - $mutations->total_out), 0, ',', '.'))
-                ->description(sprintf(
-                    "IN: Rp %s\nOUT: Rp %s",
-                    number_format($mutations->total_in, 0, ',', '.'),
-                    number_format($mutations->total_out, 0, ',', '.')
-                ))
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success'),
+            return [
+                Stat::make('Saldo Perusahaan', 'Rp ' . number_format($sisaSaldo, 0, ',', '.'))
+                    ->description('Saldo terkini perusahaan')
+                    ->descriptionIcon('heroicon-m-banknotes')
+                    ->color($this->getSaldoColor($sisaSaldo)),
+            ];
+        } catch (\Exception $e) {
+            \Log::error('Error PerusahaanStatsWidget:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTrace()
+            ]);
 
-            Stat::make('Total Transaksi', "{$mutations->total_transactions} transaksi")
-                ->description('Update otomatis setiap 15 detik')
-                ->descriptionIcon('heroicon-m-arrow-path')
-                ->color('info'),
-        ];
+            return [
+                Stat::make('Error', 'Terjadi kesalahan memuat data')
+                    ->description($e->getMessage())
+                    ->color('danger')
+            ];
+        }
     }
 
     private function getSaldoColor($saldo): string
     {
         return match (true) {
-            $saldo > 1000000000 => 'success', // > 1M
-            $saldo > 100000000 => 'info',     // > 100jt
-            $saldo > 0 => 'warning',          // > 0
-            default => 'danger'               // <= 0
+            $saldo > 50000000 => 'success', // > 50jt
+            $saldo > 10000000 => 'info',    // > 10jt
+            $saldo > 0 => 'warning',        // > 0
+            default => 'danger'             // <= 0
         };
+    }
+
+    #[On(['refresh-widget', 'saldo-updated'])]
+    public function refresh(): void
+    {
+        $this->getStats();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\TransaksiDoResource\Widgets;
 
-use App\Models\{TransaksiDo, Perusahaan};
+use App\Models\{TransaksiDo, Perusahaan, LaporanKeuangan};
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Carbon\Carbon;
@@ -19,82 +19,107 @@ class TransaksiDoStatWidget extends BaseWidget
     protected function getStats(): array
     {
         try {
-            // Ambil data perusahaan pertama (CV SUCCESS MANDIRI)
-            $perusahaan = DB::table('perusahaans')
-                ->whereNull('deleted_at')
-                ->where('id', 1)
-                ->select('id', 'name', 'saldo')
-                ->first();
+            // 1. Hitung Total Saldo/Uang Masuk
+            $totalSaldoMasuk = DB::transaction(function () {
+                // a. Saldo dari pimpinan
+                $saldoPimpinan = DB::table('laporan_keuangan')
+                    ->whereNull('deleted_at')
+                    ->where('kategori', 'Saldo')
+                    ->where('sub_kategori', 'Tambah Saldo')
+                    ->sum('nominal');
 
-            if (!$perusahaan) {
-                throw new \Exception('Data perusahaan tidak ditemukan');
-            }
+                // b. Pembayaran hutang dari DO & Operasional
+                $bayarHutang = DB::table('laporan_keuangan')
+                    ->whereNull('deleted_at')
+                    ->where('sub_kategori', 'Bayar Hutang')
+                    ->sum('nominal');
 
-            // Total dari laporan keuangan (pemasukan)
-            $laporanPemasukan = DB::table('laporan_keuangan')
-                ->whereNull('deleted_at')
-                ->where('jenis_transaksi', 'Pemasukan')
-                ->where(function ($query) {
-                    $query->where('cara_pembayaran', 'Transfer')
-                        ->orWhere('kategori', 'DO')
-                        ->orWhere('sub_kategori', 'Bayar Hutang');
-                })
-                ->sum('nominal');
+                // c. Sisa bayar DO dengan transfer/cair luar
+                $sisaBayarDO = DB::table('transaksi_do')
+                    ->whereNull('deleted_at')
+                    ->whereIn('cara_bayar', ['Transfer', 'Cair di Luar'])
+                    ->sum('sisa_bayar');
 
-            $totalSaldoMasuk = $perusahaan->saldo + $laporanPemasukan;
+                return $saldoPimpinan + $bayarHutang + $sisaBayarDO;
+            });
 
-            // Total pengeluaran dari laporan keuangan
-            $totalPengeluaran = DB::table('laporan_keuangan')
-                ->whereNull('deleted_at')
-                ->where('jenis_transaksi', 'Pengeluaran')
-                ->sum('nominal');
+            // 2. Hitung Pengeluaran/Uang Keluar
+            $totalPengeluaran = DB::transaction(function () {
+                // a. Total pengeluaran dari DO
+                $pengeluaranDO = DB::table('laporan_keuangan')
+                    ->whereNull('deleted_at')
+                    ->where('kategori', 'DO')
+                    ->where('jenis_transaksi', 'Pengeluaran')
+                    ->sum('nominal');
 
-            // Sisa Saldo
+                // b. Total pengeluaran operasional
+                $pengeluaranOperasional = DB::table('laporan_keuangan')
+                    ->whereNull('deleted_at')
+                    ->where('kategori', 'Operasional')
+                    ->where('jenis_transaksi', 'Pengeluaran')
+                    ->sum('nominal');
+
+                return $pengeluaranDO + $pengeluaranOperasional;
+            });
+
+            // 3. Hitung Sisa Saldo
             $sisaSaldo = $totalSaldoMasuk - $totalPengeluaran;
 
-            // Ambil detail transaksi
-            $detailPemasukan = DB::table('laporan_keuangan')
-                ->whereNull('deleted_at')
-                ->where('jenis_transaksi', 'Pemasukan')
-                ->selectRaw('
-                    COALESCE(SUM(CASE WHEN cara_pembayaran = "Transfer" THEN nominal ELSE 0 END), 0) as transfer,
-                    COALESCE(SUM(CASE WHEN sub_kategori = "Bayar Hutang" THEN nominal ELSE 0 END), 0) as bayar_hutang
-                ')
-                ->first();
+            // Ambil detail untuk deskripsi
+            $detailPemasukan = [
+                'saldo_pimpinan' => DB::table('laporan_keuangan')
+                    ->whereNull('deleted_at')
+                    ->where('kategori', 'Saldo')
+                    ->where('sub_kategori', 'Tambah Saldo')
+                    ->sum('nominal'),
+                'bayar_hutang' => DB::table('laporan_keuangan')
+                    ->whereNull('deleted_at')
+                    ->where('sub_kategori', 'Bayar Hutang')
+                    ->sum('nominal'),
+                'transfer_do' => DB::table('transaksi_do')
+                    ->whereNull('deleted_at')
+                    ->where('cara_bayar', 'Transfer')
+                    ->sum('sisa_bayar')
+            ];
 
-            $detailPengeluaran = DB::table('laporan_keuangan')
-                ->whereNull('deleted_at')
-                ->where('jenis_transaksi', 'Pengeluaran')
-                ->selectRaw('
-                    COALESCE(SUM(CASE WHEN kategori = "DO" THEN nominal ELSE 0 END), 0) as transaksi_do,
-                    COALESCE(SUM(CASE WHEN kategori = "Operasional" THEN nominal ELSE 0 END), 0) as operasional
-                ')
-                ->first();
+            $detailPengeluaran = [
+                'transaksi_do' => DB::table('laporan_keuangan')
+                    ->whereNull('deleted_at')
+                    ->where('kategori', 'DO')
+                    ->where('jenis_transaksi', 'Pengeluaran')
+                    ->sum('nominal'),
+                'operasional' => DB::table('laporan_keuangan')
+                    ->whereNull('deleted_at')
+                    ->where('kategori', 'Operasional')
+                    ->where('jenis_transaksi', 'Pengeluaran')
+                    ->sum('nominal')
+            ];
 
             return [
-                // Tambahkan nama perusahaan sebagai heading
-                Stat::make('Sisa Saldo ' . $perusahaan->name, 'Rp ' . number_format($sisaSaldo, 0, ',', '.'))
-                    ->description('Saldo tersisa setelah dikurangi pengeluaran')
+                Stat::make('Sisa Saldo', 'Rp ' . number_format($sisaSaldo, 0, ',', '.'))
+                    ->description('Saldo tersisa dari total pemasukan dikurangi pengeluaran')
                     ->color($this->getSaldoColor($sisaSaldo))
+                    ->chart([7, 2, 10, 3, 15, 4, 17])
                     ->extraAttributes(['class' => 'font-bold']),
 
                 Stat::make('Total Saldo/Uang Masuk', 'Rp ' . number_format($totalSaldoMasuk, 0, ',', '.'))
                     ->description(sprintf(
-                        "Saldo %s: Rp %s\nTransfer: Rp %s\nBayar Hutang: Rp %s",
-                        $perusahaan->name,
-                        number_format($perusahaan->saldo, 0, ',', '.'),
-                        number_format($detailPemasukan->transfer ?? 0, 0, ',', '.'),
-                        number_format($detailPemasukan->bayar_hutang ?? 0, 0, ',', '.')
+                        "Tambah Saldo: Rp %s\nBayar Hutang: Rp %s\nTransfer DO: Rp %s",
+                        number_format($detailPemasukan['saldo_pimpinan'], 0, ',', '.'),
+                        number_format($detailPemasukan['bayar_hutang'], 0, ',', '.'),
+                        number_format($detailPemasukan['transfer_do'], 0, ',', '.')
                     ))
-                    ->color('success'),
+                    ->color('success')
+                    ->chart([7, 2, 10, 3, 15, 4, 17]),
 
                 Stat::make('Pengeluaran/Uang Keluar', 'Rp ' . number_format($totalPengeluaran, 0, ',', '.'))
                     ->description(sprintf(
                         "Transaksi DO: Rp %s\nOperasional: Rp %s",
-                        number_format($detailPengeluaran->transaksi_do ?? 0, 0, ',', '.'),
-                        number_format($detailPengeluaran->operasional ?? 0, 0, ',', '.')
+                        number_format($detailPengeluaran['transaksi_do'], 0, ',', '.'),
+                        number_format($detailPengeluaran['operasional'], 0, ',', '.')
                     ))
-                    ->color('danger'),
+                    ->color('danger')
+                    ->chart([7, 2, 10, 3, 15, 4, 17]),
             ];
         } catch (\Exception $e) {
             Log::error('Error TransaksiDoStatWidget:', [
