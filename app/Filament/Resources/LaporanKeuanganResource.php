@@ -150,8 +150,8 @@ class LaporanKeuanganResource extends Resource
                                     ->required()
                                     ->default(now())
                                     ->displayFormat('d/m/Y')
-                                    ->native(false)
-                                    ->minDate(fn($get) => $get('start_date')),
+                                    ->minDate(fn($get) => $get('start_date'))
+                                    ->native(false),
                             ])
                             ->columns(2)
                     ])
