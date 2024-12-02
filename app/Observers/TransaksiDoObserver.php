@@ -17,51 +17,60 @@ class TransaksiDoObserver
             // 1. Validasi data wajib
             $this->validateRequiredFields($transaksiDo);
 
-            // 2. Simpan dan validasi hutang
-            $this->handleHutangValidation($transaksiDo);
-
-            // 3. Hitung total dan sisa bayar
+            // 2. Hitung total DO dari tonase dan harga satuan
             $transaksiDo->total = $transaksiDo->tonase * $transaksiDo->harga_satuan;
 
-            // Hanya hitung pemasukan tunai jika cara bayar Tunai
-            $totalPemasukan = $transaksiDo->cara_bayar === 'Tunai'
-                ? ($transaksiDo->upah_bongkar + $transaksiDo->biaya_lain + $transaksiDo->pembayaran_hutang)
-                : 0;
+            // 3. Simpan dan validasi hutang
+            $this->handleHutangValidation($transaksiDo);
 
-            $transaksiDo->sisa_bayar = max(0, $transaksiDo->total - $totalPemasukan);
+            // 4. [PERBAIKAN] Hitung komponen pengurangan
+            $komponenPengurangan =
+                $transaksiDo->upah_bongkar +
+                $transaksiDo->biaya_lain +
+                $transaksiDo->pembayaran_hutang;
 
-            // 4. Validasi saldo perusahaan hanya untuk pembayaran tunai
+            // 5. [PERBAIKAN] Hitung sisa bayar yang benar
+            $transaksiDo->sisa_bayar = max(0, $transaksiDo->total - $komponenPengurangan);
+
+            // 6. Validasi saldo untuk pembayaran tunai
             if ($transaksiDo->cara_bayar === 'Tunai') {
                 $this->validateCompanyBalance($transaksiDo);
             }
 
-            // 5. Update hutang penjual jika ada pembayaran
+            // 7. Update hutang penjual
             if ($transaksiDo->pembayaran_hutang > 0) {
                 $penjual = Penjual::findOrFail($transaksiDo->penjual_id);
-                $penjual->updateHutang($transaksiDo->pembayaran_hutang, 'subtract');
 
-                // Update sisa hutang di transaksi
+                // Validasi pembayaran hutang
+                if ($transaksiDo->pembayaran_hutang > $penjual->hutang) {
+                    throw new \Exception(
+                        "Pembayaran hutang Rp " . number_format($transaksiDo->pembayaran_hutang, 0, ',', '.') .
+                            " melebihi hutang penjual Rp " . number_format($penjual->hutang, 0, ',', '.')
+                    );
+                }
+
+                $penjual->updateHutang($transaksiDo->pembayaran_hutang, 'subtract');
                 $transaksiDo->sisa_hutang_penjual = $penjual->hutang;
             }
 
-            Log::info('Data DO Siap Disimpan:', [
-                'nomor' => $transaksiDo->nomor,
-                'cara_bayar' => $transaksiDo->cara_bayar,
-                'total' => $transaksiDo->total,
-                'pemasukan_tunai' => $totalPemasukan,
-                'sisa_bayar' => $transaksiDo->sisa_bayar,
+            // 8. Logging untuk monitoring
+            Log::info('Kalkulasi Transaksi DO:', [
+                'total_do' => $transaksiDo->total,
+                'upah_bongkar' => $transaksiDo->upah_bongkar,
+                'biaya_lain' => $transaksiDo->biaya_lain,
                 'pembayaran_hutang' => $transaksiDo->pembayaran_hutang,
-                'sisa_hutang' => $transaksiDo->sisa_hutang_penjual,
-                'mempengaruhi_saldo' => $transaksiDo->cara_bayar === 'Tunai'
+                'total_pengurangan' => $komponenPengurangan,
+                'sisa_bayar_final' => $transaksiDo->sisa_bayar
             ]);
         } catch (\Exception $e) {
-            Log::error('Error Validasi TransaksiDO:', [
+            Log::error('Error Transaksi DO:', [
                 'error' => $e->getMessage(),
                 'data' => $transaksiDo->toArray()
             ]);
             throw $e;
         }
     }
+
 
     protected function validateRequiredFields(TransaksiDo $transaksiDo)
     {
