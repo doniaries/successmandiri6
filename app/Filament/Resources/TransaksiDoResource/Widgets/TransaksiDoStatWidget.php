@@ -22,25 +22,50 @@ class TransaksiDoStatWidget extends BaseWidget
                 return Perusahaan::first();
             });
 
-            // Get summary transaksi
-            $transaksi = DB::table('laporan_keuangan')
+            // Pengeluaran dari Transaksi DO & Operasional
+            $pengeluaranPerCaraBayar = DB::table('laporan_keuangan')
+                ->whereNull('deleted_at')
+                ->where('jenis_transaksi', 'Pengeluaran')
+                ->select([
+                    'cara_pembayaran',
+                    DB::raw('SUM(nominal) as total'),
+                    DB::raw('COUNT(DISTINCT id) as jumlah')
+                ])
+                ->groupBy('cara_pembayaran')
+                ->get()
+                ->keyBy('cara_pembayaran');
+
+            // Total Pemasukan dari DO
+            $pemasukanDO = DB::table('transaksi_do')
                 ->whereNull('deleted_at')
                 ->select([
-                    // Summary total
-                    DB::raw('SUM(CASE WHEN jenis_transaksi = "Pemasukan" THEN nominal ELSE 0 END) as total_pemasukan'),
-                    DB::raw('SUM(CASE WHEN jenis_transaksi = "Pengeluaran" THEN nominal ELSE 0 END) as total_pengeluaran'),
-                    // Summary per kategori
-                    DB::raw('SUM(CASE WHEN kategori = "DO" AND jenis_transaksi = "Pemasukan" THEN nominal ELSE 0 END) as pemasukan_do'),
-                    DB::raw('SUM(CASE WHEN kategori = "DO" AND jenis_transaksi = "Pengeluaran" THEN nominal ELSE 0 END) as pengeluaran_do'),
-                    DB::raw('SUM(CASE WHEN kategori = "Operasional" AND jenis_transaksi = "Pemasukan" THEN nominal ELSE 0 END) as pemasukan_operasional'),
-                    DB::raw('SUM(CASE WHEN kategori = "Operasional" AND jenis_transaksi = "Pengeluaran" THEN nominal ELSE 0 END) as pengeluaran_operasional'),
-                    // Summary per cara bayar
-                    DB::raw('SUM(CASE WHEN cara_pembayaran = "Tunai" AND jenis_transaksi = "Pengeluaran" THEN nominal ELSE 0 END) as pengeluaran_tunai'),
-                    DB::raw('SUM(CASE WHEN cara_pembayaran = "Transfer" AND jenis_transaksi = "Pengeluaran" THEN nominal ELSE 0 END) as pengeluaran_transfer'),
-                    DB::raw('SUM(CASE WHEN cara_pembayaran = "cair di luar" AND jenis_transaksi = "Pengeluaran" THEN nominal ELSE 0 END) as pengeluaran_cair_luar'),
-                    DB::raw('COUNT(DISTINCT id) as total_transaksi')
+                    DB::raw('SUM(total) as total_do'),
+                    DB::raw('COUNT(id) as jumlah_do')
                 ])
                 ->first();
+
+            // Total Pemasukan dari Operasional
+            $pemasukanOperasional = DB::table('operasional')
+                ->whereNull('deleted_at')
+                ->where('operasional', 'pemasukan')
+                ->select([
+                    DB::raw('SUM(nominal) as total_operasional'),
+                    DB::raw('COUNT(id) as jumlah_operasional')
+                ])
+                ->first();
+
+            // Total semua pengeluaran (DO + Operasional)
+            $totalPengeluaran = DB::table('laporan_keuangan')
+                ->whereNull('deleted_at')
+                ->where('jenis_transaksi', 'Pengeluaran')
+                ->select([
+                    'kategori',
+                    DB::raw('SUM(nominal) as total'),
+                    DB::raw('COUNT(DISTINCT id) as jumlah')
+                ])
+                ->groupBy('kategori')
+                ->get()
+                ->keyBy('kategori');
 
             return [
                 // Saldo Kas
@@ -49,34 +74,48 @@ class TransaksiDoStatWidget extends BaseWidget
                     ->descriptionIcon('heroicon-m-banknotes')
                     ->color('success'),
 
-                // Total Transaksi dengan Summary
+                // Total Pengeluaran dengan rincian kategori
                 Stat::make(
-                    'Total Transaksi',
-                    'Rp ' . number_format($transaksi->total_pemasukan - $transaksi->total_pengeluaran, 0, ',', '.')
+                    'Total Pengeluaran',
+                    'Rp ' . number_format(
+                        ($totalPengeluaran['DO']->total ?? 0) + ($totalPengeluaran['Operasional']->total ?? 0),
+                        0,
+                        ',',
+                        '.'
+                    )
                 )
                     ->description(sprintf(
-                        "Pemasukan:\nDO: Rp %s\nOperasional: Rp %s\n\nPengeluaran:\nDO: Rp %s\nOperasional: Rp %s",
-                        number_format($transaksi->pemasukan_do ?? 0, 0, ',', '.'),
-                        number_format($transaksi->pemasukan_operasional ?? 0, 0, ',', '.'),
-                        number_format($transaksi->pengeluaran_do ?? 0, 0, ',', '.'),
-                        number_format($transaksi->pengeluaran_operasional ?? 0, 0, ',', '.')
+                        "Total %d Transaksi\nDO: Rp %s (%d)\nOperasional: Rp %s (%d)",
+                        ($totalPengeluaran['DO']->jumlah ?? 0) + ($totalPengeluaran['Operasional']->jumlah ?? 0),
+                        number_format($totalPengeluaran['DO']->total ?? 0, 0, ',', '.'),
+                        $totalPengeluaran['DO']->jumlah ?? 0,
+                        number_format($totalPengeluaran['Operasional']->total ?? 0, 0, ',', '.'),
+                        $totalPengeluaran['Operasional']->jumlah ?? 0
                     ))
-                    ->descriptionIcon('heroicon-m-chart-bar')
-                    ->color('info'),
+                    ->descriptionIcon('heroicon-m-arrow-trending-down')
+                    ->color('danger'),
 
-                // Detail Pengeluaran
+                // Total Pemasukan dari DO dan Operasional
                 Stat::make(
-                    'Detail Pengeluaran',
-                    $transaksi->total_transaksi . ' Transaksi'
+                    'Total Pemasukan',
+                    'Rp ' . number_format(
+                        ($pemasukanDO->total_do ?? 0) + ($pemasukanOperasional->total_operasional ?? 0),
+                        0,
+                        ',',
+                        '.'
+                    )
                 )
                     ->description(sprintf(
-                        "Tunai: Rp %s\nTransfer: Rp %s\nCair di Luar: Rp %s",
-                        number_format($transaksi->pengeluaran_tunai ?? 0, 0, ',', '.'),
-                        number_format($transaksi->pengeluaran_transfer ?? 0, 0, ',', '.'),
-                        number_format($transaksi->pengeluaran_cair_luar ?? 0, 0, ',', '.')
+                        "Tunai: Rp %s (%d)\nTransfer: Rp %s (%d)\nCair di Luar: Rp %s (%d)",
+                        number_format($pengeluaranPerCaraBayar['Tunai']->total ?? 0, 0, ',', '.'),
+                        $pengeluaranPerCaraBayar['Tunai']->jumlah ?? 0,
+                        number_format($pengeluaranPerCaraBayar['Transfer']->total ?? 0, 0, ',', '.'),
+                        $pengeluaranPerCaraBayar['Transfer']->jumlah ?? 0,
+                        number_format($pengeluaranPerCaraBayar['cair di luar']->total ?? 0, 0, ',', '.'),
+                        $pengeluaranPerCaraBayar['cair di luar']->jumlah ?? 0
                     ))
-                    ->descriptionIcon('heroicon-m-banknotes')
-                    ->color('warning')
+                    ->descriptionIcon('heroicon-m-arrow-trending-up')
+                    ->color('success')
             ];
         } catch (\Exception $e) {
             Log::error('Error TransaksiDoStatWidget:', [
