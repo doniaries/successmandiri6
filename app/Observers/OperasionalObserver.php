@@ -18,6 +18,52 @@ class OperasionalObserver
         $this->laporanObserver = $laporanObserver;
     }
 
+
+    public function handleTransaksiDO(TransaksiDo $transaksiDo)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Lock perusahaan untuk update
+            $perusahaan = Perusahaan::lockForUpdate()->first();
+            if (!$perusahaan) {
+                throw new \Exception('Data perusahaan tidak ditemukan');
+            }
+
+            // Eager load relasi penjual untuk menghindari N+1
+            $transaksiDo->load('penjual');
+
+            // Handle transaksi berdasarkan cara bayar
+            if ($transaksiDo->cara_bayar === 'Tunai') {
+                $this->handleTransaksiTunai($transaksiDo, $perusahaan);
+            } else {
+                $this->handleTransaksiNonTunai($transaksiDo);
+            }
+
+            // Update hutang penjual jika ada pembayaran
+            if ($transaksiDo->pembayaran_hutang > 0 && $transaksiDo->penjual) {
+                $transaksiDo->penjual->decrement('hutang', $transaksiDo->pembayaran_hutang);
+            }
+
+            DB::commit();
+
+            // Log transaksi berhasil
+            Log::info('Transaksi DO berhasil dicatat:', [
+                'nomor' => $transaksiDo->nomor,
+                'cara_bayar' => $transaksiDo->cara_bayar,
+                'total' => $transaksiDo->total,
+                'saldo_akhir' => $perusahaan->fresh()->saldo
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error mencatat transaksi DO:', [
+                'error' => $e->getMessage(),
+                'transaksi' => $transaksiDo->toArray()
+            ]);
+            throw $e;
+        }
+    }
+
     public function created(Operasional $operasional): void
     {
         try {

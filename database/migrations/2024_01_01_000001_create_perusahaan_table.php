@@ -12,8 +12,6 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->decimal('saldo', 15, 0)->default(0);
-            $table->decimal('saldo_kas', 15, 0)->default(0)->comment('Saldo kas fisik/tunai');  // [NEW]
-            $table->decimal('saldo_bank', 15, 0)->default(0)->comment('Saldo di rekening bank'); // [NEW]
             $table->string('alamat')->nullable();
             $table->string('telepon')->nullable();
             $table->string('email')->nullable();
