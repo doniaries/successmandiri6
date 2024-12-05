@@ -275,11 +275,11 @@
                 <td>:</td>
                 <td class="text-right">Rp {{ number_format($totalCairDiluar) }}</td>
             </tr>
-            <tr class="text-bold">
+            {{-- <tr class="text-bold">
                 <td>Total Sisa Hutang</td>
                 <td>:</td>
                 <td class="text-right">Rp {{ number_format($totalBelumBayar) }}</td>
-            </tr>
+            </tr> --}}
         </table>
     </div>
 

@@ -27,7 +27,7 @@ class TransaksiDoObserver
             $transaksiDo->sub_total = $transaksiDo->tonase * $transaksiDo->harga_satuan;
 
             // Komponen pengurangan
-            $komponenPengurangan = 
+            $komponenPengurangan =
                 $transaksiDo->upah_bongkar +
                 $transaksiDo->biaya_lain +
                 $transaksiDo->pembayaran_hutang;
@@ -278,4 +278,6 @@ class TransaksiDoObserver
             ->body("DO #{$transaksiDo->nomor} telah dihapus secara permanen")
             ->send();
     }
+
+
 }

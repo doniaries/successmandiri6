@@ -759,15 +759,15 @@ class TransaksiDoResource extends Resource
                             ->required(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_from'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                            )
-                            ->when(
-                                $data['created_to'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date)
-                            );
+                        if (!empty($data['created_from'])) {
+                            $query->whereDate('created_at', '>=', $data['created_from']);
+                        }
+
+                        if (!empty($data['created_to'])) {
+                            $query->whereDate('created_at', '<=', $data['created_to']);
+                        }
+
+                        return $query;
                     }),
 
                 Tables\Filters\TrashedFilter::make(),

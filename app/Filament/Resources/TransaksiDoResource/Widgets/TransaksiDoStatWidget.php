@@ -30,7 +30,7 @@ class TransaksiDoStatWidget extends BaseWidget
                     ->select([
                         DB::raw('COALESCE(SUM(pembayaran_hutang), 0) as total_debt_payments'),
                         DB::raw('COALESCE(SUM(CASE
-                            WHEN cara_bayar IN ("Transfer", "Cair di Luar", "Belum Bayar")
+                            WHEN cara_bayar IN ("Transfer", "Cair di Luar", "Belum Bayar", "Belum Bayar")
                             THEN sisa_bayar
                             ELSE 0
                         END), 0) as remaining_payments')
@@ -89,6 +89,18 @@ class TransaksiDoStatWidget extends BaseWidget
                         ))
                         ->descriptionIcon('heroicon-m-arrow-trending-down')
                         ->color('danger'),
+
+                        Stat::make('Total Transaksi', TransaksiDo::count())
+    ->description(sprintf(
+        "Tunai: %d\nTransfer: %d\nCair di Luar: %d\nBelum Bayar: %d",
+        TransaksiDo::where('cara_bayar', 'Tunai')->count(),
+        TransaksiDo::where('cara_bayar', 'Transfer')->count(),
+        TransaksiDo::where('cara_bayar', 'cair di luar')->count(),
+        TransaksiDo::where('cara_bayar', 'Belum Bayar')->count()
+    ))
+    ->descriptionIcon('heroicon-m-document-text')
+    ->color('primary'),
+
                 ];
             });
         } catch (\Exception $e) {
