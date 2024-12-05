@@ -34,7 +34,7 @@ class PerusahaanResource extends Resource
 {
     protected static ?string $model = Perusahaan::class;
 
-    // protected static ?string $navigationGroup = 'Master Data';
+    protected static ?string $navigationGroup = 'Master Data';
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static ?int $navigationSort = 3;
 
@@ -79,7 +79,6 @@ class PerusahaanResource extends Resource
                                         ->label('Logo Perusahaan')
                                         ->image()
                                         ->disk('public') // Pastikan menggunakan disk public
-                                        ->directory('perusahaan-logo')
                                         ->visibility('public') // Tambahkan visibility public
                                         ->preserveFilenames()
                                         ->maxSize(2048)
@@ -112,7 +111,9 @@ class PerusahaanResource extends Resource
                 Tables\Columns\ImageColumn::make('logo')
                     ->label('Logo')
                     ->disk('public')
-                    ->circular(),
+                    ->circular()
+                    ->height(40)
+                    ->visibility('public'),
                 Tables\Columns\TextColumn::make('saldo')
                     ->weight('5')
                     ->badge()
@@ -192,7 +193,7 @@ class PerusahaanResource extends Resource
                                             ->image()
                                             ->disk('public')
                                             ->directory('bukti-saldo')
-                                            ->required(fn(Get $get) => $get('cara_bayar') === 'Transfer')
+                                        // ->required(fn(Get $get) => $get('cara_bayar') === 'Transfer')
 
                                     ])
                                     ->columns(1)

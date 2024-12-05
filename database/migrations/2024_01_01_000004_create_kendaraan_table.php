@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('transaksi_do', function (Blueprint $table) {
-            $table->string('supir')->nullable();
+        Schema::create('kendaraan', function (Blueprint $table) {
+            $table->id();
+            $table->string('no_polisi', 10);
+            $table->foreignId('supir_id')->constrained('supir');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('transaksi_do', function (Blueprint $table) {
-            $table->dropColumn('supir');
-        });
+        Schema::dropIfExists('kendaraan');
     }
 };

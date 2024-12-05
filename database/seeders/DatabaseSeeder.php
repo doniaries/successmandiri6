@@ -7,6 +7,11 @@ use App\Models\Penjual;
 use App\Models\Perusahaan;
 use Illuminate\Database\Seeder;
 use Database\Seeders\SettingsSeeder;
+use Database\Seeders\TransaksiDoSeeder;
+use Database\Seeders\OperasionalSeeder;
+use Database\Seeders\PerusahaanSeeder;
+use Database\Seeders\PenjualSeeder;
+use Database\Seeders\SupirSeeder; // Add this line
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -42,7 +47,7 @@ class DatabaseSeeder extends Seeder
 
         // Buat Kasir
         $kasir = User::create([
-            'id' => 2,
+            'id' => 4,
             'name' => 'Kasir 1',
             'email' => 'kasir1@gmail.com',
             'password' => Hash::make('password'),
@@ -51,9 +56,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            PerusahaanSeeder::class,
             PenjualSeeder::class,
-
+            SupirSeeder::class,
+            OperasionalSeeder::class,
+            TransaksiDoSeeder::class,
+            PerusahaanSeeder::class,
         ]);
 
         // Run PerusahaanSeeder and get the created perusahaan

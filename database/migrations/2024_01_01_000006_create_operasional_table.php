@@ -17,10 +17,11 @@ return new class extends Migration
             $table->dateTime('tanggal');
             $table->enum('operasional', ['pemasukan', 'pengeluaran']);
             $table->string('kategori');
-            $table->enum('tipe_nama', ['penjual', 'user']);
+            $table->enum('tipe_nama', ['penjual', 'user', 'supir', 'pekerja']);
             $table->foreignId('penjual_id')->nullable()->constrained('penjuals')->nullOnDelete();
             $table->unsignedBigInteger('pekerja_id')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('supir_id')->nullable()->constrained('supir')->nullOnDelete();
             $table->decimal('nominal', 15, 0);
             $table->text('keterangan')->nullable();
             $table->string('file_bukti', 512)->nullable();

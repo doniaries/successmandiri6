@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Supir;
+use App\Models\Penjual;
+use App\Models\Kendaraan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Traits\DokumentasiTrait;
-use App\Traits\GenerateMonthlyNumber;
 use App\Traits\LaporanKeuanganTrait;
+use App\Traits\GenerateMonthlyNumber;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\{DB, Log};
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\{HasMany, BelongsTo};
-use Barryvdh\DomPDF\Facade\Pdf;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 // use BaconQrCode\Renderer\ImageRenderer;
 // use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 // use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -30,22 +33,22 @@ class TransaksiDo extends Model
         'nomor',
         'tanggal',
         'penjual_id',
-        'supir',
-        'nomor_polisi',
+        'supir_id',
+        'kendaraan_id',
         'tonase',
         'harga_satuan',
-        'total',
+        'sub_total',
         'upah_bongkar',
         'biaya_lain',
         'keterangan_biaya_lain',
         'hutang_awal',          // Updated
         'pembayaran_hutang',    // Updated
         'sisa_hutang_penjual',  // Updated
-        'sisa_bayar',
-        'file_do',
         'cara_bayar',
+        'sisa_bayar',
+        // 'file_do',
         // 'status_bayar',
-        'catatan',
+        // 'catatan',
     ];
 
     // MASIH DIPAKAI - Tidak berubah
@@ -61,7 +64,7 @@ class TransaksiDo extends Model
         'tanggal' => 'datetime',
         'tonase' => 'decimal:0',
         'harga_satuan' => 'decimal:0',
-        'total' => 'decimal:0',
+        'sub_total' => 'decimal:0',
         'upah_bongkar' => 'integer',
         'biaya_lain' => 'integer',
         'hutang_awal' => 'decimal:0',         // Updated
@@ -72,7 +75,7 @@ class TransaksiDo extends Model
     ];
 
     protected $attributes = [
-        'total' => 0,
+        'sub_total' => 0,
         'upah_bongkar' => 0,
         'biaya_lain' => 0,
         'hutang_awal' => 0,           // Updated
@@ -83,10 +86,10 @@ class TransaksiDo extends Model
     ];
 
     const CARA_BAYAR = [
-        'Tunai' => 'Tunai',           // Mempengaruhi saldo kas
-        'Transfer' => 'Transfer',      // Tidak mempengaruhi saldo kas
-        'cair di luar' => 'cair di luar', // Tidak mempengaruhi saldo kas
-        // 'belum bayar' => 'Belum Bayar',
+        'Tunai' => 'Tunai',
+        'Transfer' => 'Transfer',
+        'cair di luar' => 'cair di luar',
+        'belum bayar' => 'Belum Bayar',
     ];
 
     // Panggil method dari trait
@@ -98,27 +101,27 @@ class TransaksiDo extends Model
     }
 
     // Di Model TransaksiDo
-    public function handleFileUpload($file)
-    {
-        if ($file) {
-            // Simpan file dengan nama unik
-            $fileName = Str::slug($this->nomor) . '-' . time() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('do-files', $fileName, 'public');
+    // public function handleFileUpload($file)
+    // {
+    //     if ($file) {
+    //         // Simpan file dengan nama unik
+    //         $fileName = Str::slug($this->nomor) . '-' . time() . '.' . $file->getClientOriginalExtension();
+    //         $path = $file->storeAs('do-files', $fileName, 'public');
 
-            $this->update([
-                'file_do' => $path
-            ]);
+    //         $this->update([
+    //             'file_do' => $path
+    //         ]);
 
-            // Catat di log
-            Log::info('File DO uploaded:', [
-                'nomor_do' => $this->nomor,
-                'file_path' => $path
-            ]);
+    //         // Catat di log
+    //         Log::info('File DO uploaded:', [
+    //             'nomor_do' => $this->nomor,
+    //             'file_path' => $path
+    //         ]);
 
-            return $path;
-        }
-        return null;
-    }
+    //         return $path;
+    //     }
+    //     return null;
+    // }
 
     public function penjual(): BelongsTo
     {
@@ -167,5 +170,26 @@ class TransaksiDo extends Model
             ]);
             throw $e;
         }
+    }
+
+    public function supir(): BelongsTo
+    {
+        return $this->belongsTo(Supir::class);
+    }
+
+    public function kendaraan(): BelongsTo
+    {
+        return $this->belongsTo(Kendaraan::class);
+    }
+
+    public function getTotalAttribute()
+    {
+        return $this->sub_total;
+    }
+
+    public function scopeWithTotals($query)
+    {
+        return $query->select('*')
+            ->addSelect(DB::raw('sub_total as total_amount'));  // Use sub_total consistently
     }
 }

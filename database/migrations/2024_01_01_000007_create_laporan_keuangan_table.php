@@ -22,9 +22,11 @@ return new class extends Migration
             $table->unsignedBigInteger('referensi_id')->comment('ID dari tabel sumber (transaksi_do/operasional)');
             $table->string('nomor_referensi', 50)->nullable()->comment('Nomor DO jika dari transaksi DO');
             $table->string('pihak_terkait', 100)->nullable()->comment('Nama penjual/user terkait');
-            $table->enum('tipe_pihak', ['penjual', 'pekerja', 'user']);
+            $table->enum('tipe_pihak', ['penjual', 'pekerja', 'user', 'supir']);
             $table->string('cara_pembayaran', 20)->nullable()->comment('Tunai/Transfer/cair di luar');
             $table->text('keterangan')->nullable();
+            $table->boolean('mempengaruhi_kas')->default(true)->comment('Apakah transaksi ini mempengaruhi kas atau tidak');
+            $table->decimal('saldo_sebelum', 15, 0)->nullable()->comment('Saldo sebelum transaksi');
             $table->timestamps();
             $table->softDeletes();
 

@@ -15,10 +15,9 @@ class LaporanKeuangan extends Model
     protected $table = 'laporan_keuangan';
 
     protected $fillable = [
-        'id',
         'tanggal',
-        'jenis_transaksi', // Sesuaikan dengan kolom di database
-        'kategori',        // Sesuaikan nama kolom
+        'jenis_transaksi',
+        'kategori',
         'sub_kategori',
         'nominal',
         'sumber_transaksi',
@@ -27,11 +26,7 @@ class LaporanKeuangan extends Model
         'pihak_terkait',
         'tipe_pihak',
         'cara_pembayaran',
-        'file_bukti', // Tambahkan ini
         'keterangan',
-        'created_at',
-        'updated_at',
-        // 'deleted_at'
     ];
 
     protected $casts = [

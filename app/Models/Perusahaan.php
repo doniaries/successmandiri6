@@ -34,13 +34,19 @@ class Perusahaan extends Model implements HasMedia
         'is_active' => 'boolean',
         'saldo' => 'decimal:0',
         'setting' => 'json',
-
     ];
 
-    protected function logo(): Attribute
+    protected function logo(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
-        return Attribute::make(
-            get: fn(?string $value) => $value ? Storage::disk('public')->url($value) : null,
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+            get: function ($value) {
+                if (empty($value)) {
+                    return null;
+                }
+                // Force HTTP protocol for development
+                $url = Storage::disk('public')->url($value);
+                return str_replace('https://', 'http://', $url);
+            },
         );
     }
 

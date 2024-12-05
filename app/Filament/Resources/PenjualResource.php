@@ -26,7 +26,7 @@ use App\Filament\Resources\PenjualResource\RelationManagers\RiwayatPembayaranHut
 class PenjualResource extends Resource
 {
     protected static ?string $model = Penjual::class;
-    // protected static ?string $navigationGroup = 'Master Data';
+    protected static ?string $navigationGroup = 'Master Data';
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?int $navigationSort = 4;
 
@@ -134,6 +134,7 @@ class PenjualResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('nama', 'asc')
             ->filters([
 
                 // Tables\Filters\SelectFilter::make('hutang_status')

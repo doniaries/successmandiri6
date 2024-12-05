@@ -12,6 +12,7 @@ enum KategoriOperasional: string
     case BAHAN_BAKAR = 'bahan_bakar';
     case PERAWATAN = 'perawatan';
     case LAIN_LAIN = 'lain_lain';
+    case TAMBAH_SALDO = 'tambah_saldo';
 
     public function label(): string
     {
@@ -23,6 +24,8 @@ enum KategoriOperasional: string
             self::BAHAN_BAKAR => 'Bahan Bakar',
             self::PERAWATAN => 'Perawatan',
             self::LAIN_LAIN => 'Lain-lain',
+            self::TAMBAH_SALDO => 'Tambah Saldo',
+            // self::SISA_SALDO => 'Sisa Saldo',
         };
     }
 
@@ -31,6 +34,8 @@ enum KategoriOperasional: string
     {
         return match ($this) {
             self::BAYAR_HUTANG => 'pemasukan',
+            self::TAMBAH_SALDO => 'pemasukan',
+
             self::PINJAMAN => 'pengeluaran',
             default => 'pengeluaran'
         };
@@ -47,6 +52,7 @@ enum KategoriOperasional: string
     {
         return [
             self::BAYAR_HUTANG->value => self::BAYAR_HUTANG->label(),
+            self::TAMBAH_SALDO->value => self::TAMBAH_SALDO->label(),
         ];
     }
 

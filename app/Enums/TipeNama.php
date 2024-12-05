@@ -7,6 +7,7 @@ enum TipeNama: string
     case PENJUAL = 'penjual'; // lowercase sesuai database
     case PEKERJA = 'pekerja';
     case USER = 'user';
+    case SUPIR = 'supir';
 
     public function getLabel(): string
     {
@@ -14,6 +15,7 @@ enum TipeNama: string
             self::PENJUAL => '🏢 Penjual',
             self::PEKERJA => '👷 Pekerja',
             self::USER => '👨‍💼 Karyawan',
+            self::SUPIR => '🚗 Supir',
         };
     }
 

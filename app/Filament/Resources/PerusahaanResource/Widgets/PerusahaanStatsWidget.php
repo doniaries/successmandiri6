@@ -41,12 +41,37 @@ class PerusahaanStatsWidget extends BaseWidget
                     " (" . date('d/m/Y', strtotime($lastSaldo->tanggal)) . ")" :
                     "Belum ada penambahan saldo";
 
+                // Calculate total pemasukan
+                $totalPemasukan = DB::table('laporan_keuangan')
+                    ->whereNull('deleted_at')
+                    ->where('jenis_transaksi', 'Pemasukan')
+                    ->where('mempengaruhi_kas', true)
+                    ->sum('nominal');
+
+                // Calculate total pengeluaran
+                $totalPengeluaran = DB::table('laporan_keuangan')
+                    ->whereNull('deleted_at')
+                    ->where('jenis_transaksi', 'Pengeluaran')
+                    ->where('mempengaruhi_kas', true)
+                    ->sum('nominal');
+
+                // Calculate saldo
+                $saldoAkhir = $perusahaan->saldo;
+
+                // Log calculations for debugging
+                \Log::info('Widget Stats Calculation:', [
+                    'total_pemasukan' => $totalPemasukan,
+                    'total_pengeluaran' => $totalPengeluaran,
+                    'saldo_sistem' => $saldoAkhir,
+                    'saldo_kalkulasi' => $totalPemasukan - $totalPengeluaran
+                ]);
+
                 return [
                     // Saldo from perusahaans table
-                    Stat::make('Saldo Perusahaan', 'Rp ' . number_format($perusahaan->saldo, 0, ',', '.'))
+                    Stat::make('Saldo Perusahaan', 'Rp ' . number_format($saldoAkhir, 0, ',', '.'))
                         ->description($lastSaldoInfo)
                         ->descriptionIcon('heroicon-m-banknotes')
-                        ->color($this->getSaldoColor($perusahaan->saldo)),
+                        ->color($this->getSaldoColor($saldoAkhir)),
 
                     // Pimpinan as main title with company name below
                     Stat::make($perusahaan->name, $perusahaan->pimpinan)
@@ -56,22 +81,11 @@ class PerusahaanStatsWidget extends BaseWidget
 
                     // Transaction summary
                     Stat::make(
-                        'Ringkasan Transaksi',
-                        DB::table('laporan_keuangan')
-                            ->whereNull('deleted_at')
-                            ->where('jenis_transaksi', 'Pemasukan')
-                            ->sum('nominal')
+                        'Total Pemasukan',
+                        'Rp ' . number_format($totalPemasukan, 0, ',', '.')
                     )
                         ->description(
-                            'Total Pengeluaran: Rp ' . number_format(
-                                DB::table('laporan_keuangan')
-                                    ->whereNull('deleted_at')
-                                    ->where('jenis_transaksi', 'Pengeluaran')
-                                    ->sum('nominal'),
-                                0,
-                                ',',
-                                '.'
-                            )
+                            'Total Pengeluaran: Rp ' . number_format($totalPengeluaran, 0, ',', '.')
                         )
                         ->descriptionIcon('heroicon-m-arrow-path')
                         ->color('success'),

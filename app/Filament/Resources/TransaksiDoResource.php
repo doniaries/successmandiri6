@@ -7,19 +7,21 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Penjual;
 use Filament\Forms\Form;
+use App\Models\Kendaraan;
 use Filament\Tables\Table;
 use App\Models\TransaksiDo;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Enums\ActionsPosition;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransaksiDoResource\Pages;
 use App\Filament\Resources\TransaksiDoResource\Widgets\TransaksiDoStatWidget;
-use Filament\Tables\Enums\ActionsPosition;
 
 // use Barryvdh\DomPDF\Facade\Pdf;
 // use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -102,84 +104,113 @@ class TransaksiDoResource extends Resource
                                         ->label('Penjual')
                                         ->relationship('penjual', 'nama')
                                         ->searchable()
-                                        ->debounce(500)
                                         ->preload()
                                         ->live()
                                         ->required()
-                                        ->hint('+ tambahkan penjual baru')
-                                        ->hintColor('primary')
-                                        ->createOptionForm([
-                                            Forms\Components\TextInput::make('nama')
-                                                ->label('Nama Penjual')
-                                                ->required()
-                                                ->maxLength(255),
-                                            Forms\Components\TextInput::make('alamat')
-                                                ->label('Alamat')
-                                                ->maxLength(255),
-                                            Forms\Components\TextInput::make('telepon')
-                                                ->tel()
-                                                ->label('Nomor Telepon'),
-                                            // Hutang awal hanya muncul saat create
-                                            Forms\Components\TextInput::make('hutang')
-                                                ->label('Hutang Awal') // Ubah label
-                                                ->helperText('Masukkan hutang awal jika ada. Input ini hanya bisa dilakukan sekali saat pendaftaran penjual.')
-                                                ->prefix('Rp')
-                                                ->numeric()
-                                                ->default(0)
-                                                ->live(onBlur: true) // Tambahkan live update
-                                                ->currencyMask(
-                                                    thousandSeparator: '.',
-                                                    decimalSeparator: ',',
-                                                    precision: 0
-                                                )
-                                                ->afterStateUpdated(function ($state, Forms\Set $set) {
-                                                    // Update sisa hutang saat hutang awal berubah
-                                                    $set('hutang_awal', $state);
-                                                    $set('sisa_hutang_penjual', $state);
-                                                    $set('pembayaran_hutang', 0);
-                                                }),
-                                        ])
-                                        ->createOptionAction(function (Forms\Components\Actions\Action $action) {
-                                            return $action
-                                                ->modalHeading('Tambah Penjual Baru')
-                                                ->modalWidth('lg')
-                                                ->successNotification(
-                                                    Notification::make()
-                                                        ->success()
-                                                        ->duration(3000) // Set durasi 3 detik
-                                                        ->persistent(false) // Notifikasi akan otomatis hilang
-                                                        ->title('Penjual Berhasil Ditambahkan')
-                                                        ->body('Data penjual dan hutang awal berhasil disimpan.')
-                                                );
-                                        })
                                         ->afterStateUpdated(function ($state, Forms\Set $set) {
                                             if ($state) {
-                                                // Get fresh data penjual
-                                                $penjual = Penjual::find($state);
+                                                // Ambil data penjual
+                                                $penjual = \App\Models\Penjual::find($state);
                                                 if ($penjual) {
-                                                    // Set hutang_awal dari data penjual
+                                                    // Set hutang awal dan sisa hutang
                                                     $set('hutang_awal', $penjual->hutang);
-                                                    // Set sisa hutang awal sama dengan hutang_awal
                                                     $set('sisa_hutang_penjual', $penjual->hutang);
-                                                    // Reset pembayaran hutang
                                                     $set('pembayaran_hutang', 0);
-                                                } else {
-                                                    // Reset semua field terkait hutang
-                                                    $set('hutang_awal', 0);
-                                                    $set('sisa_hutang_penjual', 0);
-                                                    $set('pembayaran_hutang', 0);
+
+                                                    // Auto create/find supir berdasarkan penjual
+                                                    $supir = \App\Models\Supir::firstOrCreate(
+                                                        ['nama' => $penjual->nama],
+                                                        [
+                                                            'alamat' => $penjual->alamat ?? '',
+                                                            'telepon' => $penjual->telepon ?? '',
+                                                        ]
+                                                    );
+
+                                                    // Set supir_id langsung saat penjual dipilih
+                                                    $set('supir_id', $supir->id);
+
+                                                    // Log untuk tracking
+                                                    Log::info('Auto-fill supir saat pemilihan penjual:', [
+                                                        'penjual_id' => $state,
+                                                        'penjual_nama' => $penjual->nama,
+                                                        'supir_id' => $supir->id
+                                                    ]);
+
+                                                    // Notifikasi ke user
+                                                    Notification::make()
+                                                        ->title('Supir Ditambahkan')
+                                                        ->body('Data supir diisi otomatis menggunakan data penjual')
+                                                        ->success()
+                                                        ->duration(3000)
+                                                        ->send();
                                                 }
                                             }
                                         }),
 
-                                    Forms\Components\TextInput::make('supir')
+
+                                    Forms\Components\Select::make('supir_id')
                                         ->label('Supir')
+                                        ->relationship('supir', 'nama')
+                                        ->searchable()
+                                        ->preload()
+                                        ->live()
+                                        ->required()
+                                        ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                            // Reset kendaraan when supir changes
+                                            $set('kendaraan_id', null);
+                                        })
+                                        ->createOptionForm([
+                                            Forms\Components\TextInput::make('nama')
+                                                ->required()
+                                                ->maxLength(255),
+                                            Forms\Components\TextInput::make('alamat')
+                                                ->maxLength(255),
+                                            Forms\Components\TextInput::make('telepon')
+                                                ->tel()
+                                                ->maxLength(255),
+                                        ]),
+
+                                    Forms\Components\Select::make('kendaraan_id')
+                                        ->label('Nomor Polisi')
+                                        ->options(function (Forms\Get $get) {
+                                            $supirId = $get('supir_id');
+
+                                            if (!$supirId) {
+                                                return [];
+                                            }
+
+                                            return Kendaraan::query()
+                                                ->where('supir_id', $supirId)
+                                                ->pluck('no_polisi', 'id')
+                                                ->toArray();
+                                        })
+                                        ->searchable()
+                                        ->preload()
                                         // ->required()
-                                        ->minLength(2)
-                                        ->maxLength(20),
-                                    Forms\Components\TextInput::make('nomor_polisi')
-                                        ->placeholder('BA 1234 K')
-                                        ->label('Nomor Polisi'),
+                                        ->live()
+                                        // ->visible(fn(Forms\Get $get): bool => filled($get('supir_id')))
+                                        ->createOptionForm([
+                                            Forms\Components\TextInput::make('no_polisi')
+                                                ->required()
+                                                ->maxLength(10)
+                                                ->placeholder('BA 1234 XX'),
+                                            Forms\Components\Hidden::make('supir_id')
+                                                ->default(fn(Forms\Get $get) => $get('../../supir_id'))
+                                                ->required(),
+                                        ])
+                                        ->createOptionAction(function (Forms\Components\Actions\Action $action) {
+                                            return $action
+                                                ->modalHeading('Tambah Kendaraan Baru')
+                                                ->modalWidth('lg')
+                                                ->successNotification(
+                                                    Notification::make()
+                                                        ->success()
+                                                        ->title('Kendaraan berhasil ditambahkan')
+                                                        ->duration(3000)
+                                                );
+                                        }),
+
+
                                     Forms\Components\TextInput::make('tonase')
                                         ->label('Tonase (Netto)')
                                         ->hintIcon('heroicon-m-exclamation-triangle')
@@ -227,7 +258,7 @@ class TransaksiDoResource extends Resource
                                 ->dehydrated()
                                 ->numeric()
                                 ->default(0),
-                            Forms\Components\TextInput::make('total')
+                            Forms\Components\TextInput::make('sub_total')
                                 ->label('Sub Total')
                                 ->currencyMask(thousandSeparator: ',', decimalSeparator: '.', precision: 0)
                                 ->prefix('Rp')
@@ -250,6 +281,7 @@ class TransaksiDoResource extends Resource
                                 ->schema([
                                     Forms\Components\TextInput::make('upah_bongkar')
                                         ->label('Upah Bongkar')
+                                        ->hidden() //sembunyikan
                                         ->hint('*jika ada')
                                         ->hintColor('primary')
                                         ->currencyMask(thousandSeparator: ',', decimalSeparator: '.', precision: 0)
@@ -263,12 +295,47 @@ class TransaksiDoResource extends Resource
                                         ->label('Biaya Lain')
                                         ->hint('*jika ada')
                                         ->hintColor('primary')
-                                        ->currencyMask(thousandSeparator: ',', decimalSeparator: '.', precision: 0)
+                                        ->currencyMask(
+                                            thousandSeparator: ',',
+                                            decimalSeparator: '.',
+                                            precision: 0
+                                        )
                                         ->prefix('Rp')
                                         ->default(0)
                                         ->live(onBlur: true)
-                                        ->afterStateUpdated(fn($state, Forms\Get $get, Forms\Set $set) =>
-                                        static::hitungSisaBayar($state, $get, $set)),
+                                        ->afterStateUpdated(function ($state, Forms\Get $get, Forms\Set $set) {
+                                            try {
+                                                // Format nilai
+                                                $subTotal = self::formatCurrency($get('sub_total'));
+                                                $upahBongkar = self::formatCurrency($get('upah_bongkar'));
+                                                $biayaLain = self::formatCurrency($state);
+                                                $bayarHutang = self::formatCurrency($get('pembayaran_hutang'));
+
+                                                // Hitung komponen pengurangan
+                                                $komponenPengurangan = $upahBongkar + $biayaLain + $bayarHutang;
+
+                                                // Hitung sisa bayar
+                                                $sisaBayar = max(0, $subTotal - $komponenPengurangan);
+
+                                                // Update nilai sisa bayar
+                                                $set('sisa_bayar', $sisaBayar);
+
+                                                // Log untuk debugging
+                                                Log::info('Perhitungan Biaya Lain:', [
+                                                    'sub_total' => $subTotal,
+                                                    'upah_bongkar' => $upahBongkar,
+                                                    'biaya_lain' => $biayaLain,
+                                                    'bayar_hutang' => $bayarHutang,
+                                                    'komponen_pengurangan' => $komponenPengurangan,
+                                                    'sisa_bayar' => $sisaBayar
+                                                ]);
+                                            } catch (\Exception $e) {
+                                                Log::error('Error menghitung biaya lain:', [
+                                                    'error' => $e->getMessage(),
+                                                    'state' => $state
+                                                ]);
+                                            }
+                                        }),
 
                                     Forms\Components\TextInput::make('pembayaran_hutang')
                                         ->label('Bayar Hutang')
@@ -279,51 +346,78 @@ class TransaksiDoResource extends Resource
                                         )
                                         ->prefix('Rp')
                                         ->default(0)
-                                        ->live(onBlur: true)
+                                        ->live(onBlur: true) // Penting: gunakan onBlur untuk perhitungan yang akurat
                                         // Tambahkan kondisi visible
                                         ->visible(fn(Forms\Get $get): bool => $get('hutang_awal') > 0)
                                         ->afterStateUpdated(function ($state, Forms\Get $get, Forms\Set $set) {
-                                            // Format values
-                                            $hutangAwal = self::formatCurrency($get('hutang_awal'));
-                                            $bayarHutang = self::formatCurrency($state);
+                                            try {
+                                                // Format values
+                                                $hutangAwal = self::formatCurrency($get('hutang_awal'));
+                                                $bayarHutang = self::formatCurrency($state);
 
-                                            // Validasi pembayaran tidak melebihi hutang
-                                            if ($bayarHutang > $hutangAwal) {
-                                                $set('pembayaran_hutang', $hutangAwal);
-                                                $bayarHutang = $hutangAwal;
+                                                // Validasi pembayaran tidak melebihi hutang
+                                                if ($bayarHutang > $hutangAwal) {
+                                                    $set('pembayaran_hutang', $hutangAwal);
+                                                    $bayarHutang = $hutangAwal;
 
-                                                // Perbaikan format notifikasi
+                                                    // Notifikasi untuk pembayaran yang disesuaikan
+                                                    Notification::make()
+                                                        ->warning()
+                                                        ->title('Pembayaran Disesuaikan')
+                                                        ->body(sprintf(
+                                                            'Pembayaran disesuaikan menjadi Rp %s sesuai total hutang',
+                                                            number_format($hutangAwal, 0, ',', '.')
+                                                        ))
+                                                        ->duration(3000)
+                                                        ->persistent(false)
+                                                        ->icon('heroicon-o-banknotes')
+                                                        ->send();
+                                                }
+
+                                                // Update sisa hutang penjual
+                                                $sisaHutang = max(0, $hutangAwal - $bayarHutang);
+                                                $set('sisa_hutang_penjual', $sisaHutang);
+
+                                                // Hitung ulang sisa bayar
+                                                $subTotal = self::formatCurrency($get('sub_total'));
+                                                $biayaLain = self::formatCurrency($get('biaya_lain'));
+                                                $upahBongkar = self::formatCurrency($get('upah_bongkar'));
+
+                                                // Total pengurangan
+                                                $komponenPengurangan = $upahBongkar + $biayaLain + $bayarHutang;
+
+                                                // Hitung sisa bayar
+                                                $sisaBayar = max(0, $subTotal - $komponenPengurangan);
+                                                $set('sisa_bayar', $sisaBayar);
+
+                                                // Log untuk memudahkan debug
+                                                Log::info('Perhitungan Pembayaran Hutang:', [
+                                                    'hutang_awal' => $hutangAwal,
+                                                    'bayar_hutang' => $bayarHutang,
+                                                    'sisa_hutang' => $sisaHutang,
+                                                    'sub_total' => $subTotal,
+                                                    'komponen_pengurangan' => $komponenPengurangan,
+                                                    'sisa_bayar' => $sisaBayar
+                                                ]);
+                                            } catch (\Exception $e) {
+                                                Log::error('Error saat menghitung pembayaran hutang:', [
+                                                    'error' => $e->getMessage(),
+                                                    'state' => $state
+                                                ]);
+
+                                                // Notifikasi error ke user
                                                 Notification::make()
-                                                    ->warning()
-                                                    ->duration(3000) // Set durasi 3 detik
-                                                    ->persistent(false) // Notifikasi akan otomatis hilang
-                                                    ->title('Pembayaran Hutang')  // Title lebih deskriptif
-                                                    ->body(sprintf(
-                                                        'Pembayaran disesuaikan menjadi Rp %s sesuai total hutang',
-                                                        number_format($hutangAwal, 0, ',', '.')
-                                                    ))
-                                                    ->duration(3000)  // Durasi lebih singkat
-                                                    ->persistent(false) // Non-persistent karena sudah auto close
-                                                    ->color('warning')  // Tambah warna warning
-                                                    ->icon('heroicon-o-banknotes') // Icon yang lebih sesuai
+                                                    ->danger()
+                                                    ->title('Error Perhitungan')
+                                                    ->body('Terjadi kesalahan saat menghitung pembayaran hutang')
+                                                    ->duration(3000)
                                                     ->send();
                                             }
-
-                                            // Update sisa hutang
-                                            $sisaHutang = max(0, $hutangAwal - $bayarHutang);
-                                            $set('sisa_hutang_penjual', $sisaHutang);
-
-                                            // Hitung ulang sisa bayar
-                                            $total = self::formatCurrency($get('total'));
-                                            $upahBongkar = self::formatCurrency($get('upah_bongkar'));
-                                            $biayaLain = self::formatCurrency($get('biaya_lain'));
-
-                                            $sisaBayar = max(0, $total - $upahBongkar - $biayaLain - $bayarHutang);
-                                            $set('sisa_bayar', $sisaBayar);
                                         }),
 
                                     Forms\Components\TextInput::make('keterangan_biaya_lain')
                                         ->label('Keterangan Biaya Lain')
+                                        ->hidden()
                                         // ->visible(fn($get) => $get('biaya_lain') === 'biaya_lain')
                                         ->hint('*jika ada')
                                         ->hintColor('primary')
@@ -340,6 +434,7 @@ class TransaksiDoResource extends Resource
                                     Forms\Components\Select::make('cara_bayar')
                                         ->label('Cara Bayar')
                                         ->options(TransaksiDo::CARA_BAYAR)
+                                        ->native(false)
                                         ->default('Tunai')
                                         ->required()
                                         ->live()
@@ -349,18 +444,30 @@ class TransaksiDoResource extends Resource
                                                 $set('_tmp_bypass_saldo_check', true);
                                             }
                                         }),
-                                    Forms\Components\FileUpload::make('file_do')
-                                        ->label('Upload File DO')
-                                        ->disk('public') // Tambahkan ini
-                                        ->directory('do-files')
-                                        ->preserveFilenames()
-                                        ->acceptedFileTypes(['application/pdf', 'image/*'])
-                                        ->openable() // Tambahkan ini
-                                        ->downloadable() // Tambahkan ini
-                                        ->previewable(), // Tambahkan ini untuk PDF
-                                    Forms\Components\TextInput::make('catatan')
-                                        ->label('Catatan'),
+                                    // Forms\Components\FileUpload::make('file_do')
+                                    //     ->label('Upload File DO')
+                                    //     ->disk('public') // Tambahkan ini
+                                    //     ->directory('do-files')
+                                    //     ->preserveFilenames()
+                                    //     ->acceptedFileTypes(['application/pdf', 'image/*'])
+                                    //     ->openable() // Tambahkan ini
+                                    //     ->downloadable() // Tambahkan ini
+                                    //     ->previewable(), // Tambahkan ini untuk PDF
+                                    Forms\Components\Section::make('Informasi Saldo')
+                                        ->schema([
+                                            Forms\Components\Placeholder::make('saldo_perusahaan')
+                                                ->label('Saldo Perusahaan')
+                                                ->content(function () {
+                                                    $perusahaan = \App\Models\Perusahaan::first();
+                                                    return 'Rp ' . number_format($perusahaan->saldo ?? 0, 0, ',', '.');
+                                                })
+                                                ->extraAttributes(['class' => 'text-lg font-semibold']),
+                                        ]),
 
+
+                                    Forms\Components\TextInput::make('catatan')
+                                        ->hidden()
+                                        ->label('Catatan'),
 
                                 ])
                                 ->columns(3),
@@ -384,13 +491,42 @@ class TransaksiDoResource extends Resource
                                         ->dehydrated()
                                         ->default(0),
 
+
+
                                     Forms\Components\TextInput::make('sisa_bayar')
                                         ->label('Sisa Bayar')
                                         ->required()
                                         ->prefix('Rp')
                                         ->currencyMask(thousandSeparator: ',', decimalSeparator: '.', precision: 0)
                                         ->disabled()
-                                        ->dehydrated(),
+                                        ->dehydrated()
+                                        ->live()
+                                        ->afterStateUpdated(function ($state, Forms\Get $get) {
+                                            // Cek cara bayar dan saldo
+                                            if ($get('cara_bayar') === 'Tunai') {
+                                                $perusahaan = \App\Models\Perusahaan::first();
+                                                $saldoSaatIni = $perusahaan->saldo ?? 0;
+                                                $sisaBayar = self::formatCurrency($state);
+
+                                                if ($sisaBayar > $saldoSaatIni) {
+                                                    Notification::make()
+                                                        ->warning()
+                                                        ->title('Saldo Tidak Mencukupi')
+                                                        ->body(sprintf(
+                                                            "Saldo saat ini: Rp %s\nDibutuhkan: Rp %s",
+                                                            number_format($saldoSaatIni, 0, ',', '.'),
+                                                            number_format($sisaBayar, 0, ',', '.')
+                                                        ))
+                                                        ->persistent()
+                                                        ->actions([
+                                                            \Filament\Notifications\Actions\Action::make('Tambah Saldo')
+                                                                ->button()
+                                                                ->url(route('filament.admin.resources.perusahaans.index'))
+                                                        ])
+                                                        ->send();
+                                                }
+                                            }
+                                        }),
 
 
                                 ])
@@ -413,22 +549,22 @@ class TransaksiDoResource extends Resource
                 'xl' => 3,
             ])
             ->columns([
-                Tables\Columns\TextColumn::make('file_do') //image file do
-                    ->label('File DO')
-                    ->tooltip('klik untuk melihat')
-                    ->alignCenter()
-                    ->icon('heroicon-m-document')
-                    ->color(Color::Emerald)
-                    ->formatStateUsing(fn($state) => $state ? 'Lihat' : '-')
-                    ->action(
-                        Action::make('previewFile')
-                            ->modalHeading('Preview File DO')
-                            ->modalWidth('4xl')
-                            ->modalContent(fn($record) => view(
-                                'filament.components.file-viewer',
-                                ['url' => Storage::url($record->file_do ?? '')]
-                            ))
-                    ),
+                // Tables\Columns\TextColumn::make('file_do') //image file do
+                //     ->label('File DO')
+                //     ->tooltip('klik untuk melihat')
+                //     ->alignCenter()
+                //     ->icon('heroicon-m-document')
+                //     ->color(Color::Emerald)
+                //     ->formatStateUsing(fn($state) => $state ? 'Lihat' : '-')
+                //     ->action(
+                //         Action::make('previewFile')
+                //             ->modalHeading('Preview File DO')
+                //             ->modalWidth('4xl')
+                //             ->modalContent(fn($record) => view(
+                //                 'filament.components.file-viewer',
+                //                 ['url' => Storage::url($record->file_do ?? '')]
+                //             ))
+                //     ),
                 Tables\Columns\TextColumn::make('nomor')
                     ->label('Nomor')
                     ->searchable()
@@ -458,7 +594,7 @@ class TransaksiDoResource extends Resource
                     ->label('Penjual')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('supir')
+                Tables\Columns\TextColumn::make('supir.nama')
                     ->label('Supir')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tonase')
@@ -473,12 +609,12 @@ class TransaksiDoResource extends Resource
 
                 Tables\Columns\TextColumn::make('harga_satuan')
                     ->label('Harga Satuan')
-                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('total')
-                    ->label('Total')
-                    ->money('IDR')
+                Tables\Columns\TextColumn::make('sub_total')
+                    ->label('Sub Total')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->color(Color::Amber)
                     ->weight('bold')
                     ->summarize([
@@ -487,22 +623,22 @@ class TransaksiDoResource extends Resource
                     ])
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('upah_bongkar')
-                    ->label('Upah Bongkar')
-                    ->money('IDR')
-                    ->summarize([
-                        Tables\Columns\Summarizers\Sum::make()
-                            ->money('IDR')
-                    ])
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('upah_bongkar')
+                //     ->label('Upah Bongkar')
+                //     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                //     ->summarize([
+                //         Tables\Columns\Summarizers\Sum::make()
+                //             ->money('IDR')
+                //     ])
+                //     ->sortable(),
 
                 Tables\Columns\TextColumn::make('biaya_lain')
-                    ->label('Biaya Lain')
+                    ->label('Biaya')
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
                             ->money('IDR')
                     ])
-                    ->money('IDR'),
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
                 Tables\Columns\TextColumn::make('keterangan_biaya_lain')
                     ->hidden()
@@ -510,13 +646,13 @@ class TransaksiDoResource extends Resource
 
                 Tables\Columns\TextColumn::make('hutang_awal')
                     ->label('Hutang')
-                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->color(Color::Red)
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('pembayaran_hutang')
                     ->label('Bayar Hutang')
-                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
                             ->money('IDR')
@@ -526,7 +662,7 @@ class TransaksiDoResource extends Resource
 
                 Tables\Columns\TextColumn::make('sisa_hutang_penjual')  // Sesuaikan dengan nama kolom di database
                     ->label('Sisa Hutang')
-                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->state(function (TransaksiDo $record): int {
                         // Gunakan field sisa_hutang_penjual yang sudah dihitung
                         return $record->sisa_hutang_penjual ?? max(0, $record->hutang_awal - $record->pembayaran_hutang);
@@ -542,9 +678,35 @@ class TransaksiDoResource extends Resource
                         $record->sisa_hutang_penjual > 0 ? 'danger' : 'success'
                     ),
 
+                Tables\Columns\TextColumn::make('saldo_perusahaan')
+                    ->label('Saldo Perusahaan')
+                    ->formatStateUsing(function () {
+                        // Ambil data saldo terkini
+                        $perusahaan = \App\Models\Perusahaan::first();
+                        return 'Rp ' . number_format($perusahaan->saldo ?? 0, 0, ',', '.');
+                    })
+                    ->alignRight()
+                    ->color(fn($state) => $state > 0 ? 'success' : 'danger')
+                    ->weight('bold')
+                    ->searchable(false),
+
+
+
+
                 Tables\Columns\TextColumn::make('sisa_bayar')
                     ->label('Sisa Bayar')
-                    ->money('IDR')
+                    ->formatStateUsing(function (TransaksiDo $record) {
+                        // Hitung ulang komponen pengurangan
+                        $komponenPengurangan =
+                            $record->upah_bongkar +
+                            $record->biaya_lain +
+                            $record->pembayaran_hutang;
+
+                        // Hitung sisa bayar yang benar
+                        $sisaBayar = max(0, $record->sub_total - $komponenPengurangan);
+
+                        return 'Rp ' . number_format($sisaBayar, 0, ',', '.');
+                    })
                     ->color(Color::Emerald)
                     ->weight('bold')
                     ->summarize([
@@ -571,7 +733,7 @@ class TransaksiDoResource extends Resource
 
 
             ])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('created_at', 'asc')
             ->striped()
             ->defaultPaginationPageOption(10)
             ->paginated([5, 10, 25, 50, 100, 'all'])
@@ -655,20 +817,27 @@ class TransaksiDoResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ])
-            ->select(['transaksi_do.*']) // Pastikan semua kolom yang dibutuhkan
-            ->with(['penjual']); // Eager load relasi yang dibutuhkan
+            ->select([
+                'transaksi_do.*',  // Ambil semua kolom
+            ])
+            ->with([
+                'penjual',  // Eager load relasi yang diperlukan
+                'supir',
+                'kendaraan'
+            ]);
     }
+
 
 
     // Helper method untuk update sisa bayar
     private static function updateSisaBayar(Forms\Get $get, Forms\Set $set): void
     {
-        $total = $get('total') ?? 0;
+        $sub_total = $get('sub_total') ?? 0;
         $upahBongkar = $get('upah_bongkar') ?? 0;
         $biayaLain = $get('biaya_lain') ?? 0;
         $pembayaranHutang = $get('pembayaran_hutang') ?? 0;
 
-        $sisaBayar = $total - $upahBongkar - $biayaLain - $pembayaranHutang;
+        $sisaBayar = $sub_total - $upahBongkar - $biayaLain - $pembayaranHutang;
         $set('sisa_bayar', max(0, $sisaBayar));
     }
 
@@ -712,8 +881,8 @@ class TransaksiDoResource extends Resource
 
         if ($tonase && $hargaSatuan) {
             // Calculate total
-            $total = $tonase * $hargaSatuan;
-            $set('total', $total);
+            $sub_total = $tonase * $hargaSatuan;
+            $set('sub_total', $sub_total);
 
             // Recalculate sisa bayar
             $upahBongkar = self::formatCurrency($get('upah_bongkar'));
@@ -721,7 +890,7 @@ class TransaksiDoResource extends Resource
             $bayarHutang = self::formatCurrency($get('pembayaran_hutang'));
 
             // Total - (Upah Bongkar + Biaya Lain + Bayar Hutang)
-            $sisaBayar = $total - $upahBongkar - $biayaLain - $bayarHutang;
+            $sisaBayar = $sub_total - $upahBongkar - $biayaLain - $bayarHutang;
             $set('sisa_bayar', max(0, $sisaBayar));
         }
     }
@@ -762,27 +931,49 @@ class TransaksiDoResource extends Resource
         $set('sisa_hutang_penjual', max(0, $sisaHutang));
 
         // Recalculate sisa bayar
-        $total = self::formatCurrency($get('total'));
+        $sub_total = self::formatCurrency($get('sub_total'));
         $upahBongkar = self::formatCurrency($get('upah_bongkar'));
         $biayaLain = self::formatCurrency($get('biaya_lain'));
 
         // Sisa Bayar = Total - (Upah Bongkar + Biaya Lain + Bayar Hutang)
-        $sisaBayar = $total - $upahBongkar - $biayaLain - $bayarHutang;
+        $sisaBayar = $sub_total - $upahBongkar - $biayaLain - $bayarHutang;
         $set('sisa_bayar', max(0, $sisaBayar));
     }
 
 
     private static function hitungSisaBayar($state, Forms\Get $get, Forms\Set $set): void
     {
-        // Format values
-        $total = self::formatCurrency($get('total'));
-        $upahBongkar = self::formatCurrency($get('upah_bongkar'));
-        $biayaLain = self::formatCurrency($get('biaya_lain'));
-        $bayarHutang = self::formatCurrency($get('pembayaran_hutang'));
+        try {
+            // Format values
+            $subTotal = self::formatCurrency($get('sub_total'));
+            $upahBongkar = self::formatCurrency($get('upah_bongkar'));
+            $biayaLain = self::formatCurrency($get('biaya_lain'));
+            $bayarHutang = self::formatCurrency($get('pembayaran_hutang'));
 
-        // Sisa Bayar = Total - (Upah Bongkar + Biaya Lain + Bayar Hutang)
-        $sisaBayar = $total - $upahBongkar - $biayaLain - $bayarHutang;
-        $set('sisa_bayar', max(0, $sisaBayar));
+            // Hitung komponen pengurangan
+            $komponenPengurangan = $upahBongkar + $biayaLain + $bayarHutang;
+
+            // Hitung sisa bayar
+            $sisaBayar = max(0, $subTotal - $komponenPengurangan);
+
+            // Set nilai sisa bayar
+            $set('sisa_bayar', $sisaBayar);
+
+            // Log perhitungan untuk validasi
+            Log::info('Perhitungan Sisa Bayar:', [
+                'sub_total' => $subTotal,
+                'upah_bongkar' => $upahBongkar,
+                'biaya_lain' => $biayaLain,
+                'bayar_hutang' => $bayarHutang,
+                'komponen_pengurangan' => $komponenPengurangan,
+                'sisa_bayar' => $sisaBayar
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error menghitung sisa bayar:', [
+                'error' => $e->getMessage(),
+                'state' => $state
+            ]);
+        }
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
@@ -814,10 +1005,109 @@ class TransaksiDoResource extends Resource
         }
 
         // Calculate derived values
-        $data['total'] = $data['tonase'] * $data['harga_satuan'];
+        $data['sub_total'] = $data['tonase'] * $data['harga_satuan'];
         $data['sisa_hutang_penjual'] = max(0, $data['hutang_awal'] - $data['pembayaran_hutang']);
-        $data['sisa_bayar'] = max(0, $data['total'] - $data['upah_bongkar'] - $data['biaya_lain'] - $data['pembayaran_hutang']);
+        $data['sisa_bayar'] = max(0, $data['sub_total'] - $data['upah_bongkar'] - $data['biaya_lain'] - $data['pembayaran_hutang']);
 
         return $data;
+    }
+
+    protected function mutateFormDataBeforeEdit(array $data): array
+    {
+        try {
+            // Pastikan semua komponen perhitungan tersedia
+            $subTotal = $data['sub_total'] ?? 0;
+            $upahBongkar = $data['upah_bongkar'] ?? 0;
+            $biayaLain = $data['biaya_lain'] ?? 0;
+            $bayarHutang = $data['pembayaran_hutang'] ?? 0;
+
+            // Hitung ulang sisa bayar
+            $komponenPengurangan = $upahBongkar + $biayaLain + $bayarHutang;
+            $data['sisa_bayar'] = max(0, $subTotal - $komponenPengurangan);
+
+            return $data;
+        } catch (\Exception $e) {
+            Log::error('Error mempersiapkan data edit:', [
+                'error' => $e->getMessage(),
+                'data' => $data
+            ]);
+            return $data;
+        }
+    }
+
+
+    protected function mutateFormDataBeforeUpdate(array $data): array
+    {
+        try {
+            // Format numeric fields
+            $numericFields = [
+                'tonase',
+                'harga_satuan',
+                'upah_bongkar',
+                'biaya_lain',
+                'pembayaran_hutang'
+            ];
+
+            foreach ($numericFields as $field) {
+                if (isset($data[$field])) {
+                    $data[$field] = self::formatCurrency($data[$field]);
+                }
+            }
+
+            // Penting: Ambil data penjual & hutang saat update
+            if (!empty($data['penjual_id'])) {
+                $penjual = Penjual::find($data['penjual_id']);
+                if ($penjual) {
+                    // Set hutang awal dari data penjual atau 0 jika null
+                    $data['hutang_awal'] = $penjual->hutang ?? 0;
+
+                    // Revalidasi pembayaran hutang
+                    if (
+                        isset($data['pembayaran_hutang']) &&
+                        $data['pembayaran_hutang'] > $data['hutang_awal']
+                    ) {
+                        $data['pembayaran_hutang'] = $data['hutang_awal'];
+                    }
+                }
+            }
+
+            // Hitung ulang nilai turunan
+            if (isset($data['tonase']) && isset($data['harga_satuan'])) {
+                $data['sub_total'] = $data['tonase'] * $data['harga_satuan'];
+            }
+
+            if (isset($data['hutang_awal']) && isset($data['pembayaran_hutang'])) {
+                $data['sisa_hutang_penjual'] = max(0, $data['hutang_awal'] - $data['pembayaran_hutang']);
+            }
+
+            if (isset($data['sub_total'])) {
+                $komponenPengurangan =
+                    ($data['upah_bongkar'] ?? 0) +
+                    ($data['biaya_lain'] ?? 0) +
+                    ($data['pembayaran_hutang'] ?? 0);
+
+                $data['sisa_bayar'] = max(0, $data['sub_total'] - $komponenPengurangan);
+            }
+
+            return $data;
+        } catch (\Exception $e) {
+            Log::error('Error mutating form data:', [
+                'error' => $e->getMessage(),
+                'data' => $data
+            ]);
+            throw $e;
+        }
+    }
+
+
+    public static function getFormStatePath(): ?string
+    {
+        return 'data';
+    }
+
+    public static function refreshFormData($set): void
+    {
+        $perusahaan = \App\Models\Perusahaan::first();
+        $set('saldo_perusahaan', 'Rp ' . number_format($perusahaan->saldo ?? 0, 0, ',', '.'));
     }
 }

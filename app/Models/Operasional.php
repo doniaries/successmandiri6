@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Enums\KategoriOperasional; // [TAMBAH] Import enum
-use App\Models\{User, Penjual, Pekerja, TransaksiDo}; // [EDIT] Gabungkan import
+use App\Models\{User, Penjual, Supir, Pekerja, TransaksiDo}; // [EDIT] Gabungkan import
 use Illuminate\Database\Eloquent\{Model, SoftDeletes, Factories\HasFactory}; // [EDIT] Gabungkan import
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -19,11 +19,12 @@ class Operasional extends Model
         'kategori',
         'tipe_nama',
         'penjual_id',
+        'supir_id',
         'user_id',
         'pekerja_id', // [TAMBAH] Sesuai dengan relasi
         'nominal',
         'keterangan',
-        'file_bukti',
+        // 'file_bukti',
     ];
 
     protected $casts = [
@@ -52,6 +53,13 @@ class Operasional extends Model
     {
         return $this->belongsTo(Penjual::class);
     }
+
+
+    public function supir(): BelongsTo
+    {
+        return $this->belongsTo(Supir::class);
+    }
+
 
     public function pekerja(): BelongsTo
     {

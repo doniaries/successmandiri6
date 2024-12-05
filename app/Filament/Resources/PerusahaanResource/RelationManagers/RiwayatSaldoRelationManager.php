@@ -38,10 +38,10 @@ class RiwayatSaldoRelationManager extends RelationManager
                     ->tooltip(function ($record) {
                         return $record->keterangan;
                     }),
-                Tables\Columns\ImageColumn::make('bukti_tambah_saldo')
-                    ->label('Bukti')
-                    ->disk('public')
-                    ->circular(),
+                // Tables\Columns\ImageColumn::make('bukti_tambah_saldo')
+                //     ->label('Bukti')
+                //     ->disk('public')
+                //     ->circular(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

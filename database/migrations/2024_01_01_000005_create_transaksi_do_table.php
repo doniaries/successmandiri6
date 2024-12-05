@@ -13,10 +13,11 @@ return new class extends Migration
             $table->string('nomor', 20)->unique();
             $table->dateTime('tanggal');
             $table->foreignId('penjual_id')->constrained('penjuals');
-            $table->string('nomor_polisi', 20)->nullable();
+            $table->foreignId('supir_id')->nullable()->constrained('supir');
+            $table->foreignId('kendaraan_id')->nullable()->constrained('kendaraan');
             $table->decimal('tonase', 10, 2);
             $table->decimal('harga_satuan', 15, 0);
-            $table->decimal('total', 15, 0);
+            $table->decimal('sub_total', 15, 0);
             $table->decimal('upah_bongkar', 15, 0);
             $table->decimal('biaya_lain', 15, 0)->default(0);
             $table->string('keterangan_biaya_lain')->nullable();
@@ -24,10 +25,10 @@ return new class extends Migration
             $table->decimal('pembayaran_hutang', 12, 0);
             $table->decimal('sisa_hutang_penjual', 12, 0);
             $table->decimal('sisa_bayar', 15, 0);
-            $table->string('file_do')->nullable();
+            // $table->string('file_do')->nullable();
             $table->enum('cara_bayar', ['Tunai', 'Transfer', 'Cair di Luar', 'Belum Bayar'])->default('Tunai');
             // $table->enum('status_bayar', ['Belum Lunas', 'Lunas']);
-            $table->text('catatan')->nullable();
+            // $table->text('catatan')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

@@ -29,7 +29,6 @@ class PerusahaanSeeder extends Seeder
             'telepon' => '+62 823-8921-9670',
             'pimpinan' => 'Yondra',
             'npwp' => '12.345.678.9-123.000',
-            'saldo' => 100000000,
             'is_active' => true,
 
         ]);

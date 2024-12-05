@@ -82,8 +82,7 @@ class PekerjaResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('created_at', 'desc')
-
+            ->defaultSort('nama', 'asc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
