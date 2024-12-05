@@ -136,7 +136,7 @@
             <td>Rp {{ number_format($transaksi->harga_satuan, 0, ',', '.') }}</td>
         </tr>
         <tr>
-            <td>Total</td>
+            <td>Sub Total</td>
             <td>Rp {{ number_format($transaksi->total, 0, ',', '.') }}</td>
         </tr>
         <tr>

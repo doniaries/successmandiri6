@@ -65,6 +65,24 @@ class ListTransaksiDos extends ListRecords
     public function getTabs(): array
     {
         return [
+            'hari_ini' => Tab::make('Hari Ini')
+            ->icon('heroicon-o-calendar-days')
+            ->badge(fn() => $this->getModel()::whereDate('tanggal', now())->count())
+            ->modifyQueryUsing(fn(Builder $query) => $query->whereDate('tanggal', now()))
+            ->badgeColor('success'),
+
+        'kemarin' => Tab::make('Kemarin')
+            ->icon('heroicon-o-calendar')
+            ->badge(fn() => $this->getModel()::whereDate('tanggal', now()->subDay())->count())
+            ->modifyQueryUsing(fn(Builder $query) => $query->whereDate('tanggal', now()->subDay()))
+            ->badgeColor('info'),
+
+        'minggu_ini' => Tab::make('Minggu Ini')
+            ->icon('heroicon-o-calendar-days')
+            ->badge(fn() => $this->getModel()::whereBetween('tanggal', [now()->startOfWeek(), now()->endOfWeek()])->count())
+            ->modifyQueryUsing(fn(Builder $query) => $query->whereBetween('tanggal', [now()->startOfWeek(), now()->endOfWeek()]))
+            ->badgeColor('warning'),
+
             'semua' => Tab::make('Semua Transaksi')
                 ->icon('heroicon-o-clipboard-document-list')
                 ->badge(fn() => $this->getModel()::count())
@@ -137,5 +155,10 @@ class ListTransaksiDos extends ListRecords
         }
 
         return $query->count();
+    }
+
+    public function getDefaultActiveTab(): string | int | null
+    {
+        return 'hari_ini';
     }
 }
