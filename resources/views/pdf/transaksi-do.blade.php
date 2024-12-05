@@ -12,69 +12,95 @@
 
         body {
             font-family: Arial, sans-serif;
-            font-size: 11pt;
-            line-height: 1.3;
+            font-size: 9pt;
+            line-height: 1.2;
             margin: 0;
             padding: 0;
         }
 
         /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
             border-bottom: 1px solid #000;
         }
 
-        .company-name {
-            font-size: 13pt;
+        .header {
+            text-align: center;
+            flex: 1;
+        }
+
+        .header .nama-perusahaan {
+            font-size: 11pt;
             font-weight: bold;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
+        }
+
+        .qr-container {
+            text-align: right;
+            margin-left: 10px;
+        }
+
+        .qr-container img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .qr-text {
+            font-size: 6pt;
+            margin-top: 1px;
         }
 
         /* Main content */
         .doc-title {
             text-align: center;
             font-weight: bold;
-            font-size: 11pt;
-            margin: 12px 0;
+            font-size: 10pt;
+            margin: 8px 0;
         }
 
         /* Table */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            /* Memberi ruang untuk footer */
         }
 
         td {
             border: 1px solid #000;
-            padding: 5px 8px;
+            padding: 3px 5px;
             vertical-align: top;
         }
 
         .label-col {
-            width: 120px;
+            width: 100px;
         }
-
 
         /* Footer */
         .footer {
-            position: fixed;
-            bottom: 8mm;
-            left: 0;
-            width: 100%;
             text-align: center;
-            font-size: 9pt;
+            font-size: 8pt;
+            padding-top: 5px;
+            margin-top: 10px;
         }
     </style>
 </head>
 
 <body>
-    <div class="header">
-        <div class="company-name">CV SUCCESS MANDIRI</div>
-        <div>Dusun Sungai Moran Nagari Kamang</div>
-        <div>Telp: +62 823-8921-9670</div>
+    <div class="header-container">
+        <div class="header">
+            <div class="nama-perusahaan">{{ $perusahaan->name }}</div>
+            <div>{{ $perusahaan->alamat }}</div>
+            <div>Telp: {{ $perusahaan->telepon }}</div>
+        </div>
+        <div class="qr-container">
+            <img src="data:image/svg+xml;base64,{{ $qrcode }}">
+            <div class="qr-text">Scan QR untuk verifikasi</div>
+        </div>
     </div>
 
     <div class="doc-title">BUKTI TRANSAKSI DO</div>
@@ -90,16 +116,16 @@
         </tr>
         <tr>
             <td>Nama Penjual</td>
-            <td>{{ $transaksi->penjual->nama }}</td>
+            <td>{{ optional($transaksi->penjual)->nama }}</td>
         </tr>
         <tr>
             <td>Nama Supir</td>
-            <td>{{ $transaksi->supir }}</td>
+            <td>{{ optional($transaksi->supir)->nama }}</td>
         </tr>
 
         <tr>
             <td>Nomor Polisi</td>
-            <td>{{ $transaksi->nomor_polisi }}</td>
+            <td>{{ optional($transaksi->kendaraan)->no_polisi }}</td>
         </tr>
         <tr>
             <td>Tonase (Kg)</td>
@@ -143,7 +169,6 @@
         </tr>
 
     </table>
-
 
     <div class="footer">
         Dicetak pada: {{ now()->format('d/m/Y H:i') }} oleh {{ auth()->user()->name }}

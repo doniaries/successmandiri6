@@ -100,28 +100,6 @@ class TransaksiDo extends Model
         $this->updateSaldoPerusahaan();
     }
 
-    // Di Model TransaksiDo
-    // public function handleFileUpload($file)
-    // {
-    //     if ($file) {
-    //         // Simpan file dengan nama unik
-    //         $fileName = Str::slug($this->nomor) . '-' . time() . '.' . $file->getClientOriginalExtension();
-    //         $path = $file->storeAs('do-files', $fileName, 'public');
-
-    //         $this->update([
-    //             'file_do' => $path
-    //         ]);
-
-    //         // Catat di log
-    //         Log::info('File DO uploaded:', [
-    //             'nomor_do' => $this->nomor,
-    //             'file_path' => $path
-    //         ]);
-
-    //         return $path;
-    //     }
-    //     return null;
-    // }
 
     public function penjual(): BelongsTo
     {
@@ -153,11 +131,12 @@ class TransaksiDo extends Model
     {
         try {
             $perusahaan = Perusahaan::first();
+            $qrcode = $this->generateQrCode();
 
             $pdf = PDF::loadView('pdf.transaksi-do', [
                 'transaksi' => $this,
                 'perusahaan' => $perusahaan,
-                // 'qrCode' => $qrHtml
+                'qrcode' => $qrcode
             ]);
 
             $pdf->setPaper('F4', 'portrait');
@@ -192,4 +171,22 @@ class TransaksiDo extends Model
         return $query->select('*')
             ->addSelect(DB::raw('sub_total as total_amount'));  // Use sub_total consistently
     }
+
+    public function generateQrCode()
+    {
+        return base64_encode(QrCode::format('svg')
+            ->size(100)
+            ->errorCorrection('H')
+            ->generate(json_encode([
+                'no_do' => $this->nomor,
+                'tonase' => $this->tonase,
+                'tanggal' => $this->tanggal->format('d/m/Y H:i'),
+                'penjual' => $this->penjual->nama,
+                'supir' => $this->supir->nama,
+            ]))
+        );
+    }
+
+
+
 }
