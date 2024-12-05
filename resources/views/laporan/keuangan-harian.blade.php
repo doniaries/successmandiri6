@@ -1,149 +1,108 @@
 <!DOCTYPE html>
-<html>
-@php
-    use Illuminate\Support\Facades\Storage;
-@endphp
+<html lang="id">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Keuangan Harian - {{ $perusahaan->nama }}</title>
     <style>
-        /* Landscape orientation */
-        @page {
-            size: landscape;
-            margin: 1cm;
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* Reduce font sizes */
+        /* Base */
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.4;
-            font-size: 11px;
-            /* Ukuran font default lebih kecil */
+            line-height: 1.6;
+            color: #333;
+            padding: 20px;
         }
 
+        /* Header */
         .header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 2px solid #ddd;
         }
 
         .header img {
-            max-height: 50px;
-            margin-bottom: 8px;
+            max-height: 60px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
         }
 
         .header h2 {
-            font-size: 16px;
-            margin: 5px 0;
-        }
-
-        .header h3 {
-            font-size: 14px;
-            margin: 5px 0;
+            font-size: 18px;
+            margin: 10px 0;
+            font-weight: bold;
+            color: #444;
         }
 
         .header p {
-            font-size: 11px;
+            font-size: 14px;
+            color: #666;
             margin: 5px 0;
         }
 
-        .header img {
-            display: block;
-            margin: 0 auto 20px;
-            max-width: 200px;
-            height: auto;
+        .header .alamat {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
         }
 
-        .info-section {
-            margin-bottom: 15px;
-            font-size: 11px;
+        .header .tanggal {
+            color: #666;
         }
 
-        .section-title {
-            font-size: 12px;
-            margin: 15px 0 8px 0;
-        }
-
-        .data-table {
+        /* Table */
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
-            font-size: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
 
-        .data-table th,
-        .data-table td {
-            border: 0.5px solid #ddd;
-            padding: 4px 6px;
+        th,
+        td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
         }
 
-        .data-table th {
-            background: #f5f5f5;
-            font-size: 10px;
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
         }
 
-        .summary-table {
-            width: 40%;
-            margin-left: auto;
-            font-size: 11px;
+        /* Summary */
+        .summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
         }
 
-        .badge {
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-size: 9px;
-            display: inline-block;
-            min-width: 60px;
-            text-align: center;
+        .summary h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
         }
 
-        .badge-success {
-            background: #4CAF50;
-            color: white;
+        .summary p {
+            margin-bottom: 5px;
         }
 
-        .badge-danger {
-            background: #f44336;
-            color: white;
-        }
-
-        /* Signature section */
-        .signature-section {
-            margin-top: 4rem;
-            page-break-inside: avoid;
-        }
-
-        .signature-section p {
-            margin: 0.5rem 0;
-        }
-
-        .signature-container {
-            display: inline-block;
-            width: 45%;
-            text-align: center;
-        }
-
-        .signature-box {
-            min-height: 1rem;
-            margin: 1rem auto;
-            width: 60%;
-        }
-
-        /* Float management */
-        .clearfix::after {
-            content: "";
-            clear: both;
-            display: table;
-        }
-
-        .footer {
-            margin-top: 10px;
-            font-size: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-
-        /* Additional utility classes */
+        /* Utilities */
         .text-right {
             text-align: right;
         }
@@ -152,400 +111,185 @@
             text-align: center;
         }
 
-        .badge-success {
-            background: #4CAF50;
-            color: white;
+        .text-bold {
+            font-weight: bold;
         }
 
-        .badge-danger {
-            background: #f44336;
-            color: white;
+        .bg-light {
+            background-color: #f8f9fa;
+        }
+
+        .text-success {
+            color: #28a745;
+        }
+
+        .text-danger {
+            color: #dc3545;
+        }
+
+        .mt-4 {
+            margin-top: 20px;
+        }
+
+        .mb-4 {
+            margin-bottom: 20px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
         }
     </style>
 </head>
 
 <body>
+    <!-- Header -->
     <div class="header">
-        {{-- @if ($perusahaan->logo)
-            <img src="{{ $perusahaan->logo }}" alt="Logo {{ $perusahaan->name }}"
-            style="max-height: 50px; margin-bottom: 8px;" onerror="this.style.display='none'" />
-        @endif --}}
+        {{-- <img src="{{ $perusahaan->logo }}" alt="Logo"> --}}
         <h2>{{ $perusahaan->name }}</h2>
-        <h3>Laporan Keuangan Harian</h3>
-        <p>Periode: {{ Carbon\Carbon::parse($startDate)->format('d/m/Y') }} -
-            {{ Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</p>
+        <h2>Laporan Keuangan Harian</h2>
+        <p class="tanggal">Tanggal: {{ Carbon\Carbon::parse($startDate)->isoFormat('dddd, D MMMM Y') }}</p>
     </div>
 
-    <!-- Info Section dengan null check -->
-    <div class="info-section">
+    <!-- Transaksi DO -->
+    <div class="mt-4">
+        <h3>Transaksi DO</h3>
         <table>
-            <tr>
-                <td width="120">Dibuat Oleh</td>
-                <td width="10">:</td>
-                <td>{{ $user->name ?? '-' }}</td>
-            </tr>
-            <tr>
-                <td>Tanggal Cetak</td>
-                <td>:</td>
-                <td>{{ now()->format('d/m/Y H:i') }}</td>
-            </tr>
-            <tr>
-                <td>Total Saldo & Piutang</td>
-                <td>:</td>
-                <td>Rp {{ number_format(($perusahaan->saldo ?? 0) + ($totalHutangPenjual ?? 0), 0, ',', '.') }}</td>
-            </tr>
-            <tr>
-                <td>Saldo Perusahaan</td>
-                <td>:</td>
-                <td>Rp {{ number_format($perusahaan->saldo ?? 0, 0, ',', '.') }}</td>
-            </tr>
-            <tr>
-                <td>Total Piutang</td>
-                <td>:</td>
-                <td>Rp {{ number_format($totalHutangPenjual ?? 0, 0, ',', '.') }}</td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Nomor DO</th>
+                    <th>Penjual</th>
+                    <th>Tonase</th>
+                    <th>Cara Bayar</th>
+                    <th>Total</th>
+                    <th>Biaya</th>
+                    <th>Bayar Hutang</th>
+                    <th>Sisa Hutang</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($transaksiDo as $index => $do)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $do->nomor }}</td>
+                        <td>{{ $do->penjual->nama }}</td>
+                        <td class="text-right">{{ number_format($do->tonase, 2) }}</td>
+                        <td>{{ $do->cara_bayar }}</td>
+                        <td class="text-right">{{ number_format($do->sub_total) }}</td>
+                        <td class="text-right">{{ number_format($do->biaya_lain + $do->upah_bongkar) }}</td>
+                        <td class="text-right">{{ number_format($do->pembayaran_hutang) }}</td>
+                        <td class="text-right">{{ number_format($do->sisa_hutang_penjual) }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="9" class="text-center">Tidak ada transaksi DO</td>
+                    </tr>
+                @endforelse
+                <tr class="bg-light text-bold">
+                    <td colspan="3">Total</td>
+                    <td class="text-right">{{ number_format($totalTonase, 2) }}</td>
+                    <td></td>
+                    <td class="text-right">{{ number_format($totalSubTotal) }}</td>
+                    <td class="text-right">{{ number_format($totalBiaya) }}</td>
+                    <td class="text-right">{{ number_format($totalBayarHutang) }}</td>
+                    <td class="text-right">{{ number_format($totalBelumBayar) }}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 
-    <!-- Section A: Transaksi Saldo dengan null check -->
-    @if (!empty($transaksiSaldo) && $transaksiSaldo->count() > 0)
-        <h4 class="section-title">A. Tambah Saldo</h4>
-        <table class="data-table">
+    <!-- Transaksi Operasional -->
+    <div class="mt-4">
+        <h3>Transaksi Operasional</h3>
+        <table>
             <thead>
                 <tr>
-                    <th>Tanggal</th>
+                    <th>No.</th>
+                    <th>Kategori</th>
                     <th>Jenis</th>
                     <th>Nominal</th>
                     <th>Keterangan</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($transaksiSaldo as $saldo)
+                @forelse($transaksiOperasional as $index => $op)
                     <tr>
-                        <td>{{ Carbon\Carbon::parse($saldo->tanggal)->format('d/m/y H:i') }}</td>
-                        <td>{{ $saldo->jenis }}</td>
-                        <td class="text-right">{{ number_format($saldo->nominal ?? 0, 0, ',', '.') }}</td>
-                        <td>{{ $saldo->keterangan }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2" class="text-right"><strong>Total Perubahan Saldo</strong></td>
-                    <td class="text-right">
-                        <strong>{{ number_format($totalPerubahanSaldo ?? 0, 0, ',', '.') }}</strong>
-                    </td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
-    @endif
-
-    <!-- Section B: Transaksi DO dengan null check -->
-    @if (!empty($transaksiDo) && $transaksiDo->count() > 0)
-        <h4 class="section-title">B1. Transaksi DO Tunai</h4>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Tanggal</th>
-                    <th>No. DO</th>
-                    <th>Jenis</th>
-                    <th>Kategori</th>
-                    <th>Penjual</th>
-                    <th>Cara Bayar</th>
-                    <th class="text-right">Nominal</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    $transaksiTunai = $transaksiDo->where('cara_pembayaran', 'Tunai');
-                @endphp
-                @forelse($transaksiTunai as $do)
-                    <tr>
-                        <td>{{ Carbon\Carbon::parse($do->tanggal)->format('d/m/y H:i') }}</td>
-                        <td>{{ $do->nomor_referensi }}</td>
-                        <td>
-                            <span
-                                class="badge badge-{{ $do->jenis_transaksi === 'Pemasukan' ? 'success' : 'danger' }}">
-                                {{ $do->jenis_transaksi }}
-                            </span>
-                        </td>
-                        <td>{{ $do->sub_kategori }}</td>
-                        <td>{{ $do->pihak_terkait }}</td>
-                        <td>{{ $do->cara_pembayaran }}</td>
-                        <td class="text-right">{{ number_format($do->nominal ?? 0, 0, ',', '.') }}</td>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $op->kategori?->label() ?? '-' }}</td>
+                        <td>{{ ucfirst($op->operasional) }}</td>
+                        <td class="text-right">{{ number_format($op->nominal) }}</td>
+                        <td>{{ $op->keterangan ?: '-' }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center">Tidak ada transaksi DO tunai</td>
+                        <td colspan="5" class="text-center">Tidak ada transaksi operasional</td>
                     </tr>
                 @endforelse
             </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="6" class="text-right"><strong>Total Transaksi DO Tunai</strong></td>
-                    <td class="text-right">
-                        <strong>{{ number_format($transaksiTunai->sum('nominal') ?? 0, 0, ',', '.') }}</strong>
-                    </td>
-                </tr>
-            </tfoot>
         </table>
+    </div>
 
-        <!-- Section B2: Transaksi DO Non Tunai -->
-        <h4 class="section-title">B2. Transaksi DO Non Tunai</h4>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Tanggal</th>
-                    <th>No. DO</th>
-                    <th>Jenis</th>
-                    <th>Kategori</th>
-                    <th>Penjual</th>
-                    <th>Cara Bayar</th>
-                    <th class="text-right">Nominal</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    $transaksiNonTunai = $transaksiDo
-                        ->whereIn('cara_pembayaran', ['Transfer', 'cair di luar'])
-                        ->whereIn('sub_kategori', ['Pembayaran DO'])
-                        ->where('jenis_transaksi', 'Pengeluaran');
-                @endphp
-                @forelse($transaksiNonTunai as $do)
-                    <tr>
-                        <td>{{ Carbon\Carbon::parse($do->tanggal)->format('d/m/y H:i') }}</td>
-                        <td>{{ $do->nomor_referensi }}</td>
-                        <td>
-                            <span
-                                class="badge badge-{{ $do->jenis_transaksi === 'Pemasukan' ? 'success' : 'danger' }}">
-                                {{ $do->jenis_transaksi }}
-                            </span>
-                        </td>
-                        <td>{{ $do->sub_kategori }}</td>
-                        <td>{{ $do->pihak_terkait }}</td>
-                        <td>{{ $do->cara_pembayaran }}</td>
-                        <td class="text-right">{{ number_format($do->nominal ?? 0, 0, ',', '.') }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center">Tidak ada transaksi DO non tunai</td>
-                    </tr>
-                @endforelse
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="6" class="text-right"><strong>Total Transaksi DO Non Tunai</strong></td>
-                    <td class="text-right">
-                        <strong>{{ number_format($transaksiNonTunai->sum('nominal') ?? 0, 0, ',', '.') }}</strong>
-                    </td>
-                </tr>
-            </tfoot>
+    <!-- Ringkasan -->
+    <div class="mt-4 summary">
+        <h3>Ringkasan Transaksi DO</h3>
+        <table>
+            <tr>
+                <td width="200">Total Tonase</td>
+                <td width="20">:</td>
+                <td class="text-right">{{ number_format($totalTonase, 2) }} Ton</td>
+            </tr>
+            <tr>
+                <td>Total Transaksi</td>
+                <td>:</td>
+                <td class="text-right">Rp {{ number_format($totalSubTotal) }}</td>
+            </tr>
+            <tr>
+                <td>Total Biaya</td>
+                <td>:</td>
+                <td class="text-right">Rp {{ number_format($totalBiaya) }}</td>
+            </tr>
+            <tr>
+                <td>Total Bayar Hutang</td>
+                <td>:</td>
+                <td class="text-right">Rp {{ number_format($totalBayarHutang) }}</td>
+            </tr>
+            <tr>
+                <td>Pembayaran Tunai</td>
+                <td>:</td>
+                <td class="text-right">Rp {{ number_format($totalTunai) }}</td>
+            </tr>
+            <tr>
+                <td>Pembayaran Transfer</td>
+                <td>:</td>
+                <td class="text-right">Rp {{ number_format($totalTransfer) }}</td>
+            </tr>
+            <tr>
+                <td>Cair di Luar</td>
+                <td>:</td>
+                <td class="text-right">Rp {{ number_format($totalCairDiluar) }}</td>
+            </tr>
+            <tr class="text-bold">
+                <td>Total Sisa Hutang</td>
+                <td>:</td>
+                <td class="text-right">Rp {{ number_format($totalBelumBayar) }}</td>
+            </tr>
         </table>
-    @endif
+    </div>
 
-    <!-- Section C: Transaksi Operasional dengan null check -->
-    @if (!empty($transaksiOperasional))
-        <h4 class="section-title">C. Transaksi Operasional</h4>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Tanggal</th>
-                    <th>Jenis</th>
-                    <th>Kategori</th>
-                    <th>Pihak</th>
-                    <th>Keterangan</th>
-                    <th class="text-right">Nominal</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($transaksiOperasional as $operasional)
-                    <tr>
-                        <td>{{ optional(Carbon\Carbon::parse($operasional->tanggal))->format('d/m/y H:i') }}</td>
-                        <td>
-                            <span
-                                class="badge badge-{{ $operasional->jenis_transaksi === 'Pemasukan' ? 'success' : 'danger' }}">
-                                {{ ucfirst($operasional->jenis_transaksi ?? '-') }}
-                            </span>
-                        </td>
-                        <td>{{ $operasional->sub_kategori ?? '-' }}</td>
-                        <td>{{ $operasional->pihak_terkait ?? '-' }}</td>
-                        <td>{{ $operasional->keterangan ?? '-' }}</td>
-                        <td class="text-right">{{ number_format($operasional->nominal ?? 0, 0, ',', '.') }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="text-center">Tidak ada transaksi operasional</td>
-                    </tr>
-                @endforelse
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="5" class="text-right"><strong>Total Operasional</strong></td>
-                    <td class="text-right"><strong>{{ number_format($totalOperasional ?? 0, 0, ',', '.') }}</strong>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    @endif
-
-    <!-- Ringkasan Kas dengan null check -->
-    <h4 class="section-title">D. Ringkasan Kas</h4>
-    <table class="summary-table">
-        <!-- Posisi Saldo -->
-        <tr style="border-bottom: 1px solid #ddd;">
-            <td style="padding: 8px;"><strong>Saldo Awal</strong></td>
-            <td style="text-align: right; padding: 8px;">
-                <strong>Rp {{ number_format($saldoAwal ?? 0, 0, ',', '.') }}</strong>
-            </td>
-        </tr>
-
-        <!-- Kelompok Pemasukan -->
-        <tr>
-            <td colspan="2" style="padding: 8px;"><strong>Pemasukan:</strong></td>
-        </tr>
-        <!-- Upah bongkar dari tabel transaksi DO -->
-        <tr>
-            <td style="padding: 4px 8px 4px 24px;">Upah Bongkar DO</td>
-            <td style="text-align: right; padding: 4px 8px;">
-                Rp
-                {{ number_format(
-                    $transaksiDo->where('sub_kategori', 'Upah Bongkar')->where('jenis_transaksi', 'Pemasukan')->sum('nominal'),
-                    0,
-                    ',',
-                    '.',
-                ) }}
-            </td>
-        </tr>
-        <!-- Biaya lain dari tabel transaksi DO -->
-        <tr>
-            <td style="padding: 4px 8px 4px 24px;">Biaya Lain DO</td>
-            <td style="text-align: right; padding: 4px 8px;">
-                Rp
-                {{ number_format(
-                    $transaksiDo->where('sub_kategori', 'Biaya Lain')->where('jenis_transaksi', 'Pemasukan')->sum('nominal'),
-                    0,
-                    ',',
-                    '.',
-                ) }}
-            </td>
-        </tr>
-        <!-- Bayar hutang dari tabel transaksi DO -->
-        <tr>
-            <td style="padding: 4px 8px 4px 24px;">Bayar Hutang DO</td>
-            <td style="text-align: right; padding: 4px 8px;">
-                Rp
-                {{ number_format(
-                    $transaksiDo->where('sub_kategori', 'Bayar Hutang')->where('jenis_transaksi', 'Pemasukan')->sum('nominal'),
-                    0,
-                    ',',
-                    '.',
-                ) }}
-            </td>
-        </tr>
-        <!-- Operasional dari tabel transaksi operasional -->
-        <tr>
-            <td style="padding: 4px 8px 4px 24px;">Operasional</td>
-            <td style="text-align: right; padding: 4px 8px;">
-                Rp
-                {{ number_format($transaksiOperasional->where('jenis_transaksi', 'Pemasukan')->sum('nominal'), 0, ',', '.') }}
-            </td>
-        </tr>
-        <!-- Total Pemasukan -->
-        <tr style="border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
-            <td style="padding: 8px;"><strong>Total Pemasukan</strong></td>
-            <td style="text-align: right; padding: 8px;">
-                <strong class="text-success">Rp {{ number_format($totalPemasukan ?? 0, 0, ',', '.') }}</strong>
-            </td>
-        </tr>
-
-        <!-- Kelompok Pengeluaran -->
-        <tr>
-            <td colspan="2" style="padding: 8px;"><strong>Pengeluaran:</strong></td>
-        </tr>
-        <!-- Pembayaran DO Tunai -->
-        <tr>
-            <td style="padding: 4px 8px 4px 24px;">Pembayaran DO (Tunai)</td>
-            <td style="text-align: right; padding: 4px 8px;">
-                Rp
-                {{ number_format(
-                    $transaksiDo->where('cara_pembayaran', 'Tunai')->where('jenis_transaksi', 'Pengeluaran')->where('sub_kategori', 'Pembayaran DO')->sum('nominal'),
-                    0,
-                    ',',
-                    '.',
-                ) }}
-            </td>
-        </tr>
-        <!-- Pembayaran DO Non-Tunai -->
-        <tr>
-            <td style="padding: 4px 8px 4px 24px;">Pembayaran DO (Non-Tunai)</td>
-            <td style="text-align: right; padding: 4px 8px;">
-                Rp
-                {{ number_format(
-                    $transaksiDo->whereIn('cara_pembayaran', ['Transfer', 'cair di luar'])->where('jenis_transaksi', 'Pengeluaran')->where('sub_kategori', 'Pembayaran DO')->sum('nominal'),
-                    0,
-                    ',',
-                    '.',
-                ) }}
-            </td>
-        </tr>
-        <!-- Operasional -->
-        <tr>
-            <td style="padding: 4px 8px 4px 24px;">Operasional</td>
-            <td style="text-align: right; padding: 4px 8px;">
-                Rp
-                {{ number_format($transaksiOperasional->where('jenis_transaksi', 'Pengeluaran')->sum('nominal'), 0, ',', '.') }}
-            </td>
-        </tr>
-        <!-- Total Pengeluaran -->
-        <tr style="border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
-            <td style="padding: 8px;"><strong>Total Pengeluaran</strong></td>
-            <td style="text-align: right; padding: 8px;">
-                <strong class="text-danger">Rp {{ number_format($totalPengeluaran ?? 0, 0, ',', '.') }}</strong>
-            </td>
-        </tr>
-
-        <!-- Saldo Akhir: Perhitungan yang diperbaiki -->
-        <tr style="background-color: #f8f9fa;">
-            <td style="padding: 12px;"><strong>Saldo Akhir</strong></td>
-            <td style="text-align: right; padding: 12px;">
-                <strong>Rp
-                    {{ number_format(($saldoAwal ?? 0) + ($totalPemasukan ?? 0) - ($totalPengeluaran ?? 0), 0, ',', '.') }}</strong>
-            </td>
-        </tr>
-
-        <!-- Total Saldo & Piutang -->
-        <tr style="background-color: #e9ecef;">
-            <td style="padding: 12px;"><strong>Total Saldo & Piutang</strong></td>
-            <td style="text-align: right; padding: 12px;">
-                <strong>Rp
-                    {{ number_format(($saldoAwal ?? 0) + ($totalPemasukan ?? 0) - ($totalPengeluaran ?? 0) + ($totalHutangPenjual ?? 0), 0, ',', '.') }}</strong>
-            </td>
-        </tr>
-    </table>
-
-    <!-- Tanda Tangan -->
-    <table style="width: 100%; margin-top: 20px; font-size: 10px;">
-        <tr>
-            <td style="width: 60%">
-                <p style="margin: 0;">* Catatan:</p>
-                <p style="margin: 0;">- Seluruh nominal dalam Rupiah</p>
-                <p style="margin: 0;">- Dicetak oleh: {{ $user->name }} pada {{ now()->format('d/m/Y H:i') }}
-                </p>
-            </td>
-            <td style="width: 20%; text-align: center;">
-                <p style="margin-bottom: 40px;">Kasir</p>
-                <p style="margin: 0;">(_________________)</p>
-                <p style="margin: 0;">Nama Jelas</p>
-            </td>
-            <td style="width: 20%; text-align: center;">
-                <p style="margin-bottom: 40px;">Pimpinan</p>
-                <p style="margin: 0;">(_________________)</p>
-                <p style="margin: 0; font-style: italic;">{{ $perusahaan->pimpinan }}</p>
-            </td>
-        </tr>
-    </table>
-
+    <!-- Footer -->
+    <div class="mt-4">
+        <p class="text-center">
+            Dicetak pada {{ now()->isoFormat('dddd, D MMMM Y HH:mm:ss') }}
+            oleh {{ auth()->user()->name }}
+        </p>
+    </div>
 </body>
 
 </html>
