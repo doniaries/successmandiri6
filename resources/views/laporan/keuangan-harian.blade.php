@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -163,10 +166,10 @@
 
 <body>
     <div class="header">
-        @if ($perusahaan->logo)
-            <img src="{{ asset($perusahaan->logo) }}" alt="Logo {{ $perusahaan->name }}"
-                style="max-height: 50px; margin-bottom: 8px;" />
-        @endif
+        {{-- @if ($perusahaan->logo)
+            <img src="{{ $perusahaan->logo }}" alt="Logo {{ $perusahaan->name }}"
+            style="max-height: 50px; margin-bottom: 8px;" onerror="this.style.display='none'" />
+        @endif --}}
         <h2>{{ $perusahaan->name }}</h2>
         <h3>Laporan Keuangan Harian</h3>
         <p>Periode: {{ Carbon\Carbon::parse($startDate)->format('d/m/Y') }} -

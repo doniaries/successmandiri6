@@ -111,9 +111,9 @@ class PerusahaanResource extends Resource
                 Tables\Columns\ImageColumn::make('logo')
                     ->label('Logo')
                     ->disk('public')
-                    ->circular()
                     ->height(40)
-                    ->visibility('public'),
+                    ->extraImgAttributes(['loading' => 'lazy'])
+                    ->defaultImageUrl(url('/images/default-logo.png')),
                 Tables\Columns\TextColumn::make('saldo')
                     ->weight('5')
                     ->badge()

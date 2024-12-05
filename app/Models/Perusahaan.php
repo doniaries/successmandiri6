@@ -43,9 +43,7 @@ class Perusahaan extends Model implements HasMedia
                 if (empty($value)) {
                     return null;
                 }
-                // Force HTTP protocol for development
-                $url = Storage::disk('public')->url($value);
-                return str_replace('https://', 'http://', $url);
+                return Storage::disk('public')->url($value);
             },
         );
     }
