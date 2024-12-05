@@ -147,6 +147,7 @@ class PerusahaanResource extends Resource
             ])
             ->actions([
                 Action::make('tambah_saldo')
+                ->hidden()
                     ->label('Tambah Saldo')
                     ->icon('heroicon-o-plus-circle')
                     ->color('success')
