@@ -12,6 +12,7 @@ use Filament\Tables\Table;
 use App\Models\TransaksiDo;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
+use Illuminate\Support\Facades\DB;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -107,6 +108,39 @@ class TransaksiDoResource extends Resource
                                         ->preload()
                                         ->live()
                                         ->required()
+                                        ->createOptionForm([
+                                            Forms\Components\TextInput::make('nama')
+                                                ->label('Nama Penjual')
+                                                ->unique(ignoreRecord: true)
+                                                ->required()
+                                                ->maxLength(255),
+
+                                            Forms\Components\TextInput::make('alamat')
+                                                ->label('Alamat')
+                                                ->maxLength(255),
+
+                                            Forms\Components\TextInput::make('telepon')
+                                                ->tel()
+                                                ->label('Nomor Telepon'),
+
+                                            // Hutang awal hanya muncul saat create
+                                            Forms\Components\TextInput::make('hutang')
+                                                ->label(fn($context) => $context === 'create' ?
+                                                    'Hutang Awal' : 'Total Hutang')
+                                                ->helperText(fn($context) => $context === 'create' ?
+                                                    'Masukkan hutang awal jika ada. Input ini hanya bisa dilakukan sekali saat pendaftaran penjual.' : '')
+                                                // ->disabled(fn($context) => $context !== 'create')
+                                                ->dehydrated()
+                                                ->prefix('Rp')
+                                                ->numeric()
+                                                ->default(0)
+                                                ->currencyMask(
+                                                    thousandSeparator: ',',
+                                                    decimalSeparator: '.',
+                                                    precision: 0
+                                                ),
+                                        ])
+
                                         ->afterStateUpdated(function ($state, Forms\Set $set) {
                                             if ($state) {
                                                 // Ambil data penjual
@@ -172,50 +206,107 @@ class TransaksiDoResource extends Resource
 
                                     Forms\Components\Select::make('kendaraan_id')
                                         ->label('Nomor Polisi')
+                                        ->placeholder('Pilih atau tambah kendaraan')
                                         ->options(function (Forms\Get $get) {
                                             $supirId = $get('supir_id');
-
-                                            if (!$supirId) {
-                                                return [];
-                                            }
+                                            if (!$supirId) return [];
 
                                             return Kendaraan::query()
                                                 ->where('supir_id', $supirId)
-                                                ->pluck('no_polisi', 'id')
-                                                ->toArray();
+                                                ->pluck('no_polisi', 'id');
                                         })
                                         ->searchable()
                                         ->preload()
-                                        // ->required()
                                         ->live()
-                                        // ->visible(fn(Forms\Get $get): bool => filled($get('supir_id')))
                                         ->createOptionForm([
                                             Forms\Components\TextInput::make('no_polisi')
+                                                ->label('Nomor Polisi')
                                                 ->required()
+                                                ->unique(Kendaraan::class, 'no_polisi') // Perbaikan unique constraint
                                                 ->maxLength(10)
                                                 ->placeholder('BA 1234 XX'),
+
                                             Forms\Components\Hidden::make('supir_id')
-                                                ->default(fn(Forms\Get $get) => $get('../../supir_id'))
-                                                ->required(),
+                                                ->default(function (Forms\Get $get) {
+                                                    return $get('../../supir_id');
+                                                })
                                         ])
                                         ->createOptionAction(function (Forms\Components\Actions\Action $action) {
                                             return $action
                                                 ->modalHeading('Tambah Kendaraan Baru')
                                                 ->modalWidth('lg')
+                                                ->modalButton('Simpan')
                                                 ->successNotification(
                                                     Notification::make()
                                                         ->success()
                                                         ->title('Kendaraan berhasil ditambahkan')
                                                         ->duration(3000)
                                                 );
-                                        }),
+                                        })
+                                        ->createOptionUsing(function (array $data, Forms\Get $get) {
+                                            DB::beginTransaction();
+                                            try {
+                                                // Pastikan data valid
+                                                if (empty($data['no_polisi'])) {
+                                                    throw new \Exception('Nomor polisi harus diisi');
+                                                }
 
+                                                // Format nomor polisi
+                                                $noPolisi = strtoupper(trim($data['no_polisi']));
+
+                                                // Ambil supir_id dari form utama jika tidak ada di data
+                                                $supirId = $data['supir_id'] ?? $get('supir_id');
+
+                                                if (!$supirId) {
+                                                    throw new \Exception('Data supir tidak ditemukan');
+                                                }
+
+                                                // Cek duplikasi
+                                                $exists = Kendaraan::where('no_polisi', $noPolisi)->exists();
+                                                if ($exists) {
+                                                    throw new \Exception('Nomor polisi sudah terdaftar');
+                                                }
+
+                                                // Buat kendaraan baru
+                                                $kendaraan = Kendaraan::create([
+                                                    'no_polisi' => $noPolisi,
+                                                    'supir_id' => $supirId
+                                                ]);
+
+                                                DB::commit();
+
+                                                // Log untuk tracking
+                                                Log::info('Kendaraan baru berhasil dibuat:', [
+                                                    'no_polisi' => $noPolisi,
+                                                    'supir_id' => $supirId,
+                                                    'kendaraan_id' => $kendaraan->id
+                                                ]);
+
+                                                return $kendaraan->id;
+                                            } catch (\Exception $e) {
+                                                DB::rollBack();
+                                                Log::error('Error saat membuat kendaraan:', [
+                                                    'error' => $e->getMessage(),
+                                                    'data' => $data
+                                                ]);
+
+                                                Notification::make()
+                                                    ->danger()
+                                                    ->title('Gagal menambahkan kendaraan')
+                                                    ->body($e->getMessage())
+                                                    ->duration(3000)
+                                                    ->send();
+
+                                                throw $e;
+                                            }
+                                        })
+                                        ->helperText('Pilih kendaraan yang ada atau tambah baru'),
 
                                     Forms\Components\TextInput::make('tonase')
                                         ->label('Tonase (Netto)')
                                         ->hintIcon('heroicon-m-exclamation-triangle')
                                         ->hintColor('primary')
-                                        ->hint('angka tanpa titik')
+                                        // ->hint('angka tanpa titik')
                                         ->required()
                                         // ->numeric()
                                         ->suffix('Kg')
@@ -368,9 +459,12 @@ class TransaksiDoResource extends Resource
                                                             'Pembayaran disesuaikan menjadi Rp %s sesuai total hutang',
                                                             number_format($hutangAwal, 0, ',', '.')
                                                         ))
-                                                        ->duration(3000)
                                                         ->persistent(false)
-                                                        ->icon('heroicon-o-banknotes')
+                                                        ->actions([
+                                                            \Filament\Notifications\Actions\Action::make('Tambah Saldo')
+                                                                ->button()
+                                                                ->url(route('filament.admin.resources.perusahaans.index'))
+                                                        ])
                                                         ->send();
                                                 }
 

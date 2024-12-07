@@ -174,19 +174,17 @@ class TransaksiDo extends Model
 
     public function generateQrCode()
     {
-        return base64_encode(QrCode::format('svg')
-            ->size(100)
-            ->errorCorrection('H')
-            ->generate(json_encode([
-                'no_do' => $this->nomor,
-                'tonase' => $this->tonase,
-                'tanggal' => $this->tanggal->format('d/m/Y H:i'),
-                'penjual' => $this->penjual->nama,
-                'supir' => $this->supir->nama,
-            ]))
+        return base64_encode(
+            QrCode::format('svg')
+                ->size(100)
+                ->errorCorrection('H')
+                ->generate(json_encode([
+                    'no_do' => $this->nomor,
+                    'tonase' => $this->tonase,
+                    'tanggal' => $this->tanggal->format('d/m/Y H:i'),
+                    'penjual' => $this->penjual->nama,
+                    'supir' => $this->supir->nama,
+                ]))
         );
     }
-
-
-
 }
