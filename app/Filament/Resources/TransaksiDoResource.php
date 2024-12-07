@@ -24,8 +24,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransaksiDoResource\Pages;
 use App\Filament\Resources\TransaksiDoResource\Widgets\TransaksiDoStatWidget;
 
-// use Barryvdh\DomPDF\Facade\Pdf;
-// use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Barryvdh\DomPDF\Facade\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
 class TransaksiDoResource extends Resource
@@ -827,7 +827,7 @@ class TransaksiDoResource extends Resource
 
 
             ])
-            ->defaultSort('created_at', 'asc')
+            ->defaultSort('created_at', 'desc')
             ->striped()
             ->defaultPaginationPageOption(10)
             ->paginated([5, 10, 25, 50, 100, 'all'])

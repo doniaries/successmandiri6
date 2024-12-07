@@ -25,7 +25,7 @@ class TransaksiDo extends Model
     use HasFactory, SoftDeletes, LaporanKeuanganTrait, DokumentasiTrait, GenerateMonthlyNumber;
 
     protected $table = 'transaksi_do';
-    protected $with = ['penjual']; // Default eager loading
+    protected $with = ['penjual', 'supir', 'kendaraan']; // Default eager loading
 
 
     protected $fillable = [
@@ -182,8 +182,9 @@ class TransaksiDo extends Model
                     'no_do' => $this->nomor,
                     'tonase' => $this->tonase,
                     'tanggal' => $this->tanggal->format('d/m/Y H:i'),
-                    'penjual' => $this->penjual->nama,
-                    'supir' => $this->supir->nama,
+                    'penjual' => $this->penjual ? $this->penjual->nama : 'N/A',
+                    'supir' => $this->supir ? $this->supir->nama : 'N/A',
+                    'kendaraan' => $this->kendaraan ? $this->kendaraan->no_polisi : 'N/A',
                 ]))
         );
     }

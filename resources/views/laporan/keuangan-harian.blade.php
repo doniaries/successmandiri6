@@ -180,7 +180,7 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $do->nomor }}</td>
                         <td>{{ $do->penjual->nama }}</td>
-                        <td class="text-right">{{ number_format($do->tonase, 2) }}</td>
+                        <td class="text-right">{{ number_format($do->tonase, 0) }}</td>
                         <td>{{ $do->cara_bayar }}</td>
                         <td class="text-right">{{ number_format($do->sub_total) }}</td>
                         <td class="text-right">{{ number_format($do->biaya_lain + $do->upah_bongkar) }}</td>
@@ -194,7 +194,7 @@
                 @endforelse
                 <tr class="bg-light text-bold">
                     <td colspan="3">Total</td>
-                    <td class="text-right">{{ number_format($totalTonase, 2) }}</td>
+                    <td class="text-right">{{ number_format($totalTonase, 0) }}</td>
                     <td></td>
                     <td class="text-right">{{ number_format($totalSubTotal) }}</td>
                     <td class="text-right">{{ number_format($totalBiaya) }}</td>
@@ -232,6 +232,12 @@
                         <td colspan="5" class="text-center">Tidak ada transaksi operasional</td>
                     </tr>
                 @endforelse
+
+                <tr class="bg-light text-bold">
+                    <td colspan="3">Total Operasional</td>
+                    <td class="text-right">{{ number_format($transaksiOperasional->sum('nominal')) }}</td>
+                    <td></td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -239,47 +245,71 @@
     <!-- Ringkasan -->
     <div class="mt-4 summary">
         <h3>Ringkasan Transaksi DO</h3>
-        <table>
+        <table class="summary-table">
             <tr>
                 <td width="200">Total Tonase</td>
                 <td width="20">:</td>
-                <td class="text-right">{{ number_format($totalTonase, 2) }} Ton</td>
+                <td class="text-right">{{ number_format($totalTonase, 0) }} Kg</td>
             </tr>
             <tr>
                 <td>Total Transaksi</td>
                 <td>:</td>
-                <td class="text-right">Rp {{ number_format($totalSubTotal) }}</td>
+                <td class="text-right">{{ number_format($totalSubTotal) }}</td>
             </tr>
             <tr>
                 <td>Total Biaya</td>
                 <td>:</td>
-                <td class="text-right">Rp {{ number_format($totalBiaya) }}</td>
+                <td class="text-right">{{ number_format($totalBiaya) }}</td>
             </tr>
             <tr>
                 <td>Total Bayar Hutang</td>
                 <td>:</td>
-                <td class="text-right">Rp {{ number_format($totalBayarHutang) }}</td>
+                <td class="text-right">{{ number_format($totalBayarHutang) }}</td>
             </tr>
             <tr>
-                <td>Pembayaran Tunai</td>
+                <td>Total Belum Bayar</td>
                 <td>:</td>
-                <td class="text-right">Rp {{ number_format($totalTunai) }}</td>
+                <td class="text-right">{{ number_format($totalBelumBayar) }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Ringkasan Operasional -->
+    <div class="mt-4 summary">
+        <h3>Ringkasan Transaksi Operasional</h3>
+        <table class="summary-table">
+            <tr>
+                <td width="200">Total Operasional</td>
+                <td width="20">:</td>
+                <td class="text-right">{{ number_format($transaksiOperasional->sum('nominal')) }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Ringkasan Gabungan -->
+    <div class="mt-4 summary">
+        <h3>Ringkasan Gabungan DO & Operasional</h3>
+        <table class="summary-table">
+            <tr>
+                <td width="200">Total Pemasukan (DO)</td>
+                <td width="20">:</td>
+                <td class="text-right">{{ number_format($totalSubTotal) }}</td>
             </tr>
             <tr>
-                <td>Pembayaran Transfer</td>
+                <td>Total Pengeluaran</td>
                 <td>:</td>
-                <td class="text-right">Rp {{ number_format($totalTransfer) }}</td>
+                <td class="text-right">{{ number_format($totalBiaya + $transaksiOperasional->sum('nominal')) }}</td>
+            </tr>
+            <tr class="text-bold">
+                <td>Saldo</td>
+                <td>:</td>
+                <td class="text-right">{{ number_format($totalSubTotal - ($totalBiaya + $transaksiOperasional->sum('nominal'))) }}</td>
             </tr>
             <tr>
-                <td>Cair di Luar</td>
+                <td>Total Hutang Belum Bayar</td>
                 <td>:</td>
-                <td class="text-right">Rp {{ number_format($totalCairDiluar) }}</td>
+                <td class="text-right">{{ number_format($totalBelumBayar) }}</td>
             </tr>
-            {{-- <tr class="text-bold">
-                <td>Total Sisa Hutang</td>
-                <td>:</td>
-                <td class="text-right">Rp {{ number_format($totalBelumBayar) }}</td>
-            </tr> --}}
         </table>
     </div>
 
