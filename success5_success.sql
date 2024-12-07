@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 05, 2024 at 03:54 AM
--- Server version: 8.0.30
--- PHP Version: 8.2.12
+-- Waktu pembuatan: 05 Des 2024 pada 23.59
+-- Versi server: 10.6.20-MariaDB-cll-lve
+-- Versi PHP: 8.3.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,101 +18,106 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `success-mandiri6`
+-- Database: `success5_success`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cache`
+-- Struktur dari tabel `cache`
 --
 
 CREATE TABLE `cache` (
-  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expiration` int NOT NULL
+  `key` varchar(255) NOT NULL,
+  `value` mediumtext NOT NULL,
+  `expiration` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `cache`
+-- Dumping data untuk tabel `cache`
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('transaksi-stats', 'a:3:{i:0;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:37:\"Total saldo masuk - Total pengeluaran\";s:18:\"\0*\0descriptionIcon\";s:20:\"heroicon-m-banknotes\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:10:\"Sisa Saldo\";s:8:\"\0*\0value\";s:14:\"Rp 134.876.700\";}i:1;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:101:\"Pembayaran Hutang: Rp 2.000.000\nPembayaran Sisa: Rp 164.128.680\nPemasukan Operasional: Rp 265.647.000\";s:18:\"\0*\0descriptionIcon\";s:28:\"heroicon-m-arrow-trending-up\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:22:\"Total Saldo/Uang Masuk\";s:8:\"\0*\0value\";s:14:\"Rp 431.775.680\";}i:2;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:6:\"danger\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:54:\"Total DO: Rp 296.694.980\nTotal Operasional: Rp 204.000\";s:18:\"\0*\0descriptionIcon\";s:30:\"heroicon-m-arrow-trending-down\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:23:\"Pengeluaran/Uang Keluar\";s:8:\"\0*\0value\";s:14:\"Rp 296.898.980\";}}', 1733370873);
+('356a192b7913b04c54574d18c28d46e6395428ab', 'i:1;', 1733404023),
+('356a192b7913b04c54574d18c28d46e6395428ab:timer', 'i:1733404023;', 1733404023),
+('451e9dc56069578d85e9dfda9070b795a0fd4652', 'i:1;', 1733413178),
+('451e9dc56069578d85e9dfda9070b795a0fd4652:timer', 'i:1733413178;', 1733413178),
+('perusahaan-stats', 'a:3:{i:0;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:43:\"Terakhir tambah: Rp 50.000.000 (03/12/2024)\";s:18:\"\0*\0descriptionIcon\";s:20:\"heroicon-m-banknotes\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:16:\"Saldo Perusahaan\";s:8:\"\0*\0value\";s:14:\"Rp 136.176.700\";}i:1;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:4:\"info\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:14:\"Kasir: Kasir 1\";s:18:\"\0*\0descriptionIcon\";s:21:\"heroicon-m-user-group\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:18:\"CV SUCCESS MANDIRI\";s:8:\"\0*\0value\";s:6:\"Yondra\";}i:2;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:33:\"Total Pengeluaran: Rp 152.324.480\";s:18:\"\0*\0descriptionIcon\";s:21:\"heroicon-m-arrow-path\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:15:\"Total Pemasukan\";s:8:\"\0*\0value\";s:14:\"Rp 510.221.500\";}}', 1733404027),
+('transaksi-stats', 'a:4:{i:0;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:37:\"Total saldo masuk - Total pengeluaran\";s:18:\"\0*\0descriptionIcon\";s:20:\"heroicon-m-banknotes\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:10:\"Sisa Saldo\";s:8:\"\0*\0value\";s:14:\"Rp 134.876.700\";}i:1;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:101:\"Pembayaran Hutang: Rp 2.000.000\nPembayaran Sisa: Rp 164.128.680\nPemasukan Operasional: Rp 265.647.000\";s:18:\"\0*\0descriptionIcon\";s:28:\"heroicon-m-arrow-trending-up\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:22:\"Total Saldo/Uang Masuk\";s:8:\"\0*\0value\";s:14:\"Rp 431.775.680\";}i:2;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:6:\"danger\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:54:\"Total DO: Rp 296.694.980\nTotal Operasional: Rp 204.000\";s:18:\"\0*\0descriptionIcon\";s:30:\"heroicon-m-arrow-trending-down\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:23:\"Pengeluaran/Uang Keluar\";s:8:\"\0*\0value\";s:14:\"Rp 296.898.980\";}i:3;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"primary\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:52:\"Tunai: 13\nTransfer: 4\nCair di Luar: 2\nBelum Bayar: 0\";s:18:\"\0*\0descriptionIcon\";s:24:\"heroicon-m-document-text\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:15:\"Total Transaksi\";s:8:\"\0*\0value\";i:19;}}', 1733417972);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cache_locks`
+-- Struktur dari tabel `cache_locks`
 --
 
 CREATE TABLE `cache_locks` (
-  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `owner` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expiration` int NOT NULL
+  `key` varchar(255) NOT NULL,
+  `owner` varchar(255) NOT NULL,
+  `expiration` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `failed_jobs`
+-- Struktur dari tabel `failed_jobs`
 --
 
 CREATE TABLE `failed_jobs` (
-  `id` bigint UNSIGNED NOT NULL,
-  `uuid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `connection` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `uuid` varchar(255) NOT NULL,
+  `connection` text NOT NULL,
+  `queue` text NOT NULL,
+  `payload` longtext NOT NULL,
+  `exception` longtext NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `jobs`
+-- Struktur dari tabel `jobs`
 --
 
 CREATE TABLE `jobs` (
-  `id` bigint UNSIGNED NOT NULL,
-  `queue` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `attempts` tinyint UNSIGNED NOT NULL,
-  `reserved_at` int UNSIGNED DEFAULT NULL,
-  `available_at` int UNSIGNED NOT NULL,
-  `created_at` int UNSIGNED NOT NULL
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `queue` varchar(255) NOT NULL,
+  `payload` longtext NOT NULL,
+  `attempts` tinyint(3) UNSIGNED NOT NULL,
+  `reserved_at` int(10) UNSIGNED DEFAULT NULL,
+  `available_at` int(10) UNSIGNED NOT NULL,
+  `created_at` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `job_batches`
+-- Struktur dari tabel `job_batches`
 --
 
 CREATE TABLE `job_batches` (
-  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `total_jobs` int NOT NULL,
-  `pending_jobs` int NOT NULL,
-  `failed_jobs` int NOT NULL,
-  `failed_job_ids` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `options` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `cancelled_at` int DEFAULT NULL,
-  `created_at` int NOT NULL,
-  `finished_at` int DEFAULT NULL
+  `id` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `total_jobs` int(11) NOT NULL,
+  `pending_jobs` int(11) NOT NULL,
+  `failed_jobs` int(11) NOT NULL,
+  `failed_job_ids` longtext NOT NULL,
+  `options` mediumtext DEFAULT NULL,
+  `cancelled_at` int(11) DEFAULT NULL,
+  `created_at` int(11) NOT NULL,
+  `finished_at` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `kendaraan`
+-- Struktur dari tabel `kendaraan`
 --
 
 CREATE TABLE `kendaraan` (
-  `id` bigint UNSIGNED NOT NULL,
-  `no_polisi` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `supir_id` bigint UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `no_polisi` varchar(10) NOT NULL,
+  `supir_id` bigint(20) UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -120,31 +125,31 @@ CREATE TABLE `kendaraan` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `laporan_keuangan`
+-- Struktur dari tabel `laporan_keuangan`
 --
 
 CREATE TABLE `laporan_keuangan` (
-  `id` bigint UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL,
   `tanggal` datetime NOT NULL,
-  `jenis_transaksi` enum('Pemasukan','Pengeluaran') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `kategori` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Kategori transaksi (DO/Operasional)',
-  `sub_kategori` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Sub kategori seperti upah_bongkar, biaya_lain, dll',
+  `jenis_transaksi` enum('Pemasukan','Pengeluaran') NOT NULL,
+  `kategori` varchar(50) NOT NULL COMMENT 'Kategori transaksi (DO/Operasional)',
+  `sub_kategori` varchar(50) DEFAULT NULL COMMENT 'Sub kategori seperti upah_bongkar, biaya_lain, dll',
   `nominal` decimal(15,0) NOT NULL,
-  `sumber_transaksi` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'DO/Operasional',
-  `referensi_id` bigint UNSIGNED NOT NULL COMMENT 'ID dari tabel sumber (transaksi_do/operasional)',
-  `nomor_referensi` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Nomor DO jika dari transaksi DO',
-  `pihak_terkait` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Nama penjual/user terkait',
-  `tipe_pihak` enum('penjual','pekerja','user','supir') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cara_pembayaran` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Tunai/Transfer/cair di luar',
-  `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `mempengaruhi_kas` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Apakah transaksi ini mempengaruhi kas atau tidak',
+  `sumber_transaksi` varchar(50) NOT NULL COMMENT 'DO/Operasional',
+  `referensi_id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID dari tabel sumber (transaksi_do/operasional)',
+  `nomor_referensi` varchar(50) DEFAULT NULL COMMENT 'Nomor DO jika dari transaksi DO',
+  `pihak_terkait` varchar(100) DEFAULT NULL COMMENT 'Nama penjual/user terkait',
+  `tipe_pihak` enum('penjual','pekerja','user','supir') NOT NULL,
+  `cara_pembayaran` varchar(20) DEFAULT NULL COMMENT 'Tunai/Transfer/cair di luar',
+  `keterangan` text DEFAULT NULL,
+  `mempengaruhi_kas` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'Apakah transaksi ini mempengaruhi kas atau tidak',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `laporan_keuangan`
+-- Dumping data untuk tabel `laporan_keuangan`
 --
 
 INSERT INTO `laporan_keuangan` (`id`, `tanggal`, `jenis_transaksi`, `kategori`, `sub_kategori`, `nominal`, `sumber_transaksi`, `referensi_id`, `nomor_referensi`, `pihak_terkait`, `tipe_pihak`, `cara_pembayaran`, `keterangan`, `mempengaruhi_kas`, `created_at`, `updated_at`, `deleted_at`) VALUES
@@ -201,17 +206,17 @@ INSERT INTO `laporan_keuangan` (`id`, `tanggal`, `jenis_transaksi`, `kategori`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `migrations`
+-- Struktur dari tabel `migrations`
 --
 
 CREATE TABLE `migrations` (
-  `id` int UNSIGNED NOT NULL,
-  `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `batch` int NOT NULL
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(255) NOT NULL,
+  `batch` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `migrations`
+-- Dumping data untuk tabel `migrations`
 --
 
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
@@ -232,29 +237,29 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `operasional`
+-- Struktur dari tabel `operasional`
 --
 
 CREATE TABLE `operasional` (
-  `id` bigint UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL,
   `tanggal` datetime NOT NULL,
-  `operasional` enum('pemasukan','pengeluaran') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `kategori` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tipe_nama` enum('penjual','user','pekerja','supir') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `penjual_id` bigint UNSIGNED DEFAULT NULL,
-  `pekerja_id` bigint UNSIGNED DEFAULT NULL,
-  `user_id` bigint UNSIGNED DEFAULT NULL,
-  `supir_id` bigint UNSIGNED DEFAULT NULL,
+  `operasional` enum('pemasukan','pengeluaran') NOT NULL,
+  `kategori` varchar(255) NOT NULL,
+  `tipe_nama` enum('penjual','user','pekerja','supir') NOT NULL,
+  `penjual_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `pekerja_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `supir_id` bigint(20) UNSIGNED DEFAULT NULL,
   `nominal` decimal(15,0) DEFAULT NULL,
-  `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `file_bukti` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `keterangan` text DEFAULT NULL,
+  `file_bukti` varchar(512) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `operasional`
+-- Dumping data untuk tabel `operasional`
 --
 
 INSERT INTO `operasional` (`id`, `tanggal`, `operasional`, `kategori`, `tipe_nama`, `penjual_id`, `pekerja_id`, `user_id`, `supir_id`, `nominal`, `keterangan`, `file_bukti`, `created_at`, `updated_at`, `deleted_at`) VALUES
@@ -272,29 +277,29 @@ INSERT INTO `operasional` (`id`, `tanggal`, `operasional`, `kategori`, `tipe_nam
 -- --------------------------------------------------------
 
 --
--- Table structure for table `password_reset_tokens`
+-- Struktur dari tabel `password_reset_tokens`
 --
 
 CREATE TABLE `password_reset_tokens` (
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pekerja`
+-- Struktur dari tabel `pekerja`
 --
 
 CREATE TABLE `pekerja` (
-  `id` bigint UNSIGNED NOT NULL,
-  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `alamat` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `telepon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `pendapatan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `hutang` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `riwayat_bayar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `alamat` varchar(255) DEFAULT NULL,
+  `telepon` varchar(255) DEFAULT NULL,
+  `pendapatan` varchar(255) NOT NULL DEFAULT '0',
+  `hutang` varchar(255) NOT NULL DEFAULT '0',
+  `riwayat_bayar` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
@@ -303,23 +308,23 @@ CREATE TABLE `pekerja` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `penjuals`
+-- Struktur dari tabel `penjuals`
 --
 
 CREATE TABLE `penjuals` (
-  `id` bigint UNSIGNED NOT NULL,
-  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `alamat` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `telepon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `alamat` varchar(255) DEFAULT NULL,
+  `telepon` varchar(255) DEFAULT NULL,
   `hutang` decimal(15,0) DEFAULT NULL,
-  `riwayat_bayar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `riwayat_bayar` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `penjuals`
+-- Dumping data untuk tabel `penjuals`
 --
 
 INSERT INTO `penjuals` (`id`, `nama`, `alamat`, `telepon`, `hutang`, `riwayat_bayar`, `created_at`, `updated_at`, `deleted_at`) VALUES
@@ -343,47 +348,47 @@ INSERT INTO `penjuals` (`id`, `nama`, `alamat`, `telepon`, `hutang`, `riwayat_ba
 -- --------------------------------------------------------
 
 --
--- Table structure for table `perusahaans`
+-- Struktur dari tabel `perusahaans`
 --
 
 CREATE TABLE `perusahaans` (
-  `id` bigint UNSIGNED NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `saldo` decimal(15,0) NOT NULL DEFAULT '0',
-  `alamat` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `telepon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `pimpinan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Pimpinan Perusahaan',
-  `npwp` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `logo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Logo Perusahaan',
-  `is_active` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Status aktif perusahaan',
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `saldo` decimal(15,0) NOT NULL DEFAULT 0,
+  `alamat` varchar(255) DEFAULT NULL,
+  `telepon` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `pimpinan` varchar(255) DEFAULT NULL COMMENT 'Pimpinan Perusahaan',
+  `npwp` varchar(30) DEFAULT NULL,
+  `logo` varchar(255) DEFAULT NULL COMMENT 'Logo Perusahaan',
+  `is_active` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'Status aktif perusahaan',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `perusahaans`
+-- Dumping data untuk tabel `perusahaans`
 --
 
 INSERT INTO `perusahaans` (`id`, `name`, `saldo`, `alamat`, `telepon`, `email`, `pimpinan`, `npwp`, `logo`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'CV SUCCESS MANDIRI', 136176700, 'Dusun Sungai Moran Nagari Kamang', '+62 823-8921-9670', NULL, 'Yondra', '12.345.678.9-123.000', 'perusahaan-logo/kabupaten-sijunjung-logo-DB0B31633D-seeklogo.com.png', 1, '2024-12-03 04:36:58', '2024-12-05 03:36:06', NULL);
+(1, 'CV SUCCESS MANDIRI', 136176700, 'Dusun Sungai Moran Nagari Kamang', '+62 823-8921-9670', NULL, 'Yondra', '12.345.678.9-123.000', 'success.png', 1, '2024-12-03 04:36:58', '2024-12-05 13:06:06', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `riwayat_pembayaran_hutangs`
+-- Struktur dari tabel `riwayat_pembayaran_hutangs`
 --
 
 CREATE TABLE `riwayat_pembayaran_hutangs` (
-  `id` bigint UNSIGNED NOT NULL,
-  `tanggal` timestamp NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `tanggal` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `nominal` decimal(15,0) NOT NULL,
-  `tipe` enum('penjual','pekerja') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `penjual_id` bigint UNSIGNED DEFAULT NULL,
-  `pekerja_id` bigint UNSIGNED DEFAULT NULL,
-  `operasional_id` bigint UNSIGNED NOT NULL,
-  `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `tipe` enum('penjual','pekerja') NOT NULL,
+  `penjual_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `pekerja_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `operasional_id` bigint(20) UNSIGNED NOT NULL,
+  `keterangan` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
@@ -392,47 +397,85 @@ CREATE TABLE `riwayat_pembayaran_hutangs` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sessions`
+-- Struktur dari tabel `sessions`
 --
 
 CREATE TABLE `sessions` (
-  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` bigint UNSIGNED DEFAULT NULL,
-  `ip_address` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_activity` int NOT NULL
+  `id` varchar(255) NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `payload` longtext NOT NULL,
+  `last_activity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `sessions`
+-- Dumping data untuk tabel `sessions`
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
+('0eVuBF1IOtCxWe9anfqTffzWoBxaiGyeFcIx2Ul2', NULL, '36.69.116.220', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZTduUFNnN0tlc2U5ZmZuNlhEcDQ0OWJEVGlyTk1QSkVWMURKWmx4eSI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czo1MDoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4vbGFwb3Jhbi1rZXVhbmdhbnMiO31zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozODoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4vbG9naW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1733371283),
+('2jitP84nsH3YICMbnLF9t8H8iR7bclQoakEp5Kjz', NULL, '43.156.168.214', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoibnRobnlwMEJzcUd2T3UwUFI3U05YZ0xjWXZuOGRVbWNodE12OUdycSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzA6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1733411478),
+('3TSkSBJEqLsgt6dY4u50UYEfOAzMmt7m69bnXksq', NULL, '10.57.0.118', 'python-requests/2.22.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiY1EwZWJzeFhwaGhXYnhxclBGQlJjalJWMmthb1lKaXZSUEVZcXhIRiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDI6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbi9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjE6e3M6ODoiaW50ZW5kZWQiO3M6MzY6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbiI7fX0=', 1733404636),
+('5nClQjjkyvsVQqD9qlacwOKuHsSFJ1XSUowUXstb', NULL, '159.203.69.155', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoid2VsdzhVSTNWYW1uSURPMnRUQ1MyWFI1SzhkSkJBUlo2WlRPU2hSWiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733374363),
+('5umHb5CVTpJTsHnPoF3oqffGDKUFBuRGEkx9lJ4J', NULL, '124.220.171.131', 'Mozilla/5.0 (Linux; Android 10; LIO-AN00 Build/HUAWEILIO-AN00; wv) MicroMessenger Weixin QQ AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.62 XWEB/2692 MMWEBSDK/200901 Mobile Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiamcyTkZ6RXNqRkc3TmNVZHBCUjJ1UWF1RXl4UXQ3dGFDTjZFU0hzUSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733413287),
+('6m3XM0vSthoZ9DBGoSSlvvkOsegeFqlTOClKmLsD', NULL, '34.213.144.1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/68.0.3440.106 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoicW5oaDlzMFRaaHdUamMwWjNLSzYxN2ZRUFFVR3prdEJzTTRDSTExTyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO319', 1733399087),
+('85gElrOpIPcoZdjQZm4j7u6tN0cpOCt9YMH6CgTk', NULL, '43.153.113.127', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSDc4U3dpWmhncW1UNHVrbmN0eWJoUjJFeDRsWFpjRGpJbEZNeDZCVCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO31zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1733394610),
+('9TS2vpA5ypTomYQGCXpKX2o66tdREOVFBQ2NnTU2', NULL, '49.51.195.195', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiMnNoNEUyYmg5ZXhNMFZLUVFuZVVqSHo0SzVsaFRyajR5YkxQSTFCaCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733385671),
+('by6v4kx5W2K0HIW7y4AAkdWbJjRN9r8MQtvaWOy2', NULL, '43.156.168.214', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiY2Rkd0xkQTRmTjA4VE1XZ2JkMWNKNjJITkVPUUEwM3I2bHBCZEdIbyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDI6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbi9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1733411482),
+('C5jddmX94LX2ObafG9r44iMoISjnsGDaZRB6cI5W', NULL, '107.173.234.211', 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/123.0.6312.52 Mobile/15E148 Safari/604.1', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZDVURFFnT2QxM2lLMVhYa0pXbGFId3VPd05KbTkwYmVkdjZvbENTdyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO319', 1733380507),
+('dDlBBNZNm6pIPODHSdkyX9k1bjuXdXLqdeZvRbaT', NULL, '66.249.79.35', 'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiazhNSGdpeEdtWWVwdVFodm1mN1NKaU51WGl3MHJNUkI3VTllMWE4OSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO319', 1733381839),
 ('DfdwZOvQJ42iYXOrWzJ7Z8cFs3Ur41Y4Fy1JMteS', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiRVJ6eVpvd3RRb1N2WUR6cUdvRXZCQ1FpbUIyTEVoSjhVenFIRWdyYSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi90cmFuc2Frc2ktZG9zIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7czoxNzoicGFzc3dvcmRfaGFzaF93ZWIiO3M6NjA6IiQyeSQxMiRHNlFEYUhQUUVwU1pRcE80N0tYTXJPeU1ZVldvQ3JBY1ZQRmxDRlY1cU01c0lrSlpPM0lyTyI7czo2OiJ0YWJsZXMiO2E6MTp7czoyMToiTGlzdFRyYW5zYWtzaURvc19zb3J0IjthOjI6e3M6NjoiY29sdW1uIjtOO3M6OToiZGlyZWN0aW9uIjtOO319czo4OiJmaWxhbWVudCI7YTowOnt9fQ==', 1733305681),
+('dmgESix9j4mOKjg0fqBcLTzuusxFZwZYqoIYrPo6', NULL, '139.59.34.198', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiV2NqR2NRZnU1WEFKWG1TR0FnNFhjSE9Hd3J2SDNLUkdPUWdFYnhnVCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733401600),
+('DtMqyXLMYwDWzIe4NhLbSsr6xDndllvmzGQfelfl', NULL, '49.51.195.195', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMmRsNEhUWWl4dUpwRFVxcks0YzBEajYxSlRadFZXa3RZWDJYTnVQQyI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO31zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1733385668),
+('hiM1g8b5E64PLmyUwp0c2c2R7728m97H37mU2Ox3', NULL, '10.57.0.118', 'python-requests/2.22.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoidjdrV0U1dDUwR1RzSGtJVmdWSXFEV052VWVlQlNhN0JwelYyRUVGTiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDI6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbi9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjE6e3M6ODoiaW50ZW5kZWQiO3M6MzY6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbiI7fX0=', 1733375022),
+('hszcY0upuJOFDTQAMjJlD02gJGx8rwNU17nkdfkN', NULL, '66.249.79.36', 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiOExjd3dzSU9aazE3QkFxQ1ZudmM5U3BqaG53TVAyT2NvUGw3TFRiMSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO319', 1733381838),
+('iiDsdnVBmhG3NekHfHUaryUmYIZzmNfckXT9j0F1', NULL, '10.57.0.118', 'python-requests/2.22.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiRVdpY3dqUGx0ZU9LdnBiNGZiYTRuY3F4NUM3NXBXMzhsUHpBdGZnSyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDI6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbi9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjE6e3M6ODoiaW50ZW5kZWQiO3M6MzY6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbiI7fX0=', 1733403805),
+('jlIO9uOluT2dVaLUEQ9ixH4uBwVNPJiUGoO8MIVv', NULL, '18.237.97.30', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiTnJ6UVgxQ1NkQ3l5Nkp6UnJDZlFEclZJN2poZzhMZ0hjQ3JrOTM1UyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO319', 1733399081),
+('JS5LsqTZ4yGWYqGkXGmXRPHQ6SghyZgIRazodXo5', NULL, '10.57.0.118', 'python-requests/2.22.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSVhONHVEeDJsRjZYeU8zdnpLbldGa1F2UXZUNEF1RHdGaFVsYXl6ZyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDI6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbi9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjE6e3M6ODoiaW50ZW5kZWQiO3M6MzY6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbiI7fX0=', 1733389406),
+('k3VfWdso212hKH9OoxRrMTA27iHV78hPNKUmPKE7', NULL, '43.153.113.127', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiMFQxbEV4U2Rvc1VmU3NUR1d0NWE1SjREb3Zab0tFOG94R0xTVDVaUCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733394607),
+('kcqWf6xu3LT0T3P7mQ8Idcozo2HYSsXQb6478zO9', NULL, '54.148.197.63', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiTExyTGdhQ0xwUTdNS0o5OEdIeFl5YTdzVWt2SXRLNU9YSTI3MTU1MyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733396082),
+('krsN4u1Q99UHjBhqu32mgcg3B5R6ldRVFqtlStRX', NULL, '129.226.147.7', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiQVhDdzZwSkVEaDlVNndzMXU1dlNNOW1hM051aUdrWEhnZ2poUzEyTiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733389531),
+('KVS5UsootEFjrkm4HW03S0MfNNfxxlcUO0Z6PSND', NULL, '129.226.147.7', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoieHlMaGhhMEF1OXRJOE5Oc09WM2p3R0FEMExOSnNxNzI2YUVZcE5CZiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733389533),
+('LC8rsjREDqkKfBskeZQXoes103lYV7hSqWPT24Rp', NULL, '124.220.171.131', 'Mozilla/5.0 (Linux; Android 10; LIO-AN00 Build/HUAWEILIO-AN00; wv) MicroMessenger Weixin QQ AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.62 XWEB/2692 MMWEBSDK/200901 Mobile Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiYVdCbFhkVDZWWElaR05tbDEzY2g4QlpVNkpVOVJKNEJxVzBiall1bCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733413267),
 ('nRU6fdQ4Vn7KAteNQdtki5TcxcjR5OHzotgV117q', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiT0ZkNHBOaVNjT0hFRXNaYzU0OWJJaUp1SkxWbGZxdUVRd3JMMVdMdiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjQ1OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYWRtaW4vbGFwb3Jhbi1rZXVhbmdhbnMiO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO3M6MTc6InBhc3N3b3JkX2hhc2hfd2ViIjtzOjYwOiIkMnkkMTIkRzZRRGFIUFFFcFNaUXBPNDdLWE1yT3lNWVZXb0NyQWNWUEZsQ0ZWNXFNNXNJa0paTzNJck8iO3M6NjoidGFibGVzIjthOjE6e3M6MjE6Ikxpc3RUcmFuc2Frc2lEb3Nfc29ydCI7YToyOntzOjY6ImNvbHVtbiI7TjtzOjk6ImRpcmVjdGlvbiI7Tjt9fXM6ODoiZmlsYW1lbnQiO2E6MDp7fX0=', 1733370814),
-('SuM2Pt292mPf63IPZ9tgAlYQa0wCxIao44bh064f', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiZFY4Y3duQ0RiNUgyU3lBNXpNZ3RneWpGU09YemZQdmU0aksyalRzbCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9vcGVyYXNpb25hbHMvY3JlYXRlIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjE3OiJwYXNzd29yZF9oYXNoX3dlYiI7czo2MDoiJDJ5JDEyJEc2UURhSFBRRXBTWlFwTzQ3S1hNck95TVlWV29DckFjVlBGbENGVjVxTTVzSWtKWk8zSXJPIjtzOjY6InRhYmxlcyI7YTo0OntzOjIxOiJMaXN0VHJhbnNha3NpRG9zX3NvcnQiO2E6Mjp7czo2OiJjb2x1bW4iO047czo5OiJkaXJlY3Rpb24iO047fXM6MTc6Ikxpc3RQZW5qdWFsc19zb3J0IjthOjI6e3M6NjoiY29sdW1uIjtOO3M6OToiZGlyZWN0aW9uIjtOO31zOjIxOiJMaXN0UGVuanVhbHNfcGVyX3BhZ2UiO3M6MzoiYWxsIjtzOjE5OiJMaXN0U3VwaXJzX3Blcl9wYWdlIjtzOjM6ImFsbCI7fXM6ODoiZmlsYW1lbnQiO2E6MDp7fX0=', 1733225522);
+('NtIVXCZMiytfkhHddJBCbuqlfbE3jNDeM3L24cq8', NULL, '36.77.105.170', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZjY3dEdUV1lITkw5Y1JWTHJZbGZmNXF6M1FHVGxBcGVYYXJsZlZ0VCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9fQ==', 1733371004),
+('pCJHJoD8Z301EexK8VjdUH9D5vKaB3nncmEoiHtf', NULL, '168.151.103.154', 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/123.0.6312.52 Mobile/15E148 Safari/604.1', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiREtuV3BpZjhSaFEzUEJrWXEyb3RZWlhRSk1EUmRranRkZG01NHRhcSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO319', 1733380540),
+('q0PM2cT61ALPZziKJWeg3sAkaS2OYHLV9XJJQPje', NULL, '43.156.168.214', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiS3pyQ3BieEh6NWNJZzlDQjlrTFN6eTg4ZVdmRTNKZTB6TUh0emxRZCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozNjoiaHR0cHM6Ly93d3cuc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluIjt9czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzY6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1733411480),
+('Q8WsjtEu2m045YroFu8M6sY5QDLvQVLtgCh6YiMf', NULL, '10.57.0.118', 'python-requests/2.22.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNUIyZm5PdUxQZDk2OFVDM25YYXN4UVJhSzFaQW1aUHg3M0VHMTVKQSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDI6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbi9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjE6e3M6ODoiaW50ZW5kZWQiO3M6MzY6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbiI7fX0=', 1733390091),
+('qboLJL7qxnBCEzG9s7jdVaixPF2ryaImfsi7SqWV', NULL, '129.226.147.7', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSmJBUjZRT3ZTQU1OVjA2WWRidGp6SEJIcVBzbTVuS3l0VXY3eGM2eSI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO31zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1733389532),
+('QrZtKVywso84s9knC13eDU6lpsklQU7E4FGntnOd', NULL, '159.203.69.155', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiRWdYWGhlNFc5c0w0QkFVMTE1VjNGSHI5NWhCRUx4c3FQQ3J4cmQ5TiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733374372),
+('SuM2Pt292mPf63IPZ9tgAlYQa0wCxIao44bh064f', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiZFY4Y3duQ0RiNUgyU3lBNXpNZ3RneWpGU09YemZQdmU0aksyalRzbCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9vcGVyYXNpb25hbHMvY3JlYXRlIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjE3OiJwYXNzd29yZF9oYXNoX3dlYiI7czo2MDoiJDJ5JDEyJEc2UURhSFBRRXBTWlFwTzQ3S1hNck95TVlWV29DckFjVlBGbENGVjVxTTVzSWtKWk8zSXJPIjtzOjY6InRhYmxlcyI7YTo0OntzOjIxOiJMaXN0VHJhbnNha3NpRG9zX3NvcnQiO2E6Mjp7czo2OiJjb2x1bW4iO047czo5OiJkaXJlY3Rpb24iO047fXM6MTc6Ikxpc3RQZW5qdWFsc19zb3J0IjthOjI6e3M6NjoiY29sdW1uIjtOO3M6OToiZGlyZWN0aW9uIjtOO31zOjIxOiJMaXN0UGVuanVhbHNfcGVyX3BhZ2UiO3M6MzoiYWxsIjtzOjE5OiJMaXN0U3VwaXJzX3Blcl9wYWdlIjtzOjM6ImFsbCI7fXM6ODoiZmlsYW1lbnQiO2E6MDp7fX0=', 1733225522),
+('TGFcezHhy7yXtZha6wdaNUfZ7CUI2VImvmTzhJH5', NULL, '43.153.113.127', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVTdjZjdpRjBjckdsdU1yUDUxakkwZVlYcXF0dkR6TkRkQkRqTmhsVSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733394611),
+('UpRZAUFop1V7eOn205ICkETynhF2BxYH1MfXibBD', NULL, '18.237.97.30', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZWFEMFRwNU82amoxUllBYkczR0FtN2ppaWRuVFhqbHl5UThMSXRIWiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO319', 1733399083),
+('vyLz8RquJZCWlNElHzYKOVUjPf1PexLmCAmzvtwn', NULL, '10.57.0.118', 'python-requests/2.22.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVmJQbnFnSHRTUVh1SzdkMGZFNVFXb0k0TXc4RkRGcTBzbTAxdVZTViI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDI6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbi9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjE6e3M6ODoiaW50ZW5kZWQiO3M6MzY6Imh0dHBzOi8vd3d3LnN1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbiI7fX0=', 1733376021),
+('wRS7Sy1QNZrz3O9xvZraUcEmPpfsFExm1EWa9nIF', NULL, '159.203.69.155', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoia2dHMXdEUFJBSHBlWUx4eWVLdVI0OW85d1p0Rm9Mc0p0enNGeEFJSSI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO31zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1733374370),
+('wxtvhaZytzQuM73nnzZF0Ns8jJf1D95gz9RUr3ua', 1, '36.77.105.170', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiUlhEOU8yT2pZeW1NbzhWenRRbnZpdTFXMmQ5dzlIZ1lKRjd1TVZJMCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTkwOiJodHRwczovL3N1Y2Nlc3NtYW5kaXJpLmNvbS9hZG1pbi90cmFuc2Frc2ktZG9zP3RhYmxlRmlsdGVycyU1QmNyZWF0ZWRfYXQlNUQlNUJjcmVhdGVkX2Zyb20lNUQ9MjAyNC0xMi0wMyUyMDAwJTNBMDAlM0EwMCZ0YWJsZUZpbHRlcnMlNUJjcmVhdGVkX2F0JTVEJTVCY3JlYXRlZF90byU1RD0yMDI0LTEyLTAzJTIwMDAlM0EwMCUzQTAwIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjE3OiJwYXNzd29yZF9oYXNoX3dlYiI7czo2MDoiJDJ5JDEyJEc2UURhSFBRRXBTWlFwTzQ3S1hNck95TVlWV29DckFjVlBGbENGVjVxTTVzSWtKWk8zSXJPIjtzOjY6InRhYmxlcyI7YToxOntzOjIxOiJMaXN0VHJhbnNha3NpRG9zX3NvcnQiO2E6Mjp7czo2OiJjb2x1bW4iO047czo5OiJkaXJlY3Rpb24iO047fX19', 1733417965),
+('xeQeyqOrZnS2C035qpqSSIsLfDo0Z94D0k1h8tLI', NULL, '104.166.80.6', 'Mozilla/5.0 (X11; Linux i686; rv:109.0) Gecko/20100101 Firefox/120.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoid0c4YmpuZmcyZTNKcmdvc1NSSnJiUHVIMW5UN0dVdnZnSzNDVVYxTyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO319', 1733401608),
+('XUOPeaMJaKvZwZN5qigkHcEjecVwwBPoGP7BlTw6', NULL, '139.59.34.198', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiUTgyWDZDZVJoTWJXcVQ4QWRTM0w0WW80QVI5Q0x0dTd6TGZiNjRoUiI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO31zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozMjoiaHR0cHM6Ly9zdWNjZXNzbWFuZGlyaS5jb20vYWRtaW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1733401601),
+('XYjVmzxDBftWfs2b59EQgAAUA2tDeyTSHAkv3JMF', NULL, '139.59.34.198', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoidTVMNFhNUXRHT09yUm1iTE1WUXlxaGxSanNDTEtNNDhPNnNoNHRmaCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733401602),
+('Z4piynMrxtaT77GKEInMG0MoLp5R0dTZDIziRhom', NULL, '49.51.195.195', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiWWxwZTVaR1YwWHkwaHNJSXdoRXk5QWZkRE1PcDhFUFhFSTlIU3VHMiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHBzOi8vc3VjY2Vzc21hbmRpcmkuY29tIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733385666);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `supir`
+-- Struktur dari tabel `supir`
 --
 
 CREATE TABLE `supir` (
-  `id` bigint UNSIGNED NOT NULL,
-  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `alamat` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `telepon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `alamat` varchar(255) DEFAULT NULL,
+  `telepon` varchar(255) DEFAULT NULL,
   `hutang` decimal(15,0) DEFAULT NULL,
-  `riwayat_bayar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `riwayat_bayar` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `supir`
+-- Dumping data untuk tabel `supir`
 --
 
 INSERT INTO `supir` (`id`, `nama`, `alamat`, `telepon`, `hutang`, `riwayat_bayar`, `created_at`, `updated_at`, `deleted_at`) VALUES
@@ -460,37 +503,37 @@ INSERT INTO `supir` (`id`, `nama`, `alamat`, `telepon`, `hutang`, `riwayat_bayar
 -- --------------------------------------------------------
 
 --
--- Table structure for table `transaksi_do`
+-- Struktur dari tabel `transaksi_do`
 --
 
 CREATE TABLE `transaksi_do` (
-  `id` bigint UNSIGNED NOT NULL,
-  `nomor` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nomor` varchar(20) NOT NULL,
   `tanggal` datetime NOT NULL,
-  `penjual_id` bigint UNSIGNED NOT NULL,
-  `supir_id` bigint UNSIGNED NOT NULL,
-  `kendaraan_id` bigint UNSIGNED DEFAULT NULL,
-  `nomor_polisi` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `penjual_id` bigint(20) UNSIGNED NOT NULL,
+  `supir_id` bigint(20) UNSIGNED NOT NULL,
+  `kendaraan_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `nomor_polisi` varchar(20) DEFAULT NULL,
   `tonase` decimal(10,2) NOT NULL,
   `harga_satuan` decimal(15,0) NOT NULL,
   `sub_total` decimal(15,0) NOT NULL,
   `upah_bongkar` decimal(15,0) NOT NULL,
-  `biaya_lain` decimal(15,0) NOT NULL DEFAULT '0',
-  `keterangan_biaya_lain` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `biaya_lain` decimal(15,0) NOT NULL DEFAULT 0,
+  `keterangan_biaya_lain` varchar(255) DEFAULT NULL,
   `hutang_awal` decimal(15,0) NOT NULL,
   `pembayaran_hutang` decimal(12,0) NOT NULL,
   `sisa_hutang_penjual` decimal(12,0) NOT NULL,
   `sisa_bayar` decimal(15,0) NOT NULL,
-  `file_do` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cara_bayar` enum('Tunai','Transfer','Cair di Luar','Belum Bayar') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Tunai',
-  `catatan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `file_do` varchar(255) DEFAULT NULL,
+  `cara_bayar` enum('Tunai','Transfer','Cair di Luar','Belum Bayar') NOT NULL DEFAULT 'Tunai',
+  `catatan` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `transaksi_do`
+-- Dumping data untuk tabel `transaksi_do`
 --
 
 INSERT INTO `transaksi_do` (`id`, `nomor`, `tanggal`, `penjual_id`, `supir_id`, `kendaraan_id`, `nomor_polisi`, `tonase`, `harga_satuan`, `sub_total`, `upah_bongkar`, `biaya_lain`, `keterangan_biaya_lain`, `hutang_awal`, `pembayaran_hutang`, `sisa_hutang_penjual`, `sisa_bayar`, `file_do`, `cara_bayar`, `catatan`, `created_at`, `updated_at`, `deleted_at`) VALUES
@@ -517,25 +560,25 @@ INSERT INTO `transaksi_do` (`id`, `nomor`, `tanggal`, `penjual_id`, `supir_id`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Struktur dari tabel `users`
 --
 
 CREATE TABLE `users` (
-  `id` bigint UNSIGNED NOT NULL,
-  `perusahaan_id` bigint UNSIGNED DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `perusahaan_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `remember_token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `users`
+-- Dumping data untuk tabel `users`
 --
 
 INSERT INTO `users` (`id`, `perusahaan_id`, `name`, `email`, `is_active`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
@@ -549,46 +592,46 @@ INSERT INTO `users` (`id`, `perusahaan_id`, `name`, `email`, `is_active`, `email
 --
 
 --
--- Indexes for table `cache`
+-- Indeks untuk tabel `cache`
 --
 ALTER TABLE `cache`
   ADD PRIMARY KEY (`key`);
 
 --
--- Indexes for table `cache_locks`
+-- Indeks untuk tabel `cache_locks`
 --
 ALTER TABLE `cache_locks`
   ADD PRIMARY KEY (`key`);
 
 --
--- Indexes for table `failed_jobs`
+-- Indeks untuk tabel `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
 
 --
--- Indexes for table `jobs`
+-- Indeks untuk tabel `jobs`
 --
 ALTER TABLE `jobs`
   ADD PRIMARY KEY (`id`),
   ADD KEY `jobs_queue_index` (`queue`);
 
 --
--- Indexes for table `job_batches`
+-- Indeks untuk tabel `job_batches`
 --
 ALTER TABLE `job_batches`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `kendaraan`
+-- Indeks untuk tabel `kendaraan`
 --
 ALTER TABLE `kendaraan`
   ADD PRIMARY KEY (`id`),
   ADD KEY `kendaraan_supir_id_foreign` (`supir_id`);
 
 --
--- Indexes for table `laporan_keuangan`
+-- Indeks untuk tabel `laporan_keuangan`
 --
 ALTER TABLE `laporan_keuangan`
   ADD PRIMARY KEY (`id`),
@@ -600,13 +643,13 @@ ALTER TABLE `laporan_keuangan`
   ADD KEY `laporan_keuangan_created_at_index` (`created_at`);
 
 --
--- Indexes for table `migrations`
+-- Indeks untuk tabel `migrations`
 --
 ALTER TABLE `migrations`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `operasional`
+-- Indeks untuk tabel `operasional`
 --
 ALTER TABLE `operasional`
   ADD PRIMARY KEY (`id`),
@@ -619,13 +662,13 @@ ALTER TABLE `operasional`
   ADD KEY `operasional_tanggal_operasional_index` (`tanggal`,`operasional`);
 
 --
--- Indexes for table `password_reset_tokens`
+-- Indeks untuk tabel `password_reset_tokens`
 --
 ALTER TABLE `password_reset_tokens`
   ADD PRIMARY KEY (`email`);
 
 --
--- Indexes for table `pekerja`
+-- Indeks untuk tabel `pekerja`
 --
 ALTER TABLE `pekerja`
   ADD PRIMARY KEY (`id`),
@@ -633,7 +676,7 @@ ALTER TABLE `pekerja`
   ADD KEY `pekerja_telepon_index` (`telepon`);
 
 --
--- Indexes for table `penjuals`
+-- Indeks untuk tabel `penjuals`
 --
 ALTER TABLE `penjuals`
   ADD PRIMARY KEY (`id`),
@@ -641,7 +684,7 @@ ALTER TABLE `penjuals`
   ADD KEY `penjuals_telepon_index` (`telepon`);
 
 --
--- Indexes for table `perusahaans`
+-- Indeks untuk tabel `perusahaans`
 --
 ALTER TABLE `perusahaans`
   ADD PRIMARY KEY (`id`),
@@ -651,7 +694,7 @@ ALTER TABLE `perusahaans`
   ADD KEY `perusahaans_npwp_index` (`npwp`);
 
 --
--- Indexes for table `riwayat_pembayaran_hutangs`
+-- Indeks untuk tabel `riwayat_pembayaran_hutangs`
 --
 ALTER TABLE `riwayat_pembayaran_hutangs`
   ADD PRIMARY KEY (`id`),
@@ -662,7 +705,7 @@ ALTER TABLE `riwayat_pembayaran_hutangs`
   ADD KEY `riwayat_pembayaran_hutangs_tipe_penjual_id_pekerja_id_index` (`tipe`,`penjual_id`,`pekerja_id`);
 
 --
--- Indexes for table `sessions`
+-- Indeks untuk tabel `sessions`
 --
 ALTER TABLE `sessions`
   ADD PRIMARY KEY (`id`),
@@ -670,7 +713,7 @@ ALTER TABLE `sessions`
   ADD KEY `sessions_last_activity_index` (`last_activity`);
 
 --
--- Indexes for table `supir`
+-- Indeks untuk tabel `supir`
 --
 ALTER TABLE `supir`
   ADD PRIMARY KEY (`id`),
@@ -678,7 +721,7 @@ ALTER TABLE `supir`
   ADD KEY `supir_telepon_index` (`telepon`);
 
 --
--- Indexes for table `transaksi_do`
+-- Indeks untuk tabel `transaksi_do`
 --
 ALTER TABLE `transaksi_do`
   ADD PRIMARY KEY (`id`),
@@ -688,7 +731,7 @@ ALTER TABLE `transaksi_do`
   ADD KEY `transaksi_do_tanggal_penjual_id_index` (`tanggal`,`penjual_id`);
 
 --
--- Indexes for table `users`
+-- Indeks untuk tabel `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
@@ -698,106 +741,106 @@ ALTER TABLE `users`
   ADD KEY `users_name_index` (`name`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `failed_jobs`
+-- AUTO_INCREMENT untuk tabel `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `jobs`
+-- AUTO_INCREMENT untuk tabel `jobs`
 --
 ALTER TABLE `jobs`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `kendaraan`
+-- AUTO_INCREMENT untuk tabel `kendaraan`
 --
 ALTER TABLE `kendaraan`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `laporan_keuangan`
+-- AUTO_INCREMENT untuk tabel `laporan_keuangan`
 --
 ALTER TABLE `laporan_keuangan`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
--- AUTO_INCREMENT for table `migrations`
+-- AUTO_INCREMENT untuk tabel `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
--- AUTO_INCREMENT for table `operasional`
+-- AUTO_INCREMENT untuk tabel `operasional`
 --
 ALTER TABLE `operasional`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `pekerja`
+-- AUTO_INCREMENT untuk tabel `pekerja`
 --
 ALTER TABLE `pekerja`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `penjuals`
+-- AUTO_INCREMENT untuk tabel `penjuals`
 --
 ALTER TABLE `penjuals`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT for table `perusahaans`
+-- AUTO_INCREMENT untuk tabel `perusahaans`
 --
 ALTER TABLE `perusahaans`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `riwayat_pembayaran_hutangs`
+-- AUTO_INCREMENT untuk tabel `riwayat_pembayaran_hutangs`
 --
 ALTER TABLE `riwayat_pembayaran_hutangs`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `supir`
+-- AUTO_INCREMENT untuk tabel `supir`
 --
 ALTER TABLE `supir`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
--- AUTO_INCREMENT for table `transaksi_do`
+-- AUTO_INCREMENT untuk tabel `transaksi_do`
 --
 ALTER TABLE `transaksi_do`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `kendaraan`
+-- Ketidakleluasaan untuk tabel `kendaraan`
 --
 ALTER TABLE `kendaraan`
   ADD CONSTRAINT `kendaraan_supir_id_foreign` FOREIGN KEY (`supir_id`) REFERENCES `supir` (`id`);
 
 --
--- Constraints for table `operasional`
+-- Ketidakleluasaan untuk tabel `operasional`
 --
 ALTER TABLE `operasional`
   ADD CONSTRAINT `operasional_penjual_id_foreign` FOREIGN KEY (`penjual_id`) REFERENCES `penjuals` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `operasional_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
--- Constraints for table `riwayat_pembayaran_hutangs`
+-- Ketidakleluasaan untuk tabel `riwayat_pembayaran_hutangs`
 --
 ALTER TABLE `riwayat_pembayaran_hutangs`
   ADD CONSTRAINT `riwayat_pembayaran_hutangs_operasional_id_foreign` FOREIGN KEY (`operasional_id`) REFERENCES `operasional` (`id`) ON DELETE CASCADE,
@@ -805,14 +848,14 @@ ALTER TABLE `riwayat_pembayaran_hutangs`
   ADD CONSTRAINT `riwayat_pembayaran_hutangs_penjual_id_foreign` FOREIGN KEY (`penjual_id`) REFERENCES `penjuals` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `transaksi_do`
+-- Ketidakleluasaan untuk tabel `transaksi_do`
 --
 ALTER TABLE `transaksi_do`
   ADD CONSTRAINT `transaksi_do_penjual_id_foreign` FOREIGN KEY (`penjual_id`) REFERENCES `penjuals` (`id`),
   ADD CONSTRAINT `transaksi_do_supir_id_foreign` FOREIGN KEY (`supir_id`) REFERENCES `supir` (`id`);
 
 --
--- Constraints for table `users`
+-- Ketidakleluasaan untuk tabel `users`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `users_perusahaan_id_foreign` FOREIGN KEY (`perusahaan_id`) REFERENCES `perusahaans` (`id`) ON DELETE CASCADE;

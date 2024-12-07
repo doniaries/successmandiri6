@@ -56,11 +56,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            PerusahaanSeeder::class,
             PenjualSeeder::class,
             SupirSeeder::class,
             OperasionalSeeder::class,
             TransaksiDoSeeder::class,
-            PerusahaanSeeder::class,
         ]);
 
         // Run PerusahaanSeeder and get the created perusahaan

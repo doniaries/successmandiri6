@@ -13,13 +13,22 @@ class OperasionalSeeder extends Seeder
     {
         $operasionals = [
             [
+                'tanggal' => '2024-12-03 18:01:54',
+                'operasional' => 'pemasukan',
+                'kategori' => 'tambah_saldo',
+                'tipe_nama' => 'user',
+                'user_id' => 3,
+                'nominal' => 3592000,
+                'keterangan' => 'Sisa Saldo kemaren',
+            ],
+            [
                 'tanggal' => '2024-12-03 18:01:52',
                 'operasional' => 'pemasukan',
                 'kategori' => 'tambah_saldo',
                 'tipe_nama' => 'user',
                 'user_id' => 3,
                 'nominal' => 250000000,
-                'keterangan' => 'sdfsdfsfsfdf',
+                'keterangan' => 'Jemput Ke Kamang',
             ],
             [
                 'tanggal' => '2024-12-03 18:03:05',
@@ -28,7 +37,16 @@ class OperasionalSeeder extends Seeder
                 'tipe_nama' => 'user',
                 'user_id' => 3,
                 'nominal' => 12025000,
-                'keterangan' => 'siska minta transfer',
+                'keterangan' => 'siska Minta Transfer',
+            ],
+            [
+                'tanggal' => '2024-12-03 18:04:05',
+                'operasional' => 'pemasukan',
+                'kategori' => 'tambah_saldo',
+                'tipe_nama' => 'user',
+                'user_id' => 3,
+                'nominal' => 30000,
+                'keterangan' => 'Sisa DITEG',
             ],
             [
                 'tanggal' => '2024-12-03 18:20:34',
@@ -37,7 +55,7 @@ class OperasionalSeeder extends Seeder
                 'tipe_nama' => 'supir',
                 'supir_id' => 1,
                 'nominal' => 76000,
-                'keterangan' => null,
+                'keterangan' => 'Biaya pijakan gas Eko',
             ],
             [
                 'tanggal' => '2024-12-03 18:30:19',
@@ -46,16 +64,16 @@ class OperasionalSeeder extends Seeder
                 'tipe_nama' => 'user',
                 'user_id' => 4,
                 'nominal' => 50000,
-                'keterangan' => 'belanja',
+                'keterangan' => 'Belanja operasional',
             ],
             [
                 'tanggal' => '2024-12-03 18:31:05',
                 'operasional' => 'pengeluaran',
-                'kategori' => 'lain_lain',
-                'tipe_nama' => 'user',
+                'kategori' => 'pijakan_gas',
+                'tipe_nama' => 'supir',
                 'user_id' => 4,
-                'nominal' => 50000,
-                'keterangan' => 'belanja',
+                'nominal' => 78000,
+                'keterangan' => 'Biaya pijakan gas Naro',
             ],
         ];
 

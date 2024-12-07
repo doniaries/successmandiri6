@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 05, 2024 at 03:54 AM
+-- Generation Time: Dec 05, 2024 at 05:09 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `success-mandiri6`
+-- Database: `tesdb`
 --
 
 -- --------------------------------------------------------
@@ -338,7 +338,8 @@ INSERT INTO `penjuals` (`id`, `nama`, `alamat`, `telepon`, `hutang`, `riwayat_ba
 (13, 'DITEG', NULL, NULL, 0, NULL, '2024-12-03 04:36:58', '2024-12-03 04:36:58', NULL),
 (14, 'KELOMPOK', NULL, NULL, 0, NULL, '2024-12-03 04:36:58', '2024-12-03 04:36:58', NULL),
 (15, 'UCOK', NULL, NULL, 0, NULL, '2024-12-03 04:36:58', '2024-12-03 04:36:58', NULL),
-(16, 'ARI WAHYU', NULL, NULL, 0, NULL, '2024-12-03 04:36:58', '2024-12-03 04:36:58', NULL);
+(16, 'ARI WAHYU', NULL, NULL, 0, NULL, '2024-12-03 04:36:58', '2024-12-03 04:36:58', NULL),
+(17, 'KELOMPOK 2', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -508,7 +509,7 @@ INSERT INTO `transaksi_do` (`id`, `nomor`, `tanggal`, `penjual_id`, `supir_id`, 
 (17, 'DO-20241203-0012', '2024-12-03 17:17:12', 4, 12, NULL, NULL, 9809.00, 3180, 31192620, 0, 124000, NULL, 0, 0, 0, 31068620, NULL, 'Cair di Luar', NULL, '2024-12-03 10:18:21', '2024-12-03 10:18:21', NULL),
 (18, 'DO-20241203-0013', '2024-12-03 17:21:12', 12, 13, NULL, NULL, 8122.00, 3190, 25909180, 0, 300000, NULL, 1000000, 1000000, 0, 24609180, NULL, 'Transfer', NULL, '2024-12-03 10:22:45', '2024-12-04 11:11:27', NULL),
 (19, 'DO-20241203-0014', '2024-12-03 17:22:45', 13, 14, NULL, NULL, 9979.00, 3180, 31733220, 0, 350000, NULL, 0, 0, 0, 31383220, NULL, 'Transfer', NULL, '2024-12-03 10:24:21', '2024-12-03 10:24:21', NULL),
-(20, 'DO-20241203-0015', '2024-12-03 17:41:55', 14, 15, NULL, NULL, 8627.00, 3190, 27520130, 0, 650000, NULL, 0, 0, 0, 26870130, NULL, 'Tunai', NULL, '2024-12-03 10:42:50', '2024-12-03 10:42:50', NULL),
+(20, 'DO-20241203-0015', '2024-12-03 17:41:55', 17, 15, NULL, NULL, 8627.00, 3190, 27520130, 0, 650000, NULL, 0, 0, 0, 26870130, NULL, 'Tunai', NULL, '2024-12-03 10:42:50', '2024-12-03 10:42:50', NULL),
 (21, 'DO-20241203-0016', '2024-12-03 17:42:50', 14, 15, NULL, NULL, 8221.00, 3190, 26224990, 0, 650000, NULL, 0, 0, 0, 25574990, NULL, 'Tunai', NULL, '2024-12-03 10:43:20', '2024-12-03 10:43:20', NULL),
 (22, 'DO-20241203-0017', '2024-12-03 17:43:20', 5, 16, NULL, NULL, 6196.00, 3190, 19765240, 0, 0, NULL, 0, 0, 0, 19765240, NULL, 'Tunai', NULL, '2024-12-03 10:44:59', '2024-12-03 10:44:59', NULL),
 (23, 'DO-20241203-0018', '2024-12-03 17:51:25', 15, 17, NULL, NULL, 1720.00, 3180, 5469600, 0, 0, NULL, 0, 0, 0, 5469600, NULL, 'Tunai', NULL, '2024-12-03 10:52:03', '2024-12-03 10:52:03', NULL),
@@ -747,7 +748,7 @@ ALTER TABLE `pekerja`
 -- AUTO_INCREMENT for table `penjuals`
 --
 ALTER TABLE `penjuals`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `perusahaans`

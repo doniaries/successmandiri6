@@ -30,6 +30,9 @@ class PerusahaanSeeder extends Seeder
             'pimpinan' => 'Yondra',
             'npwp' => '12.345.678.9-123.000',
             'is_active' => true,
+            'sisa_saldo_kemarin' => 0,
+            'tanggal_sisa_saldo' => now(),
+            'sudah_diproses' => false,
 
         ]);
 
