@@ -20,7 +20,7 @@ class SupirSeeder extends Seeder
             ],
             [
                 'id' => 2,
-                'nama' => 'FURQON',
+                'nama' => 'FURQONS',
                 'telepon' => null,
                 'alamat' => null,
                 'hutang' => null,

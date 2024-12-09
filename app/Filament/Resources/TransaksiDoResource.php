@@ -372,7 +372,7 @@ class TransaksiDoResource extends Resource
                                 ->schema([
                                     Forms\Components\TextInput::make('upah_bongkar')
                                         ->label('Upah Bongkar')
-                                        ->hidden() //sembunyikan
+                                        // ->hidden() //sembunyikan
                                         ->hint('*jika ada')
                                         ->hintColor('primary')
                                         ->currencyMask(thousandSeparator: ',', decimalSeparator: '.', precision: 0)
@@ -717,14 +717,14 @@ class TransaksiDoResource extends Resource
                     ])
                     ->sortable(),
 
-                // Tables\Columns\TextColumn::make('upah_bongkar')
-                //     ->label('Upah Bongkar')
-                //     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                //     ->summarize([
-                //         Tables\Columns\Summarizers\Sum::make()
-                //             ->money('IDR')
-                //     ])
-                //     ->sortable(),
+                Tables\Columns\TextColumn::make('upah_bongkar')
+                    ->label('Upah Bongkar')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                    ->summarize([
+                        Tables\Columns\Summarizers\Sum::make()
+                            ->money('IDR')
+                    ])
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('biaya_lain')
                     ->label('Biaya')

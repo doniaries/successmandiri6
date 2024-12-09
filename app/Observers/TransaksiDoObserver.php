@@ -20,28 +20,13 @@ class TransaksiDoObserver
         try {
             DB::beginTransaction();
 
-            // Validasi data wajib
             $this->validateRequiredFields($transaksiDo);
+            $this->prepareForSave($transaksiDo); // Calculate all amounts
 
-            // Hitung total DO
-            $transaksiDo->sub_total = $transaksiDo->tonase * $transaksiDo->harga_satuan;
-
-            // Komponen pengurangan
-            $komponenPengurangan =
-                $transaksiDo->upah_bongkar +
-                $transaksiDo->biaya_lain +
-                $transaksiDo->pembayaran_hutang;
-
-            // Hitung sisa bayar
-            $transaksiDo->sisa_bayar = $transaksiDo->sub_total - $komponenPengurangan;
-            $transaksiDo->sisa_bayar = max(0, $transaksiDo->sisa_bayar);
-
-            // Validasi saldo untuk pembayaran tunai
             if ($transaksiDo->cara_bayar === 'Tunai') {
                 $this->validateCompanyBalance($transaksiDo);
             }
 
-            // Update hutang penjual jika ada pembayaran
             if ($transaksiDo->pembayaran_hutang > 0) {
                 $this->handleHutangPenjual($transaksiDo);
             }
@@ -49,13 +34,10 @@ class TransaksiDoObserver
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error creating TransaksiDo:', [
-                'error' => $e->getMessage(),
-                'data' => $transaksiDo->toArray()
-            ]);
             throw $e;
         }
     }
+
 
     public function created(TransaksiDo $transaksiDo)
     {
@@ -68,19 +50,20 @@ class TransaksiDoObserver
         try {
             DB::beginTransaction();
 
-            $oldTransaksi = TransaksiDo::find($transaksiDo->id);
+            // Get the original model data
+            $oldPembayaranHutang = $transaksiDo->getOriginal('pembayaran_hutang', 0);
 
-            // Rollback hutang lama jika ada perubahan
-            if ($oldTransaksi->pembayaran_hutang > 0) {
-                $oldTransaksi->penjual->increment('hutang', $oldTransaksi->pembayaran_hutang);
+            // Rollback old hutang if there was a payment
+            if ($oldPembayaranHutang > 0) {
+                $transaksiDo->penjual?->increment('hutang', $oldPembayaranHutang);
             }
 
-            // Proses hutang baru jika ada
+            // Process new hutang payment if any
             if ($transaksiDo->pembayaran_hutang > 0) {
                 $this->handleHutangPenjual($transaksiDo);
             }
 
-            // Validasi saldo untuk pembayaran tunai
+            // Validate balance for cash payments
             if ($transaksiDo->cara_bayar === 'Tunai') {
                 $this->validateCompanyBalance($transaksiDo);
             }
@@ -88,6 +71,12 @@ class TransaksiDoObserver
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error updating TransaksiDo:', [
+                'error' => $e->getMessage(),
+                'transaksi_id' => $transaksiDo->id,
+                'old_payment' => $oldPembayaranHutang,
+                'new_payment' => $transaksiDo->pembayaran_hutang
+            ]);
             throw $e;
         }
     }
@@ -167,13 +156,15 @@ class TransaksiDoObserver
             throw new \Exception('Data perusahaan tidak ditemukan');
         }
 
-        // Untuk transaksi tunai, periksa saldo cukup untuk membayar sisa
-        if ($transaksiDo->sisa_bayar > $perusahaan->saldo) {
-            throw new \Exception(
-                "Saldo tidak mencukupi untuk pembayaran tunai.\n" .
-                "Saldo: Rp " . number_format($perusahaan->saldo, 0, ',', '.') . "\n" .
-                "Dibutuhkan: Rp " . number_format($transaksiDo->sisa_bayar, 0, ',', '.')
-            );
+        // For cash transactions, only validate sisa_bayar for pengeluaran
+        if ($transaksiDo->sisa_bayar > 0) {
+            if ($transaksiDo->sisa_bayar > $perusahaan->saldo) {
+                throw new \Exception(
+                    "Saldo tidak mencukupi untuk pembayaran tunai.\n" .
+                        "Saldo: Rp " . number_format($perusahaan->saldo, 0, ',', '.') . "\n" .
+                        "Dibutuhkan: Rp " . number_format($transaksiDo->sisa_bayar, 0, ',', '.')
+                );
+            }
         }
     }
 
@@ -278,6 +269,4 @@ class TransaksiDoObserver
             ->body("DO #{$transaksiDo->nomor} telah dihapus secara permanen")
             ->send();
     }
-
-
 }
