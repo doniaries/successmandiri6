@@ -151,14 +151,26 @@ class TransaksiDoObserver
 
     protected function validateCompanyBalance(TransaksiDo $transaksiDo)
     {
-        $perusahaan = Perusahaan::lockForUpdate()->first();
-        if (!$perusahaan) {
-            throw new \Exception('Data perusahaan tidak ditemukan');
+        // Skip validasi untuk data yang dipulihkan
+        if ($transaksiDo->exists && $transaksiDo->wasRecentlyCreated === false) {
+            return;
         }
 
-        // For cash transactions, only validate sisa_bayar for pengeluaran
-        if ($transaksiDo->sisa_bayar > 0) {
-            if ($transaksiDo->sisa_bayar > $perusahaan->saldo) {
+        // Validasi saldo hanya untuk transaksi tunai baru
+        if ($transaksiDo->cara_bayar === 'Tunai') {
+            $perusahaan = Perusahaan::lockForUpdate()->first();
+            if (!$perusahaan) {
+                throw new \Exception('Data perusahaan tidak ditemukan');
+            }
+
+            if ($perusahaan->saldo < 0) {
+                throw new \Exception(
+                    "Tidak dapat melakukan transaksi tunai karena saldo minus.\n" .
+                        "Saldo saat ini: Rp " . number_format($perusahaan->saldo, 0, ',', '.')
+                );
+            }
+
+            if ($transaksiDo->isClean() && $transaksiDo->sisa_bayar > $perusahaan->saldo) {
                 throw new \Exception(
                     "Saldo tidak mencukupi untuk pembayaran tunai.\n" .
                         "Saldo: Rp " . number_format($perusahaan->saldo, 0, ',', '.') . "\n" .
@@ -167,6 +179,7 @@ class TransaksiDoObserver
             }
         }
     }
+
 
     protected function sendDeleteNotification(TransaksiDo $transaksiDo)
     {
@@ -235,12 +248,31 @@ class TransaksiDoObserver
         try {
             DB::beginTransaction();
 
-            // Restore related data
-            $this->laporanObserver->handleTransaksiDO($transaksiDo);
+            // Bypass saldo check untuk transaksi yang dipulihkan
+            if ($transaksiDo->cara_bayar === 'Tunai') {
+                $perusahaan = Perusahaan::lockForUpdate()->first();
 
+                // Increment saldo untuk pembayaran tunai
+                $totalPemasukan = $transaksiDo->upah_bongkar +
+                    $transaksiDo->biaya_lain +
+                    $transaksiDo->pembayaran_hutang;
+
+                if ($totalPemasukan > 0) {
+                    $perusahaan->increment('saldo', $totalPemasukan);
+                }
+
+                if ($transaksiDo->sisa_bayar > 0) {
+                    $perusahaan->decrement('saldo', $transaksiDo->sisa_bayar);
+                }
+            }
+
+            // Restore hutang penjual jika ada
             if ($transaksiDo->pembayaran_hutang > 0) {
                 $this->handleHutangPenjual($transaksiDo);
             }
+
+            // Generate ulang laporan keuangan
+            $this->laporanObserver->handleTransaksiDO($transaksiDo);
 
             DB::commit();
 
@@ -254,6 +286,7 @@ class TransaksiDoObserver
             throw $e;
         }
     }
+
 
     public function forceDeleted(TransaksiDo $transaksiDo)
     {

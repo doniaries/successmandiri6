@@ -13,62 +13,54 @@ class LaporanKeuanganObserver
         try {
             DB::beginTransaction();
 
-            // Ambil data perusahaan dengan locking
+            // Untuk data yang dihapus, hanya buat laporan tanpa mempengaruhi saldo
+            if ($transaksiDo->trashed()) {
+                if ($transaksiDo->cara_bayar === 'Tunai') {
+                    $this->createLaporan([
+                        'tanggal' => $transaksiDo->tanggal,
+                        'jenis_transaksi' => 'Pengeluaran',
+                        'kategori' => 'DO',
+                        'sub_kategori' => 'Pembayaran DO',
+                        'nominal' => $transaksiDo->sisa_bayar,
+                        'sumber_transaksi' => 'DO',
+                        'referensi_id' => $transaksiDo->id,
+                        'nomor_referensi' => $transaksiDo->nomor,
+                        'pihak_terkait' => $transaksiDo->penjual->nama,
+                        'cara_pembayaran' => 'Tunai',
+                        'keterangan' => "Pembatalan DO #{$transaksiDo->nomor}",
+                        'mempengaruhi_kas' => false
+                    ]);
+                }
+
+                DB::commit();
+                return;
+            }
+
+            // Proses normal untuk non-deleted records
             $perusahaan = Perusahaan::lockForUpdate()->first();
             if (!$perusahaan) {
                 throw new \Exception('Data perusahaan tidak ditemukan');
             }
 
-            // Load relasi penjual untuk menghindari N+1
-            $transaksiDo->load('penjual');
-
-            // Simpan saldo awal untuk logging
-            $saldoAwal = $perusahaan->saldo;
-
-            // Handle berdasarkan cara bayar
+            // Proses normal untuk transaksi baru/update
             if ($transaksiDo->cara_bayar === 'Tunai') {
-                // Untuk transaksi tunai, semua komponen mempengaruhi kas
                 $pemasukan = $transaksiDo->upah_bongkar + $transaksiDo->biaya_lain + $transaksiDo->pembayaran_hutang;
-                $pengeluaran = $transaksiDo->sisa_bayar;
-
-                // Update saldo
                 if ($pemasukan > 0) {
                     $perusahaan->increment('saldo', $pemasukan);
                 }
-                if ($pengeluaran > 0) {
-                    $perusahaan->decrement('saldo', $pengeluaran);
+
+                if ($transaksiDo->sisa_bayar > 0) {
+                    $perusahaan->decrement('saldo', $transaksiDo->sisa_bayar);
                 }
 
-                // Buat laporan keuangan
                 $this->handleTransaksiTunai($transaksiDo, $perusahaan);
             } else {
-                // Untuk non-tunai, hanya komponen tunai yang mempengaruhi kas
-                $pemasukanTunai = $transaksiDo->upah_bongkar + $transaksiDo->biaya_lain + $transaksiDo->pembayaran_hutang;
-                if ($pemasukanTunai > 0) {
-                    $perusahaan->increment('saldo', $pemasukanTunai);
-                }
-
-                // Buat laporan keuangan
                 $this->handleTransaksiNonTunai($transaksiDo, $perusahaan);
             }
 
             DB::commit();
-
-            // Log perubahan saldo
-            Log::info('Transaksi DO selesai:', [
-                'nomor' => $transaksiDo->nomor,
-                'cara_bayar' => $transaksiDo->cara_bayar,
-                'saldo_awal' => $saldoAwal,
-                'saldo_akhir' => $perusahaan->fresh()->saldo,
-                'selisih' => $perusahaan->fresh()->saldo - $saldoAwal
-            ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error mencatat transaksi DO:', [
-                'error' => $e->getMessage(),
-                'transaksi' => $transaksiDo->toArray()
-            ]);
             throw $e;
         }
     }
