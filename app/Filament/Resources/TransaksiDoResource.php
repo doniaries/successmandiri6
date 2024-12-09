@@ -652,7 +652,7 @@ class TransaksiDoResource extends Resource
                                                         ->actions([
                                                             \Filament\Notifications\Actions\Action::make('Tambah Saldo')
                                                                 ->button()
-                                                                ->url(route('filament.admin.resources.perusahaans.index'))
+                                                                ->url(route('filament.admin.resources.operasionals.index'))
                                                         ])
                                                         ->send();
                                                 }
