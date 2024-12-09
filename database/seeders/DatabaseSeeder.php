@@ -59,8 +59,8 @@ class DatabaseSeeder extends Seeder
             PerusahaanSeeder::class,
             PenjualSeeder::class,
             SupirSeeder::class,
-            OperasionalSeeder::class,
-            TransaksiDoSeeder::class,
+            // OperasionalSeeder::class,
+            // TransaksiDoSeeder::class,
         ]);
 
         // Run PerusahaanSeeder and get the created perusahaan

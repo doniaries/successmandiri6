@@ -135,6 +135,7 @@ class LaporanKeuanganObserver
         ];
 
         $totalPemasukan = 0;
+        $pihakTerkait = $transaksiDo->penjual ? $transaksiDo->penjual->nama : 'Penjual tidak ditemukan';
 
         // Catat setiap komponen pemasukan tunai
         foreach ($komponenPemasukan as $komponen) {
@@ -148,7 +149,7 @@ class LaporanKeuanganObserver
                     'sumber_transaksi' => 'DO',
                     'referensi_id' => $transaksiDo->id,
                     'nomor_referensi' => $transaksiDo->nomor,
-                    'pihak_terkait' => $transaksiDo->penjual->nama,
+                    'pihak_terkait' => $pihakTerkait,
                     'cara_pembayaran' => 'Tunai',
                     'keterangan' => "Pemasukan tunai DO #{$transaksiDo->nomor}",
                     'mempengaruhi_kas' => true,
@@ -169,7 +170,7 @@ class LaporanKeuanganObserver
                 'sumber_transaksi' => 'DO',
                 'referensi_id' => $transaksiDo->id,
                 'nomor_referensi' => $transaksiDo->nomor,
-                'pihak_terkait' => $transaksiDo->penjual->nama,
+                'pihak_terkait' => $pihakTerkait,
                 'cara_pembayaran' => $transaksiDo->cara_bayar,
                 'keterangan' => "Pembayaran DO via {$transaksiDo->cara_bayar}",
                 'mempengaruhi_kas' => false,
@@ -183,66 +184,5 @@ class LaporanKeuanganObserver
             'sisa_bayar_non_tunai' => $transaksiDo->sisa_bayar,
             'saldo_akhir' => $perusahaan->fresh()->saldo
         ]);
-    }
-
-    protected function createLaporan(array $data)
-    {
-        // Validasi data wajib
-        $required = [
-            'tanggal',
-            'jenis_transaksi',
-            'kategori',
-            'nominal',
-            'sumber_transaksi',
-            'referensi_id',
-            'pihak_terkait',
-            'cara_pembayaran',
-            'mempengaruhi_kas'
-        ];
-
-        foreach ($required as $field) {
-            if (!isset($data[$field])) {
-                throw new \Exception("Field {$field} wajib diisi");
-            }
-        }
-
-        // Cek duplikasi
-        $exists = LaporanKeuangan::where([
-            'sumber_transaksi' => $data['sumber_transaksi'],
-            'referensi_id' => $data['referensi_id'],
-            'kategori' => $data['kategori'],
-            'sub_kategori' => $data['sub_kategori'] ?? null,
-            'nominal' => $data['nominal']
-        ])->exists();
-
-        if ($exists) {
-            Log::info('Mencegah duplikasi transaksi:', $data);
-            return null;
-        }
-
-        return LaporanKeuangan::create($data);
-    }
-
-    protected function updateSaldo(TransaksiDo $transaksiDo)
-    {
-        if ($transaksiDo->cara_bayar === 'Tunai') {
-            $perusahaan = Perusahaan::lockForUpdate()->first();
-
-            // Hitung komponen yang mempengaruhi saldo
-            $pemasukan = $transaksiDo->pembayaran_hutang;
-            $pengeluaran = $transaksiDo->sub_total;
-
-            // Update saldo
-            $perusahaan->decrement('saldo', $pengeluaran);
-            if ($pemasukan > 0) {
-                $perusahaan->increment('saldo', $pemasukan);
-            }
-
-            Log::info('Saldo updated:', [
-                'pengeluaran' => $pengeluaran,
-                'pemasukan' => $pemasukan,
-                'saldo_akhir' => $perusahaan->fresh()->saldo
-            ]);
-        }
     }
 }
