@@ -50,6 +50,7 @@ return [
             'driver' => 'file',
             'path' => storage_path('framework/cache/data'),
             'lock_path' => storage_path('framework/cache/data'),
+            'permission' => 0755,
         ],
 
         'memcached' => [
@@ -75,6 +76,12 @@ return [
             'driver' => 'redis',
             'connection' => env('REDIS_CACHE_CONNECTION', 'cache'),
             'lock_connection' => env('REDIS_CACHE_LOCK_CONNECTION', 'default'),
+            'prefix' => 'transaksi_do_cache',
+        ],
+
+        'memory' => [
+            'driver' => 'array',
+            'prefix' => 'memory_cache',
         ],
 
         'dynamodb' => [
@@ -103,6 +110,7 @@ return [
     |
     */
 
-    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache_'),
+    'prefix' => env('CACHE_PREFIX', 'successmandiri_'),
+    'query_ttl' => 3600, // Cache query selama 1 jam
 
 ];

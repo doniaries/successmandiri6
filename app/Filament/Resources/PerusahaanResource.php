@@ -113,7 +113,8 @@ class PerusahaanResource extends Resource
                     ->disk('public')
                     ->height(40)
                     ->extraImgAttributes(['loading' => 'lazy'])
-                    ->defaultImageUrl(url('/images/default-logo.png')),
+                    ->defaultImageUrl(url('/images/default-logo.png'))
+                    ->getStateUsing(fn($record) => $record->logo ?? '/images/default-logo.png'),
                 Tables\Columns\TextColumn::make('saldo')
                     ->weight('5')
                     ->badge()
@@ -147,7 +148,7 @@ class PerusahaanResource extends Resource
             ])
             ->actions([
                 Action::make('tambah_saldo')
-                // ->hidden()
+                    // ->hidden()
                     ->label('Tambah Saldo')
                     ->icon('heroicon-o-plus-circle')
                     ->color('success')

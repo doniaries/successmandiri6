@@ -41,8 +41,17 @@ class Perusahaan extends Model implements HasMedia
         return \Illuminate\Database\Eloquent\Casts\Attribute::make(
             get: function ($value) {
                 if (empty($value)) {
-                    return null;
+                    return url('/images/default-logo.png');
                 }
+
+                // Debugging: Log full path
+                \Log::info('Logo Path Debug', [
+                    'original_value' => $value,
+                    'storage_url' => Storage::disk('public')->url($value),
+                    'full_path' => public_path('storage/' . $value),
+                    'file_exists' => file_exists(public_path('storage/' . $value))
+                ]);
+
                 return Storage::disk('public')->url($value);
             },
         );

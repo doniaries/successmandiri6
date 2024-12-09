@@ -10,7 +10,7 @@ use App\Traits\DokumentasiTrait;
 use App\Traits\LaporanKeuanganTrait;
 use App\Traits\GenerateMonthlyNumber;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\{DB, Log};
+use Illuminate\Support\Facades\{DB, Log, Cache};
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,7 +25,7 @@ class TransaksiDo extends Model
     use HasFactory, SoftDeletes, LaporanKeuanganTrait, DokumentasiTrait, GenerateMonthlyNumber;
 
     protected $table = 'transaksi_do';
-    protected $with = ['penjual', 'supir', 'kendaraan']; // Default eager loading
+    protected $with = ['penjual:id', 'supir:id', 'kendaraan:id']; // Default eager loading
 
 
     protected $fillable = [
@@ -103,7 +103,9 @@ class TransaksiDo extends Model
 
     public function penjual(): BelongsTo
     {
-        return $this->belongsTo(Penjual::class);
+        return $this->belongsTo(Penjual::class)->withDefault([
+            'nama' => 'Tidak Diketahui'
+        ]);
     }
 
     // Tambahkan relation ke laporan keuangan
@@ -187,5 +189,22 @@ class TransaksiDo extends Model
                     'kendaraan' => $this->kendaraan ? $this->kendaraan->no_polisi : 'N/A',
                 ]))
         );
+    }
+
+    public function scopeRecent($query, $days = 30)
+    {
+        return $query->where('tanggal', '>=', now()->subDays($days));
+    }
+
+    public function scopeByPenjual($query, $penjualId)
+    {
+        return $query->where('penjual_id', $penjualId);
+    }
+
+    public function getCachedAttribute($key)
+    {
+        return Cache::remember("transaksi_do_{$this->id}_{$key}", 3600, function () use ($key) {
+            return $this->getAttribute($key);
+        });
     }
 }

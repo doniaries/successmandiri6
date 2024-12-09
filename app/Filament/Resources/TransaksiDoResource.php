@@ -151,29 +151,16 @@ class TransaksiDoResource extends Resource
                                                     $set('sisa_hutang_penjual', $penjual->hutang);
                                                     $set('pembayaran_hutang', 0);
 
-                                                    // Auto create/find supir berdasarkan penjual
-                                                    $supir = \App\Models\Supir::firstOrCreate(
-                                                        ['nama' => $penjual->nama],
-                                                        [
-                                                            'alamat' => $penjual->alamat ?? '',
-                                                            'telepon' => $penjual->telepon ?? '',
-                                                        ]
-                                                    );
-
-                                                    // Set supir_id langsung saat penjual dipilih
-                                                    $set('supir_id', $supir->id);
-
                                                     // Log untuk tracking
                                                     Log::info('Auto-fill supir saat pemilihan penjual:', [
                                                         'penjual_id' => $state,
                                                         'penjual_nama' => $penjual->nama,
-                                                        'supir_id' => $supir->id
                                                     ]);
 
                                                     // Notifikasi ke user
                                                     Notification::make()
-                                                        ->title('Supir Ditambahkan')
-                                                        ->body('Data supir diisi otomatis menggunakan data penjual')
+                                                        ->title('Penjual Dipilih')
+                                                        ->body('Data penjual diisi otomatis')
                                                         ->success()
                                                         ->duration(3000)
                                                         ->send();
@@ -308,9 +295,60 @@ class TransaksiDoResource extends Resource
                                         ->hintColor('primary')
                                         // ->hint('angka tanpa titik')
                                         ->required()
-                                        // ->numeric()
+                                        ->currencyMask(
+                                            thousandSeparator: '.',
+                                            decimalSeparator: ',',
+                                            precision: 0
+                                        )
+                                        ->numeric()
                                         ->suffix('Kg')
                                         ->live(onBlur: true)
+                                        ->afterStateUpdated(function ($state, Forms\Get $get, Forms\Set $set) {
+                                            // Ambil penjual_id yang sudah dipilih sebelumnya
+                                            $penjualId = $get('penjual_id');
+
+                                            // Jika tonase sudah diisi dan penjual sudah dipilih
+                                            if ($state && $penjualId) {
+                                                $penjual = \App\Models\Penjual::find($penjualId);
+                                                if ($penjual) {
+                                                    // Cek apakah supir_id sudah diisi
+                                                    $existingSupirId = $get('supir_id');
+
+                                                    if (!$existingSupirId) {
+                                                        // Auto create/find supir berdasarkan penjual
+                                                        $supir = \App\Models\Supir::firstOrCreate(
+                                                            ['nama' => $penjual->nama],
+                                                            [
+                                                                'alamat' => $penjual->alamat ?? '',
+                                                                'telepon' => $penjual->telepon ?? '',
+                                                            ]
+                                                        );
+
+                                                        // Set supir_id setelah tonase diisi
+                                                        $set('supir_id', $supir->id);
+
+                                                        // Log untuk tracking
+                                                        \Log::info('Auto-fill supir setelah tonase diisi:', [
+                                                            'penjual_id' => $penjualId,
+                                                            'penjual_nama' => $penjual->nama,
+                                                            'supir_id' => $supir->id,
+                                                            'tonase' => $state
+                                                        ]);
+
+                                                        // Notifikasi ke user
+                                                        Notification::make()
+                                                            ->title('Supir Ditambahkan')
+                                                            ->body('Data supir diisi otomatis setelah mengisi tonase')
+                                                            ->success()
+                                                            ->duration(3000)
+                                                            ->send();
+                                                    }
+                                                }
+                                            }
+
+                                            // Panggil fungsi hitung total
+                                            static::hitungTotal($state, $get, $set);
+                                        })
                                         ->afterStateUpdated(fn($state, Forms\Get $get, Forms\Set $set) =>
                                         static::hitungTotal($state, $get, $set)),
 
@@ -586,7 +624,6 @@ class TransaksiDoResource extends Resource
                                         ->default(0),
 
 
-
                                     Forms\Components\TextInput::make('sisa_bayar')
                                         ->label('Sisa Bayar')
                                         ->required()
@@ -772,19 +809,17 @@ class TransaksiDoResource extends Resource
                         $record->sisa_hutang_penjual > 0 ? 'danger' : 'success'
                     ),
 
-                Tables\Columns\TextColumn::make('saldo_perusahaan')
-                    ->label('Saldo Perusahaan')
-                    ->formatStateUsing(function () {
-                        // Ambil data saldo terkini
-                        $perusahaan = \App\Models\Perusahaan::first();
-                        return 'Rp ' . number_format($perusahaan->saldo ?? 0, 0, ',', '.');
-                    })
-                    ->alignRight()
-                    ->color(fn($state) => $state > 0 ? 'success' : 'danger')
-                    ->weight('bold')
-                    ->searchable(false),
-
-
+                // Tables\Columns\TextColumn::make('saldo_perusahaan')
+                //     ->label('Saldo Perusahaan')
+                //     ->formatStateUsing(function () {
+                //         // Ambil data saldo terkini
+                //         $perusahaan = \App\Models\Perusahaan::first();
+                //         return 'Rp ' . number_format($perusahaan->saldo ?? 0, 0, ',', '.');
+                //     })
+                //     ->alignRight()
+                //     ->color(fn($state) => $state > 0 ? 'success' : 'danger')
+                //     ->weight('bold')
+                //     ->searchable(false),
 
 
                 Tables\Columns\TextColumn::make('sisa_bayar')
@@ -901,24 +936,21 @@ class TransaksiDoResource extends Resource
             ])
             ->emptyStateHeading('Belum ada data Transaksi DO')
             ->emptyStateDescription('Silakan tambah Transaksi DO baru dengan klik tombol di atas')
-            ->emptyStateIcon('heroicon-o-banknotes');
+            ->emptyStateIcon('heroicon-o-banknotes')
+            ->defaultSort('tanggal', 'desc')
+            ->poll('60s') // Poll setiap 60 detik
+            ->deferLoading() // Menunda loading sampai halaman sepenuhnya dimuat
+            ->persistFiltersInSession() // Menyimpan filter di session
+            ->persistSortInSession() // Menyimpan pengurutan di session
+            ->striped();
     }
 
     // Tambahan untuk memastikan data diload dengan benar
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ])
-            ->select([
-                'transaksi_do.*',  // Ambil semua kolom
-            ])
-            ->with([
-                'penjual',  // Eager load relasi yang diperlukan
-                'supir',
-                'kendaraan'
-            ]);
+            ->with(['penjual', 'supir', 'kendaraan']) // Eager loading
+            ->latest('tanggal');
     }
 
 

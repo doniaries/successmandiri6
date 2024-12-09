@@ -2,12 +2,52 @@
 
 namespace App\Observers;
 
-use Illuminate\Support\Facades\{DB, Log};
+use Illuminate\Support\Facades\{DB, Log, Cache};
 use App\Models\{TransaksiDo, Operasional, Perusahaan, LaporanKeuangan};
 use Filament\Notifications\Notification;
 
 class LaporanKeuanganObserver
 {
+    protected function createLaporan(array $data): void
+    {
+        try {
+            // Pastikan data minimal yang diperlukan
+            $requiredFields = [
+                'tanggal',
+                'jenis_transaksi',
+                'kategori',
+                'nominal',
+                'sumber_transaksi',
+                'referensi_id'
+            ];
+
+            foreach ($requiredFields as $field) {
+                if (!isset($data[$field])) {
+                    throw new \Exception("Field {$field} wajib diisi");
+                }
+            }
+
+            // Set default values jika tidak ada
+            $data['sub_kategori'] = $data['sub_kategori'] ?? '-';
+            $data['nomor_referensi'] = $data['nomor_referensi'] ?? '-';
+            $data['pihak_terkait'] = $data['pihak_terkait'] ?? '-';
+            $data['cara_pembayaran'] = $data['cara_pembayaran'] ?? 'Tunai';
+            $data['keterangan'] = $data['keterangan'] ?? '-';
+            $data['mempengaruhi_kas'] = $data['mempengaruhi_kas'] ?? true;
+
+            // Create laporan
+            $laporan = LaporanKeuangan::create($data);
+
+            // Log success dengan informasi minimal
+            Log::info('Laporan dibuat: ' . $laporan->id);
+        } catch (\Exception $e) {
+            Log::error('Error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+
+
     public function handleTransaksiDO(TransaksiDo $transaksiDo)
     {
         try {
@@ -37,7 +77,11 @@ class LaporanKeuanganObserver
             }
 
             // Proses normal untuk non-deleted records
-            $perusahaan = Perusahaan::lockForUpdate()->first();
+            // Menggunakan cache untuk data perusahaan
+            $perusahaan = Cache::remember('perusahaan', 300, function () {
+                return Perusahaan::lockForUpdate()->first();
+            });
+            
             if (!$perusahaan) {
                 throw new \Exception('Data perusahaan tidak ditemukan');
             }
@@ -116,13 +160,8 @@ class LaporanKeuanganObserver
             ]);
         }
 
-        // Log perubahan saldo
-        Log::info('Update saldo transaksi tunai:', [
-            'nomor_do' => $transaksiDo->nomor,
-            'total_pemasukan' => $totalPemasukan,
-            'pengeluaran' => $transaksiDo->sisa_bayar,
-            'saldo_akhir' => $perusahaan->fresh()->saldo
-        ]);
+        // Log perubahan saldo dengan informasi minimal
+        Log::info("DO #{$transaksiDo->nomor} selesai: +{$totalPemasukan}, -{$transaksiDo->sisa_bayar}");
     }
 
     protected function handleTransaksiNonTunai(TransaksiDo $transaksiDo, Perusahaan $perusahaan)
@@ -177,12 +216,7 @@ class LaporanKeuanganObserver
             ]);
         }
 
-        // Log perubahan saldo
-        Log::info('Update saldo transaksi non-tunai:', [
-            'nomor_do' => $transaksiDo->nomor,
-            'total_pemasukan_tunai' => $totalPemasukan,
-            'sisa_bayar_non_tunai' => $transaksiDo->sisa_bayar,
-            'saldo_akhir' => $perusahaan->fresh()->saldo
-        ]);
+        // Log perubahan saldo dengan informasi minimal
+        Log::info("DO non-tunai #{$transaksiDo->nomor} selesai: +{$totalPemasukan}");
     }
 }
