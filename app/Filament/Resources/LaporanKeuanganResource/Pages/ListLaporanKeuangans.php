@@ -60,19 +60,19 @@ class ListLaporanKeuangans extends ListRecords
     //             ->modifyQueryUsing(fn(Builder $query) => $query)
     //             ->badgeColor('primary'),
 
-    //         'tunai' => Tab::make('Tunai')
+    //         'tunai' => Tab::make('tunai')
     //             ->icon('heroicon-o-banknotes')
-    //             ->badge($this->getTabCount('Tunai'))
-    //             ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'Tunai'))
+    //             ->badge($this->getTabCount('tunai'))
+    //             ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'tunai'))
     //             ->badgeColor('success'),
 
-    //         'transfer' => Tab::make('Transfer')
+    //         'transfer' => Tab::make('transfer')
     //             ->icon('heroicon-o-credit-card')
-    //             ->badge($this->getTabCount('Transfer'))
-    //             ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'Transfer'))
+    //             ->badge($this->getTabCount('transfer'))
+    //             ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'transfer'))
     //             ->badgeColor('info'),
 
-    //         'cair_di_luar' => Tab::make('Cair di Luar')
+    //         'cair_di_luar' => Tab::make('cair di luar')
     //             ->icon('heroicon-o-check-circle')
     //             ->badge($this->getTabCount('cair di luar'))
     //             ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'cair di luar'))

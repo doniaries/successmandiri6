@@ -8,6 +8,87 @@ use Illuminate\Support\Facades\{DB, Log};
 
 class LaporanKeuanganService
 {
+    public function getLaporanData($startDate, $endDate)
+    {
+        try {
+            // 1. Get current data perusahaan
+            $perusahaan = Perusahaan::firstOrFail();
+
+            // 2. Get all transactions in date range with proper eager loading
+            $laporan = LaporanKeuangan::with(['transaksiDo', 'operasional'])
+                ->whereBetween('tanggal', [
+                    Carbon::parse($startDate)->startOfDay(),
+                    Carbon::parse($endDate)->endOfDay()
+                ])
+                ->get();
+
+            // 3. Calculate totals correctly
+            $pemasukan = $laporan->where('jenis_transaksi', 'Pemasukan')->sum('nominal');
+            $pengeluaran = $laporan->where('jenis_transaksi', 'Pengeluaran')->sum('nominal');
+
+            // Breakdown by categories
+            $pembaranHutang = $laporan->where('sub_kategori', 'Bayar Hutang')->sum('nominal');
+            $pemasukkanSisa = $laporan->where('sub_kategori', 'Sisa')->sum('nominal');
+
+            // DO Calculations
+            $totalDO = $laporan->where('kategori', 'DO')
+                ->where('jenis_transaksi', 'Pengeluaran')
+                ->sum('nominal');
+
+            // Operational Calculations
+            $totalOperasional = $laporan->where('kategori', 'Operasional')
+                ->where('jenis_transaksi', 'Pengeluaran')
+                ->sum('nominal');
+
+            // Payment Method Breakdown
+            $pembayaran = [
+                'tunai' => $laporan->where('cara_pembayaran', 'tunai')->sum('sisa_bayar'),
+                'transfer' => $laporan->where('cara_pembayaran', 'transfer')->sum('sisa_bayar'),
+                'cair_diluar' => $laporan->where('cara_pembayaran', 'cair di luar')->sum('sisa_bayar'),
+                'belum_dibayar' => $laporan->where('cara_pembayaran', 'belum dibayar')->sum('sisa_bayar'),
+                'total' => $laporan->sum('sisa_bayar')
+            ];
+
+            // Calculate final totals
+            $totalPemasukan = $pemasukan;
+            $totalPengeluaran = $pengeluaran;
+
+            // Log calculations for debugging
+            Log::info('Perhitungan Laporan:', [
+                'range' => "$startDate - $endDate",
+                'pemasukan' => $totalPemasukan,
+                'pengeluaran' => $totalPengeluaran,
+                'pembayaran_hutang' => $pembaranHutang,
+                'total_do' => $totalDO,
+                'total_operasional' => $totalOperasional,
+                'breakdown_pembayaran' => $pembayaran
+            ]);
+
+            return [
+                'perusahaan' => $perusahaan,
+                'transaksi' => $laporan,
+                'totalPemasukan' => $totalPemasukan,
+                'totalPengeluaran' => $totalPengeluaran,
+                'pembayaranHutang' => $pembaranHutang,
+                'totalDO' => $totalDO,
+                'totalOperasional' => $totalOperasional,
+                'pembayaran' => $pembayaran,
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+                'tanggal' => $startDate
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error generating report:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
+
+
+
+
     public function generatePdfReport($startDate, $endDate)
     {
         try {
@@ -28,36 +109,36 @@ class LaporanKeuanganService
 
             // Hitung jumlah transaksi per cara bayar
             $transaksiCount = [
-                'tunai' => $transaksiDo->where('cara_bayar', 'Tunai')->count(),
-                'transfer' => $transaksiDo->where('cara_bayar', 'Transfer')->count(),
+                'tunai' => $transaksiDo->where('cara_bayar', 'tunai')->count(),
+                'transfer' => $transaksiDo->where('cara_bayar', 'transfer')->count(),
                 'cairDiluar' => $transaksiDo->where('cara_bayar', 'cair di luar')->count(),
-                'belumDibayar' => $transaksiDo->where('cara_bayar', 'belum dibayar')->count() // Perbaikan lowercase
+                'belumDibayar' => $transaksiDo->where('cara_bayar', 'belum dibayar')->count(),
+                'total' => $transaksiDo->count()
             ];
 
-            // Hitung total pembayaran per jenis
+            // Pembayaran per metode DO
             $pembayaran = [
-                'tunai' => $transaksiDo->where('cara_bayar', 'Tunai')->sum('sisa_bayar'),
-                'transfer' => $transaksiDo->where('cara_bayar', 'Transfer')->sum('sisa_bayar'),
+                'tunai' => $transaksiDo->where('cara_bayar', 'tunai')->sum('sisa_bayar'),
+                'transfer' => $transaksiDo->where('cara_bayar', 'transfer')->sum('sisa_bayar'),
                 'cairDiluar' => $transaksiDo->where('cara_bayar', 'cair di luar')->sum('sisa_bayar'),
-                'belumDibayar' => $transaksiDo->where('cara_bayar', 'belum dibayar')->sum('sisa_bayar') // Perbaikan lowercase
+                'belumDibayar' => $transaksiDo->where('cara_bayar', 'belum dibayar')->sum('sisa_bayar'),
             ];
-
 
             $pemasukanOperasional = $operasional->where('operasional', 'pemasukan')->sum('nominal');
             $pengeluaranOperasional = $operasional->where('operasional', 'pengeluaran')->sum('nominal');
             $totalBayarHutang = $transaksiDo->sum('pembayaran_hutang');
 
-            // TOTAL SALDO/UANG MASUK
-            $totalPemasukan = ($pembayaran['tunai'] + $pembayaran['transfer']) + // Pemasukan tunai + transfer
-                $pembayaran['cairDiluar'] + // Cair diluar
-                $totalBayarHutang + // Bayar hutang
+            // Hitung total pemasukan
+            $sisaPembayaran = $transaksiDo->whereIn('cara_bayar', ['transfer', 'cair di luar', 'belum dibayar'])->sum('sisa_bayar');
+            $totalPemasukan = $totalBayarHutang + // Total pembayaran hutang
+                $sisaPembayaran + // Sisa pembayaran (transfer, cair di luar, belum dibayar)
                 $pemasukanOperasional; // Pemasukan operasional
 
-            // PENGELUARAN/UANG KELUAR
+            // Hitung total pengeluaran
             $totalPengeluaran = $transaksiDo->sum('sub_total') + // Total DO
-                $pengeluaranOperasional; // Total operasional
+                $pengeluaranOperasional; // Pengeluaran operasional
 
-            // SISA SALDO
+            // Hitung sisa saldo
             $sisaSaldo = $totalPemasukan - $totalPengeluaran;
 
             // Hitung total lainnya

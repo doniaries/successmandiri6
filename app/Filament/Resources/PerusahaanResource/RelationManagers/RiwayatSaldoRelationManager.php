@@ -73,8 +73,8 @@ class RiwayatSaldoRelationManager extends RelationManager
                                 throw new \Exception('Data perusahaan tidak ditemukan');
                             }
 
-                            // Rollback saldo jika cara pembayaran Tunai
-                            if ($record->cara_pembayaran === 'Tunai') {
+                            // Rollback saldo jika cara pembayaran tunai
+                            if ($record->cara_pembayaran === 'tunai') {
                                 $perusahaan->rollbackSaldo($record->nominal);
                             }
 
@@ -91,7 +91,7 @@ class RiwayatSaldoRelationManager extends RelationManager
                                 'pihak_terkait' => $perusahaan->pimpinan,
                                 'cara_pembayaran' => $record->cara_pembayaran,
                                 'keterangan' => "Pembatalan transaksi {$record->nomor_referensi}",
-                                'mempengaruhi_kas' => $record->cara_pembayaran === 'Tunai'
+                                'mempengaruhi_kas' => $record->cara_pembayaran === 'tunai'
                             ]);
 
                             // Soft delete record tambah saldo

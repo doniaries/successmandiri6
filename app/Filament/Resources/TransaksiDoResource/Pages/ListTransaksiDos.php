@@ -76,22 +76,22 @@ class ListTransaksiDos extends ListRecords
                 ->modifyQueryUsing(fn(Builder $query) => $query)
                 ->badgeColor('primary'),
 
-            'tunai' => Tab::make('Tunai')
+            'tunai' => Tab::make('tunai')
                 ->icon('heroicon-o-banknotes')
                 ->badge(fn() => TransaksiDo::query()
-                    ->where('cara_bayar', 'Tunai')
+                    ->where('cara_bayar', 'tunai')
                     ->when($this->getTableFilters()['created_at'] ?? null, function ($query, $filter) {
                         $data = $filter->getState();
                         return $query->whereDate('tanggal', '>=', $data['created_from'])
                             ->whereDate('tanggal', '<=', $data['created_to']);
                     })->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'Tunai'))
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'tunai'))
                 ->badgeColor('success'),
 
-            'transfer' => Tab::make('Transfer')
+            'transfer' => Tab::make('transfer')
                 ->icon('heroicon-o-credit-card')
                 ->badge(fn() => TransaksiDo::query()
-                    ->where('cara_bayar', 'Transfer')
+                    ->where('cara_bayar', 'transfer')
                     ->when($this->getTableFilters()['created_at'] ?? null, function ($query, $filter) {
                         $data = $filter->getState();
                         if (!empty($data['created_from']) && !empty($data['created_to'])) {
@@ -100,10 +100,10 @@ class ListTransaksiDos extends ListRecords
                             $query->whereDate('tanggal', now());
                         }
                     })->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'Transfer'))
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'transfer'))
                 ->badgeColor('info'),
 
-            'cair_luar' => Tab::make('Cair Di Luar')
+            'cair_luar' => Tab::make('cair di luar')
                 ->icon('heroicon-o-banknotes')
                 ->badge(fn() => TransaksiDo::query()
                     ->where('cara_bayar', 'cair di luar')
@@ -118,10 +118,10 @@ class ListTransaksiDos extends ListRecords
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'cair di luar'))
                 ->badgeColor('warning'),
 
-            'belum_dibayar' => Tab::make('Belum Dibayar')
+            'belum_dibayar' => Tab::make('belum dibayar')
                 ->icon('heroicon-o-banknotes')
                 ->badge(fn() => TransaksiDo::query()
-                    ->where('cara_bayar', 'Belum Dibayar')
+                    ->where('cara_bayar', 'belum dibayar')
                     ->when($this->getTableFilters()['created_at'] ?? null, function ($query, $filter) {
                         $data = $filter->getState();
                         if (!empty($data['created_from']) && !empty($data['created_to'])) {
@@ -130,7 +130,7 @@ class ListTransaksiDos extends ListRecords
                             $query->whereDate('tanggal', now());
                         }
                     })->count())
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'Belum Dibayar'))
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'belum dibayar'))
                 ->badgeColor('danger'),
         ];
     }

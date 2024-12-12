@@ -567,11 +567,11 @@ class TransaksiDoResource extends Resource
                                         ->label('Cara Bayar')
                                         ->options(TransaksiDo::CARA_BAYAR)
                                         ->native(false)
-                                        ->default('Tunai')
+                                        ->default('tunai')
                                         ->required()
                                         ->live()
                                         ->afterStateUpdated(function ($state, Forms\Get $get, Forms\Set $set) {
-                                            if ($state !== 'Tunai') {
+                                            if ($state !== 'tunai') {
                                                 // Reset validasi saldo untuk non-tunai
                                                 $set('_tmp_bypass_saldo_check', true);
                                             }
@@ -667,7 +667,7 @@ class TransaksiDoResource extends Resource
                                         ->live()
                                         ->afterStateUpdated(function ($state, Forms\Get $get) {
                                             // Cek cara bayar dan saldo
-                                            if ($get('cara_bayar') === 'Tunai') {
+                                            if ($get('cara_bayar') === 'tunai') {
                                                 $perusahaan = \App\Models\Perusahaan::first();
                                                 $saldoSaatIni = $perusahaan->saldo ?? 0;
                                                 $sisaBayar = self::formatCurrency($state);
@@ -749,9 +749,10 @@ class TransaksiDoResource extends Resource
                     ->searchable()
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
-                        'Tunai' => 'success',
-                        'Transfer' => 'info',
-                        'Cair di Luar' => 'warning',
+                        'tunai' => 'success',
+                        'transfer' => 'info',
+                        'cair di luar' => 'warning',
+                        'belum dibayar' => 'danger',
                         default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('penjual.nama')

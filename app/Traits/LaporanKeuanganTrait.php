@@ -92,9 +92,9 @@ trait LaporanKeuanganTrait
     /**
      * Validasi saldo untuk transaksi tunai
      */
-    protected function validateSaldoTunai(float $nominal): void
+    protected function validateSaldotunai(float $nominal): void
     {
-        if ($this->cara_bayar === 'Tunai') {
+        if ($this->cara_bayar === 'tunai') {
             $saldo = $this->getSaldoPerusahaan();
             if ($nominal > $saldo) {
                 throw new \Exception(
@@ -140,8 +140,8 @@ trait LaporanKeuanganTrait
             }
 
             // 2. Handle pengeluaran tunai
-            if ($this->cara_bayar === 'Tunai' && $this->sisa_bayar > 0) {
-                $this->validateSaldoTunai($this->sisa_bayar);
+            if ($this->cara_bayar === 'tunai' && $this->sisa_bayar > 0) {
+                $this->validateSaldotunai($this->sisa_bayar);
                 $this->updateSaldo('decrement', $this->sisa_bayar);
                 Log::info('Saldo berkurang:', [
                     'nominal' => $this->sisa_bayar,
@@ -180,9 +180,9 @@ trait LaporanKeuanganTrait
     /**
      * Check transaksi tunai
      */
-    protected function isTransaksiTunai(): bool
+    protected function isTransaksitunai(): bool
     {
-        return $this->cara_bayar === 'Tunai';
+        return $this->cara_bayar === 'tunai';
     }
 
     /**

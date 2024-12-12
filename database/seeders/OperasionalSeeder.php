@@ -37,7 +37,7 @@ class OperasionalSeeder extends Seeder
                 'tipe_nama' => 'user',
                 'user_id' => 3,
                 'nominal' => 12025000,
-                'keterangan' => 'siska Minta Transfer',
+                'keterangan' => 'siska Minta transfer',
             ],
             [
                 'tanggal' => '2024-12-03 18:04:05',
@@ -92,7 +92,7 @@ class OperasionalSeeder extends Seeder
                 'referensi_id' => $operasional->id,
                 'pihak_terkait' => $data['tipe_nama'] === 'user' ? 'User ID: ' . $data['user_id'] : 'Supir ID: ' . ($data['supir_id'] ?? ''),
                 'tipe_pihak' => $data['tipe_nama'],
-                'cara_pembayaran' => 'Tunai',
+                'cara_pembayaran' => 'tunai',
                 'keterangan' => $data['keterangan'],
                 'mempengaruhi_kas' => true,
             ]);

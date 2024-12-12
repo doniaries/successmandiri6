@@ -30,7 +30,7 @@ class TransaksiDoStatWidget extends BaseWidget
                     ->select([
                         DB::raw('COALESCE(SUM(pembayaran_hutang), 0) as total_debt_payments'),
                         DB::raw('COALESCE(SUM(CASE
-                            WHEN cara_bayar IN ("Transfer", "Cair di Luar", "Belum Dibayar", "Belum Bayar")
+                            WHEN cara_bayar IN ("transfer", "cair di luar", "belum dibayar")
                             THEN sisa_bayar
                             ELSE 0
                         END), 0) as remaining_payments')
@@ -41,6 +41,7 @@ class TransaksiDoStatWidget extends BaseWidget
                     ->where('operasional', 'pemasukan')
                     ->sum('nominal');
 
+                // Update cara bayar untuk konsistensi
                 $totalIncoming = $incomingFunds->total_debt_payments +
                     $incomingFunds->remaining_payments +
                     $operationalIncome;
@@ -61,6 +62,19 @@ class TransaksiDoStatWidget extends BaseWidget
 
                 // Calculate remaining balance (Sisa Saldo)
                 $remainingBalance = $totalIncoming - $totalExpenditure;
+
+                // Periksa apakah nilai sudah sesuai dengan yang diharapkan
+                $expectedRemainingBalance = 134876700;
+                $expectedTotalIncoming = 431775680;
+                $expectedTotalExpenditure = 296898980;
+
+                if ($remainingBalance !== $expectedRemainingBalance || $totalIncoming !== $expectedTotalIncoming || $totalExpenditure !== $expectedTotalExpenditure) {
+                    Log::warning('Nilai tidak sesuai dengan yang diharapkan', [
+                        'Sisa Saldo' => $remainingBalance,
+                        'Total Saldo/Uang Masuk' => $totalIncoming,
+                        'Pengeluaran/Uang Keluar' => $totalExpenditure,
+                    ]);
+                }
 
                 return [
                     // Remaining Balance
@@ -92,15 +106,14 @@ class TransaksiDoStatWidget extends BaseWidget
 
                     Stat::make('Total Transaksi', TransaksiDo::count())
                         ->description(sprintf(
-                            "Tunai: %d\nTransfer: %d\nCair di Luar: %d\nBelum Dibayar: %d",
-                            TransaksiDo::where('cara_bayar', 'Tunai')->count(),
-                            TransaksiDo::where('cara_bayar', 'Transfer')->count(),
+                            "tunai: %d\ntransfer: %d\ncair di luar: %d\nbelum dibayar: %d",
+                            TransaksiDo::where('cara_bayar', 'tunai')->count(),
+                            TransaksiDo::where('cara_bayar', 'transfer')->count(),
                             TransaksiDo::where('cara_bayar', 'cair di luar')->count(),
-                            TransaksiDo::where('cara_bayar', 'Belum Dibayar')->count()
+                            TransaksiDo::where('cara_bayar', 'belum dibayar')->count()
                         ))
                         ->descriptionIcon('heroicon-m-document-text')
                         ->color('primary'),
-
                 ];
             });
         } catch (\Exception $e) {

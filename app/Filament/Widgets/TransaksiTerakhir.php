@@ -59,8 +59,8 @@ class TransaksiTerakhir extends BaseWidget
                     ->label('Pembayaran')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
-                        'Tunai' => 'success',
-                        'Transfer' => 'info',
+                        'tunai' => 'success',
+                        'transfer' => 'info',
                         default => 'gray',
                     }),
             ])

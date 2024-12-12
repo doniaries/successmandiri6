@@ -139,27 +139,37 @@
     <table class="saldo-header">
         <tr>
             <td>
-                <div class="saldo-title">SISA SALDO</div>
-                <div class="saldo-amount">Rp {{ number_format($saldoAwal, 0, ',', '.') }}</div>
+                <div style="text-align: center" class="saldo-title">SISA SALDO</div>
+                <div style="text-align: center" class="saldo-amount">Rp {{ number_format($saldoAwal, 0, ',', '.') }}</div>
             </td>
             <td>
-                <div class="saldo-title">TOTAL SALDO/UANG MASUK</div>
-                <div class="saldo-amount">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</div>
-                <div class="transaction-count">
-                    Total {{ array_sum($transaksiCount) }} Transaksi (Tunai: {{ $transaksiCount['tunai'] }},
-                    Transfer: {{ $transaksiCount['transfer'] }},
-                    Cair di Luar: {{ $transaksiCount['cairDiluar'] }},
-                    Belum Dibayar: {{ $transaksiCount['belumDibayar'] }})
+                <div style="text-align: center" class="saldo-title">TOTAL SALDO/UANG MASUK</div>
+                <div style="text-align: center" class="saldo-amount">Rp
+                    {{ number_format($totalPemasukan, 0, ',', '.') }}
+                </div>
+                <div style="text-align: center" class="transaction-count">
+                    Total
+                    {{ $transaksiCount['tunai'] + $transaksiCount['transfer'] + $transaksiCount['cairDiluar'] + $transaksiCount['belumDibayar'] }}
+                    Transaksi (tunai: {{ $transaksiCount['tunai'] }},
+                    transfer: {{ $transaksiCount['transfer'] }},
+                    cair di luar: {{ $transaksiCount['cairDiluar'] }},
+                    belum dibayar: {{ $transaksiCount['belumDibayar'] }})
                 </div>
             </td>
             <td>
-                <div class="saldo-title">PENGELUARAN/UANG KELUAR</div>
-                <div class="saldo-amount">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</div>
-                <div>
+                <div style="text-align: center" class="saldo-title">PENGELUARAN/UANG KELUAR</div>
+                <div style="text-align: center" class="saldo-amount">Rp
+                    {{ number_format($totalPengeluaran, 0, ',', '.') }}</div>
+                <div style="text-align: center">
                     Total DO: Rp {{ number_format($totalSubTotal, 0, ',', '.') }}<br>
                     Total Operasional: Rp {{ number_format($pengeluaranOperasional, 0, ',', '.') }}
                 </div>
             </td>
+            <td>
+                <div style="text-align: center" class="saldo-title">JUMLAH TRANSAKSI</div>
+                <div style="text-align: center" class="saldo-amount">{{ $transaksiCount['total'] }}</div>
+            </td>
+
         </tr>
     </table>
 
@@ -175,10 +185,10 @@
                 <th style="width: 10%;">SUB TOTAL</th>
                 <th style="width: 8%;">BIAYA</th>
                 <th style="width: 8%;">BAYAR HUTANG</th>
-                <th style="width: 8%;">TUNAI</th>
-                <th style="width: 8%;">TRANSFER</th>
+                <th style="width: 8%;">tunai</th>
+                <th style="width: 8%;">transfer</th>
                 <th style="width: 8%;">CAIR DILUAR</th>
-                <th style="width: 8%;">BELUM DIBAYAR</th>
+                <th style="width: 8%;">belum dibayar</th>
             </tr>
         </thead>
         <tbody>

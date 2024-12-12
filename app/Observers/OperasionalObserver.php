@@ -34,10 +34,10 @@ class OperasionalObserver
             $transaksiDo->load('penjual');
 
             // Handle transaksi berdasarkan cara bayar
-            if ($transaksiDo->cara_bayar === 'Tunai') {
-                $this->handleTransaksiTunai($transaksiDo, $perusahaan);
+            if ($transaksiDo->cara_bayar === 'tunai') {
+                $this->handleTransaksitunai($transaksiDo, $perusahaan);
             } else {
-                $this->handleTransaksiNonTunai($transaksiDo);
+                $this->handleTransaksiNontunai($transaksiDo);
             }
 
             // Update hutang penjual jika ada pembayaran
@@ -89,7 +89,7 @@ class OperasionalObserver
                     'nomor_referensi' => sprintf('OP-%s', str_pad($operasional->id, 5, '0', STR_PAD_LEFT)),
                     'pihak_terkait' => $operasional->nama,
                     'tipe_pihak' => $operasional->tipe_nama,
-                    'cara_pembayaran' => 'Tunai',
+                    'cara_pembayaran' => 'tunai',
                     'keterangan' => "Pembayaran hutang {$operasional->tipe_nama}" .
                         ($operasional->keterangan ? ": {$operasional->keterangan}" : ''),
                     'mempengaruhi_kas' => true,
@@ -109,7 +109,7 @@ class OperasionalObserver
                     'nomor_referensi' => sprintf('OP-%s', str_pad($operasional->id, 5, '0', STR_PAD_LEFT)),
                     'pihak_terkait' => $operasional->nama,
                     'tipe_pihak' => $operasional->tipe_nama,
-                    'cara_pembayaran' => 'Tunai',
+                    'cara_pembayaran' => 'tunai',
                     'keterangan' => $operasional->keterangan ?: '-',
                     'mempengaruhi_kas' => true,
                     'saldo_sebelum' => optional(Perusahaan::first())->saldo ?? 0,
@@ -484,7 +484,7 @@ class OperasionalObserver
             'nomor_referensi' => sprintf('OP-%s', str_pad($operasional->id, 5, '0', STR_PAD_LEFT)),
             'pihak_terkait' => $pihakTerkait,
             'tipe_pihak' => $operasional->tipe_nama,
-            'cara_pembayaran' => 'Tunai',
+            'cara_pembayaran' => 'tunai',
             'keterangan' => $operasional->keterangan ?: '-',
             'mempengaruhi_kas' => true,
         ]);

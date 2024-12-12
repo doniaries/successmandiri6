@@ -26,7 +26,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 13809510,
-                'cara_bayar' => 'Tunai',
+                'cara_bayar' => 'tunai',
             ],
             [
                 'nomor' => 'DO-20241203-0002',
@@ -44,7 +44,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 8613970,
-                'cara_bayar' => 'Tunai',
+                'cara_bayar' => 'tunai',
             ],
             [
                 'nomor' => 'DO-20241203-0003',
@@ -62,7 +62,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 1774440,
-                'cara_bayar' => 'Tunai',
+                'cara_bayar' => 'tunai',
             ],
             [
                 'nomor' => 'DO-20241203-0004',
@@ -80,7 +80,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 29152720,
-                'cara_bayar' => 'Cair di Luar',
+                'cara_bayar' => 'cair di luar',
             ],
             [
                 'nomor' => 'DO-20241203-0005',
@@ -98,7 +98,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 2939200,
-                'cara_bayar' => 'Tunai',
+                'cara_bayar' => 'tunai',
             ],
             [
                 'nomor' => 'DO-20241203-0006',
@@ -116,7 +116,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 6714740,
-                'cara_bayar' => 'Tunai',
+                'cara_bayar' => 'tunai',
             ],
             [
                 'nomor' => 'DO-20241203-0007',
@@ -134,7 +134,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 1000000,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 23209280,
-                'cara_bayar' => 'Transfer',
+                'cara_bayar' => 'transfer',
             ],
             [
                 'nomor' => 'DO-20241203-0008',
@@ -152,7 +152,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 3666540,
-                'cara_bayar' => 'Tunai',
+                'cara_bayar' => 'tunai',
             ],
             [
                 'nomor' => 'DO-20241203-0009',
@@ -170,7 +170,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 4692760,
-                'cara_bayar' => 'Tunai',
+                'cara_bayar' => 'tunai',
             ],
             [
                 'nomor' => 'DO-20241203-0010',
@@ -188,7 +188,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 4386120,
-                'cara_bayar' => 'Tunai',
+                'cara_bayar' => 'tunai',
             ],
             [
                 'nomor' => 'DO-20241203-0011',
@@ -206,7 +206,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 4692760,
-                'cara_bayar' => 'Tunai',
+                'cara_bayar' => 'tunai',
             ],
             [
                 'nomor' => 'DO-20241203-0012',
@@ -224,7 +224,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 3666540,
-                'cara_bayar' => 'Tunai',
+                'cara_bayar' => 'tunai',
             ],
             [
                 'nomor' => 'DO-20241203-0013',
@@ -242,7 +242,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 1500000,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 24424990,
-                'cara_bayar' => 'Transfer',
+                'cara_bayar' => 'transfer',
             ],
             [
                 'nomor' => 'DO-20241203-0014',
@@ -260,7 +260,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 24205660,
-                'cara_bayar' => 'Transfer',
+                'cara_bayar' => 'transfer',
             ],
             [
                 'nomor' => 'DO-20241203-0015',
@@ -278,7 +278,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 26870130,
-                'cara_bayar' => 'Tunai',
+                'cara_bayar' => 'tunai',
             ],
             [
                 'nomor' => 'DO-20241203-0016',
@@ -296,7 +296,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 25574990,
-                'cara_bayar' => 'Tunai',
+                'cara_bayar' => 'tunai',
             ],
             [
                 'nomor' => 'DO-20241203-0017',
@@ -314,7 +314,7 @@ class TransaksiDoSeeder extends Seeder
                 'pembayaran_hutang' => 0,
                 'sisa_hutang_penjual' => 0,
                 'sisa_bayar' => 24205660,
-                'cara_bayar' => 'Transfer',
+                'cara_bayar' => 'transfer',
             ],
         ];
 

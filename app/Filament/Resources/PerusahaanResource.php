@@ -178,11 +178,11 @@ class PerusahaanResource extends Resource
                                         Select::make('cara_bayar')
                                             ->label('Cara Bayar')
                                             ->options([
-                                                'Tunai' => 'Tunai',
-                                                'Transfer' => 'Transfer'
+                                                'tunai' => 'tunai',
+                                                'transfer' => 'transfer'
                                             ])
                                             ->required()
-                                            ->default('Tunai')
+                                            ->default('tunai')
                                             ->live(),
 
                                         Textarea::make('keterangan')
@@ -194,7 +194,7 @@ class PerusahaanResource extends Resource
                                             ->image()
                                             ->disk('public')
                                             ->directory('bukti-saldo')
-                                        // ->required(fn(Get $get) => $get('cara_bayar') === 'Transfer')
+                                        // ->required(fn(Get $get) => $get('cara_bayar') === 'transfer')
 
                                     ])
                                     ->columns(1)
@@ -235,7 +235,7 @@ class PerusahaanResource extends Resource
                                 'cara_pembayaran' => $data['cara_bayar'],
                                 'keterangan' => $data['keterangan'],
                                 'bukti_tambah_saldo' => $data['bukti_tambah_saldo'] ?? null,
-                                'mempengaruhi_kas' => $data['cara_bayar'] === 'Tunai'
+                                'mempengaruhi_kas' => $data['cara_bayar'] === 'tunai'
                             ]);
 
                             DB::commit();

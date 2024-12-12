@@ -23,7 +23,7 @@ class TransaksiDoObserver
             $this->validateRequiredFields($transaksiDo);
             $this->prepareForSave($transaksiDo); // Calculate all amounts
 
-            if ($transaksiDo->cara_bayar === 'Tunai') {
+            if ($transaksiDo->cara_bayar === 'tunai') {
                 $this->validateCompanyBalance($transaksiDo);
             }
 
@@ -64,7 +64,7 @@ class TransaksiDoObserver
             }
 
             // Validate balance for cash payments
-            if ($transaksiDo->cara_bayar === 'Tunai') {
+            if ($transaksiDo->cara_bayar === 'tunai') {
                 $this->validateCompanyBalance($transaksiDo);
             }
 
@@ -157,7 +157,7 @@ class TransaksiDoObserver
         }
 
         // Validasi saldo hanya untuk transaksi tunai baru
-        if ($transaksiDo->cara_bayar === 'Tunai') {
+        if ($transaksiDo->cara_bayar === 'tunai') {
             $perusahaan = Perusahaan::lockForUpdate()->first();
             if (!$perusahaan) {
                 throw new \Exception('Data perusahaan tidak ditemukan');
@@ -185,7 +185,7 @@ class TransaksiDoObserver
     {
         $message = "DO #{$transaksiDo->nomor} telah dibatalkan\n";
 
-        if ($transaksiDo->cara_bayar === 'Tunai') {
+        if ($transaksiDo->cara_bayar === 'tunai') {
             $totalPemasukan = $transaksiDo->upah_bongkar +
                 $transaksiDo->biaya_lain +
                 $transaksiDo->pembayaran_hutang;
@@ -230,7 +230,7 @@ class TransaksiDoObserver
         $transaksiDo->upah_bongkar = $transaksiDo->upah_bongkar ?? 0;
         $transaksiDo->biaya_lain = $transaksiDo->biaya_lain ?? 0;
         $transaksiDo->pembayaran_hutang = $transaksiDo->pembayaran_hutang ?? 0;
-        $transaksiDo->cara_bayar = $transaksiDo->cara_bayar ?? 'Tunai';
+        $transaksiDo->cara_bayar = $transaksiDo->cara_bayar ?? 'tunai';
 
         // Kalkulasi
         $transaksiDo->sub_total = $transaksiDo->tonase * $transaksiDo->harga_satuan;
@@ -249,7 +249,7 @@ class TransaksiDoObserver
             DB::beginTransaction();
 
             // Bypass saldo check untuk transaksi yang dipulihkan
-            if ($transaksiDo->cara_bayar === 'Tunai') {
+            if ($transaksiDo->cara_bayar === 'tunai') {
                 $perusahaan = Perusahaan::lockForUpdate()->first();
 
                 // Increment saldo untuk pembayaran tunai

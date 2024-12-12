@@ -31,7 +31,7 @@ class LaporanKeuanganObserver
             $data['sub_kategori'] = $data['sub_kategori'] ?? '-';
             $data['nomor_referensi'] = $data['nomor_referensi'] ?? '-';
             $data['pihak_terkait'] = $data['pihak_terkait'] ?? '-';
-            $data['cara_pembayaran'] = $data['cara_pembayaran'] ?? 'Tunai';
+            $data['cara_pembayaran'] = $data['cara_pembayaran'] ?? 'tunai';
             $data['keterangan'] = $data['keterangan'] ?? '-';
             $data['mempengaruhi_kas'] = $data['mempengaruhi_kas'] ?? true;
 
@@ -55,7 +55,7 @@ class LaporanKeuanganObserver
 
             // Untuk data yang dihapus, hanya buat laporan tanpa mempengaruhi saldo
             if ($transaksiDo->trashed()) {
-                if ($transaksiDo->cara_bayar === 'Tunai') {
+                if ($transaksiDo->cara_bayar === 'tunai') {
                     $this->createLaporan([
                         'tanggal' => $transaksiDo->tanggal,
                         'jenis_transaksi' => 'Pengeluaran',
@@ -66,7 +66,7 @@ class LaporanKeuanganObserver
                         'referensi_id' => $transaksiDo->id,
                         'nomor_referensi' => $transaksiDo->nomor,
                         'pihak_terkait' => $transaksiDo->penjual->nama,
-                        'cara_pembayaran' => 'Tunai',
+                        'cara_pembayaran' => 'tunai',
                         'keterangan' => "Pembatalan DO #{$transaksiDo->nomor}",
                         'mempengaruhi_kas' => false
                     ]);
@@ -81,13 +81,13 @@ class LaporanKeuanganObserver
             $perusahaan = Cache::remember('perusahaan', 300, function () {
                 return Perusahaan::lockForUpdate()->first();
             });
-            
+
             if (!$perusahaan) {
                 throw new \Exception('Data perusahaan tidak ditemukan');
             }
 
             // Proses normal untuk transaksi baru/update
-            if ($transaksiDo->cara_bayar === 'Tunai') {
+            if ($transaksiDo->cara_bayar === 'tunai') {
                 $pemasukan = $transaksiDo->upah_bongkar + $transaksiDo->biaya_lain + $transaksiDo->pembayaran_hutang;
                 if ($pemasukan > 0) {
                     $perusahaan->increment('saldo', $pemasukan);
@@ -97,9 +97,9 @@ class LaporanKeuanganObserver
                     $perusahaan->decrement('saldo', $transaksiDo->sisa_bayar);
                 }
 
-                $this->handleTransaksiTunai($transaksiDo, $perusahaan);
+                $this->handleTransaksitunai($transaksiDo, $perusahaan);
             } else {
-                $this->handleTransaksiNonTunai($transaksiDo, $perusahaan);
+                $this->handleTransaksiNontunai($transaksiDo, $perusahaan);
             }
 
             DB::commit();
@@ -109,7 +109,7 @@ class LaporanKeuanganObserver
         }
     }
 
-    protected function handleTransaksiTunai(TransaksiDo $transaksiDo, Perusahaan $perusahaan)
+    protected function handleTransaksitunai(TransaksiDo $transaksiDo, Perusahaan $perusahaan)
     {
         // Catat komponen pemasukan
         $komponenPemasukan = [
@@ -133,7 +133,7 @@ class LaporanKeuanganObserver
                     'referensi_id' => $transaksiDo->id,
                     'nomor_referensi' => $transaksiDo->nomor,
                     'pihak_terkait' => $transaksiDo->penjual->nama,
-                    'cara_pembayaran' => 'Tunai',
+                    'cara_pembayaran' => 'tunai',
                     'keterangan' => "Pemasukan tunai DO #{$transaksiDo->nomor}",
                     'mempengaruhi_kas' => true,
                 ]);
@@ -154,7 +154,7 @@ class LaporanKeuanganObserver
                 'referensi_id' => $transaksiDo->id,
                 'nomor_referensi' => $transaksiDo->nomor,
                 'pihak_terkait' => $transaksiDo->penjual->nama,
-                'cara_pembayaran' => 'Tunai',
+                'cara_pembayaran' => 'tunai',
                 'keterangan' => "Pembayaran DO #{$transaksiDo->nomor}",
                 'mempengaruhi_kas' => true,
             ]);
@@ -164,7 +164,7 @@ class LaporanKeuanganObserver
         Log::info("DO #{$transaksiDo->nomor} selesai: +{$totalPemasukan}, -{$transaksiDo->sisa_bayar}");
     }
 
-    protected function handleTransaksiNonTunai(TransaksiDo $transaksiDo, Perusahaan $perusahaan)
+    protected function handleTransaksiNontunai(TransaksiDo $transaksiDo, Perusahaan $perusahaan)
     {
         // Catat semua komponen pemasukan tunai jika ada
         $komponenPemasukan = [
@@ -189,7 +189,7 @@ class LaporanKeuanganObserver
                     'referensi_id' => $transaksiDo->id,
                     'nomor_referensi' => $transaksiDo->nomor,
                     'pihak_terkait' => $pihakTerkait,
-                    'cara_pembayaran' => 'Tunai',
+                    'cara_pembayaran' => 'tunai',
                     'keterangan' => "Pemasukan tunai DO #{$transaksiDo->nomor}",
                     'mempengaruhi_kas' => true,
                 ]);

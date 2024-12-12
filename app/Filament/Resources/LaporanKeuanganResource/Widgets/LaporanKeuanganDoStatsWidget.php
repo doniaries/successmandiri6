@@ -76,8 +76,8 @@ class LaporanKeuanganDoStatsWidget extends BaseWidget
                     ->descriptionIcon('heroicon-m-building-office-2')
                     ->color($this->getSaldoColor($perusahaan?->saldo ?? 0)),
 
-                // Stat 2: Transaksi Tunai
-                Stat::make('Pembayaran Tunai', sprintf(
+                // Stat 2: Transaksi tunai
+                Stat::make('Pembayaran tunai', sprintf(
                     "Rp %s (%d Trans.)",
                     number_format($data['total_tunai'], 0, ',', '.'),
                     $data['count_tunai']
@@ -92,14 +92,14 @@ class LaporanKeuanganDoStatsWidget extends BaseWidget
                     ->descriptionIcon('heroicon-m-banknotes')
                     ->color('success'),
 
-                // Stat 3: Non-Tunai (Transfer & Cair Luar)
-                Stat::make('Pembayaran Non-Tunai', sprintf(
+                // Stat 3: Non-tunai (transfer & Cair Luar)
+                Stat::make('Pembayaran Non-tunai', sprintf(
                     "Rp %s (%d Trans.)",
                     number_format($data['total_non_tunai'], 0, ',', '.'),
                     $data['count_non_tunai']
                 ))
                     ->description(sprintf(
-                        "Transfer: Rp %s (%d)\nCair Luar: Rp %s (%d)\nMempengaruhi Kas: Tidak",
+                        "transfer: Rp %s (%d)\nCair Luar: Rp %s (%d)\nMempengaruhi Kas: Tidak",
                         number_format($data['total_transfer'], 0, ',', '.'),
                         $data['count_transfer'],
                         number_format($data['total_cair_luar'], 0, ',', '.'),
@@ -159,21 +159,21 @@ class LaporanKeuanganDoStatsWidget extends BaseWidget
             DB::raw('COUNT(CASE WHEN kategori = "DO" THEN 1 END) as count_do'),
             DB::raw('COUNT(CASE WHEN kategori = "Operasional" THEN 1 END) as count_operasional'),
 
-            // Tunai transactions
-            DB::raw('COUNT(CASE WHEN cara_pembayaran = "Tunai" THEN 1 END) as count_tunai'),
-            DB::raw('COUNT(CASE WHEN cara_pembayaran = "Tunai" AND kategori = "DO" THEN 1 END) as count_tunai_do'),
-            DB::raw('COUNT(CASE WHEN cara_pembayaran = "Tunai" AND kategori = "Operasional" THEN 1 END) as count_tunai_operasional'),
-            DB::raw('COALESCE(SUM(CASE WHEN cara_pembayaran = "Tunai" THEN nominal ELSE 0 END), 0) as total_tunai'),
-            DB::raw('COALESCE(SUM(CASE WHEN cara_pembayaran = "Tunai" AND kategori = "DO" THEN nominal ELSE 0 END), 0) as tunai_do'),
-            DB::raw('COALESCE(SUM(CASE WHEN cara_pembayaran = "Tunai" AND kategori = "Operasional" THEN nominal ELSE 0 END), 0) as tunai_operasional'),
+            // tunai transactions
+            DB::raw('COUNT(CASE WHEN cara_pembayaran = "tunai" THEN 1 END) as count_tunai'),
+            DB::raw('COUNT(CASE WHEN cara_pembayaran = "tunai" AND kategori = "DO" THEN 1 END) as count_tunai_do'),
+            DB::raw('COUNT(CASE WHEN cara_pembayaran = "tunai" AND kategori = "Operasional" THEN 1 END) as count_tunai_operasional'),
+            DB::raw('COALESCE(SUM(CASE WHEN cara_pembayaran = "tunai" THEN nominal ELSE 0 END), 0) as total_tunai'),
+            DB::raw('COALESCE(SUM(CASE WHEN cara_pembayaran = "tunai" AND kategori = "DO" THEN nominal ELSE 0 END), 0) as tunai_do'),
+            DB::raw('COALESCE(SUM(CASE WHEN cara_pembayaran = "tunai" AND kategori = "Operasional" THEN nominal ELSE 0 END), 0) as tunai_operasional'),
 
             // Non-tunai transactions
-            DB::raw('COUNT(CASE WHEN cara_pembayaran != "Tunai" THEN 1 END) as count_non_tunai'),
-            DB::raw('COALESCE(SUM(CASE WHEN cara_pembayaran != "Tunai" THEN nominal ELSE 0 END), 0) as total_non_tunai'),
+            DB::raw('COUNT(CASE WHEN cara_pembayaran != "tunai" THEN 1 END) as count_non_tunai'),
+            DB::raw('COALESCE(SUM(CASE WHEN cara_pembayaran != "tunai" THEN nominal ELSE 0 END), 0) as total_non_tunai'),
 
-            // Transfer details
-            DB::raw('COUNT(CASE WHEN cara_pembayaran = "Transfer" THEN 1 END) as count_transfer'),
-            DB::raw('COALESCE(SUM(CASE WHEN cara_pembayaran = "Transfer" THEN nominal ELSE 0 END), 0) as total_transfer'),
+            // transfer details
+            DB::raw('COUNT(CASE WHEN cara_pembayaran = "transfer" THEN 1 END) as count_transfer'),
+            DB::raw('COALESCE(SUM(CASE WHEN cara_pembayaran = "transfer" THEN nominal ELSE 0 END), 0) as total_transfer'),
 
             // Cair Luar details
             DB::raw('COUNT(CASE WHEN cara_pembayaran = "cair di luar" THEN 1 END) as count_cair_luar'),
@@ -258,7 +258,7 @@ class LaporanKeuanganDoStatsWidget extends BaseWidget
             );
         })
             ->description(sprintf(
-                "Tunai: Rp %s\nTransfer: Rp %s",
+                "tunai: Rp %s\ntransfer: Rp %s",
                 number_format($data['tunai'], 0, ',', '.'),
                 number_format($data['transfer'], 0, ',', '.')
             ))
@@ -296,7 +296,7 @@ class LaporanKeuanganDoStatsWidget extends BaseWidget
     private function getPaymentDescription(array $data): string
     {
         return sprintf(
-            "Tunai: Rp %s\nTransfer: Rp %s\nCair Luar: Rp %s",
+            "tunai: Rp %s\ntransfer: Rp %s\nCair Luar: Rp %s",
             number_format($data['total_tunai'], 0, ',', '.'),
             number_format($data['total_transfer'], 0, ',', '.'),
             number_format($data['total_cair_luar'], 0, ',', '.')

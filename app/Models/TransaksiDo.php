@@ -86,16 +86,16 @@ class TransaksiDo extends Model
     ];
 
     const CARA_BAYAR = [
-        'Tunai' => 'Tunai',
-        'Transfer' => 'Transfer',
+        'tunai' => 'tunai',
+        'transfer' => 'transfer',
         'cair di luar' => 'cair di luar',
-        'belum dibayar' => 'Belum Dibayar',
+        'belum dibayar' => 'belum dibayar',
     ];
 
     // Panggil method dari trait
     public function handlePembayaran()
     {
-        $this->validateSaldoTunai($this->sisa_bayar);
+        $this->validateSaldotunai($this->sisa_bayar);
         $this->handlePembayaranHutang($this->pembayaran_hutang);
         $this->updateSaldoPerusahaan();
     }
