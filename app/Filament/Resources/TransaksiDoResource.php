@@ -157,13 +157,13 @@ class TransaksiDoResource extends Resource
                                                         'penjual_nama' => $penjual->nama,
                                                     ]);
 
-                                                    // Notifikasi ke user
-                                                    Notification::make()
-                                                        ->title('Penjual Dipilih')
-                                                        ->body('Data penjual diisi otomatis')
-                                                        ->success()
-                                                        ->duration(3000)
-                                                        ->send();
+                                                    // // Notifikasi ke user
+                                                    // Notification::make()
+                                                    //     ->title('Penjual Dipilih')
+                                                    //     ->body('Data penjual diisi otomatis')
+                                                    //     ->success()
+                                                    //     ->duration(3000)
+                                                    //     ->send();
                                                 }
                                             }
                                         }),
@@ -338,9 +338,9 @@ class TransaksiDoResource extends Resource
                                                         // Notifikasi ke user
                                                         Notification::make()
                                                             ->title('Supir Ditambahkan')
-                                                            ->body('Data supir diisi otomatis setelah mengisi tonase')
+                                                            ->body('Jika data Supir kosong, akan diisi otomatis dengan nama penjual,setelah mengisi tonase!')
                                                             ->success()
-                                                            ->duration(3000)
+                                                            ->duration(5000)
                                                             ->send();
                                                     }
                                                 }
