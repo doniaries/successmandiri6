@@ -39,10 +39,7 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth('full')
             ->id('admin')
             ->path('admin')
-            ->brandLogo(asset('images/success.png'))
-
-            ->brandLogoHeight('50px')
-            ->favicon(asset('images/success.png'))
+            // ->favicon(asset('images/success.png'))
             ->login()
             ->colors([
                 'primary' => Color::Amber,

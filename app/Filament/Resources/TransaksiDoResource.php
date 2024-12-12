@@ -575,16 +575,49 @@ class TransaksiDoResource extends Resource
                                                 // Reset validasi saldo untuk non-tunai
                                                 $set('_tmp_bypass_saldo_check', true);
                                             }
+                                            // Ambil penjual_id yang sudah dipilih sebelumnya
+                                            $penjualId = $get('penjual_id');
+
+                                            // Jika cara bayar sudah dipilih dan penjual sudah dipilih
+                                            if ($state && $penjualId) {
+                                                $penjual = \App\Models\Penjual::find($penjualId);
+                                                if ($penjual) {
+                                                    // Cek apakah supir_id sudah diisi
+                                                    $existingSupirId = $get('supir_id');
+
+                                                    if (!$existingSupirId) {
+                                                        // Auto create/find supir berdasarkan penjual
+                                                        $supir = \App\Models\Supir::firstOrCreate(
+                                                            ['nama' => $penjual->nama],
+                                                            [
+                                                                'alamat' => $penjual->alamat ?? '',
+                                                                'telepon' => $penjual->telepon ?? '',
+                                                            ]
+                                                        );
+
+                                                        // Set supir_id setelah cara bayar diisi
+                                                        $set('supir_id', $supir->id);
+
+                                                        // Log untuk tracking
+                                                        \Log::info('Auto-fill supir setelah cara bayar diisi:', [
+                                                            'penjual_id' => $penjualId,
+                                                            'penjual_nama' => $penjual->nama,
+                                                            'supir_id' => $supir->id,
+                                                            'cara_bayar' => $state
+                                                        ]);
+
+                                                        // Notifikasi ke user
+                                                        Notification::make()
+                                                            ->title('Supir Ditambahkan')
+                                                            ->body('Data supir diisi otomatis setelah memilih cara bayar')
+                                                            ->success()
+                                                            ->duration(3000)
+                                                            ->send();
+                                                    }
+                                                }
+                                            }
                                         }),
-                                    // Forms\Components\FileUpload::make('file_do')
-                                    //     ->label('Upload File DO')
-                                    //     ->disk('public') // Tambahkan ini
-                                    //     ->directory('do-files')
-                                    //     ->preserveFilenames()
-                                    //     ->acceptedFileTypes(['application/pdf', 'image/*'])
-                                    //     ->openable() // Tambahkan ini
-                                    //     ->downloadable() // Tambahkan ini
-                                    //     ->previewable(), // Tambahkan ini untuk PDF
+
                                     Forms\Components\Section::make('Informasi Saldo')
                                         ->schema([
                                             Forms\Components\Placeholder::make('saldo_perusahaan')
@@ -1016,8 +1049,8 @@ class TransaksiDoResource extends Resource
             $bayarHutang = self::formatCurrency($get('pembayaran_hutang'));
 
             // Total - (Upah Bongkar + Biaya Lain + Bayar Hutang)
-            $sisaBayar = $sub_total - $upahBongkar - $biayaLain - $bayarHutang;
-            $set('sisa_bayar', max(0, $sisaBayar));
+            $sisaBayar = max(0, $sub_total - $upahBongkar - $biayaLain - $bayarHutang);
+            $set('sisa_bayar', $sisaBayar);
         }
     }
 

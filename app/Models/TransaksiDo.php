@@ -89,7 +89,7 @@ class TransaksiDo extends Model
         'Tunai' => 'Tunai',
         'Transfer' => 'Transfer',
         'cair di luar' => 'cair di luar',
-        'belum bayar' => 'Belum Bayar',
+        'belum dibayar' => 'Belum Dibayar',
     ];
 
     // Panggil method dari trait

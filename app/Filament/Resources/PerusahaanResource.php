@@ -78,16 +78,16 @@ class PerusahaanResource extends Resource
                                     Forms\Components\FileUpload::make('logo')
                                         ->label('Logo Perusahaan')
                                         ->image()
-                                        ->disk('public') // Pastikan menggunakan disk public
-                                        ->visibility('public') // Tambahkan visibility public
-                                        ->preserveFilenames()
+                                        ->disk('public')
+                                        ->visibility('public')
                                         ->maxSize(2048)
-                                        ->imagePreviewHeight('250')
-                                        ->loadingIndicatorPosition('left')
-                                        ->removeUploadedFileButtonPosition('right')
-                                        ->uploadButtonPosition('left')
-                                        ->uploadProgressIndicatorPosition('left')
-                                        ->columnSpanFull(),
+                                        ->preserveFilenames(),
+                                    // ->imagePreviewHeight('250')
+                                    // ->loadingIndicatorPosition('left')
+                                    // ->removeUploadedFileButtonPosition('right')
+                                    // ->uploadButtonPosition('left')
+                                    // ->uploadProgressIndicatorPosition('left')
+                                    // ->columnSpanFull(),
 
                                     Forms\Components\Toggle::make('is_active')
                                         ->required(),
@@ -112,7 +112,6 @@ class PerusahaanResource extends Resource
                     ->label('Logo')
                     ->disk('public')
                     ->height(40)
-                    ->extraImgAttributes(['loading' => 'lazy'])
                     ->defaultImageUrl(url('/images/default-logo.png'))
                     ->getStateUsing(fn($record) => $record->logo ?? '/images/default-logo.png'),
                 Tables\Columns\TextColumn::make('saldo')

@@ -4,322 +4,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Keuangan Harian - {{ $perusahaan->nama }}</title>
+    <title>Laporan Keuangan Harian - {{ $perusahaan->name }}</title>
     <style>
-        /* Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        /* Base */
-        body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            padding: 20px;
         }
 
-        /* Header */
-        .header {
+        body {
+            padding: 30px;
+            /* Margin dari tepi kertas */
+            font-size: 10px;
+            /* Ukuran font default lebih kecil */
+            line-height: 1.3;
+        }
+
+        .report-header {
             text-align: center;
-            margin-bottom: 30px;
-            padding: 20px 0;
-            border-bottom: 2px solid #ddd;
+            margin-bottom: 25px;
         }
 
-        .header img {
-            max-height: 60px;
-            margin-bottom: 15px;
-        }
-
-        .header h1 {
-            font-size: 20px;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .header h2 {
-            font-size: 18px;
-            margin: 10px 0;
-            font-weight: bold;
-            color: #444;
-        }
-
-        .header p {
+        .report-header h2 {
             font-size: 14px;
-            color: #666;
-            margin: 5px 0;
+            margin-bottom: 3px;
         }
 
-        .header .alamat {
-            font-size: 24px;
+        .report-header h3 {
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        .report-header p {
+            font-size: 11px;
+        }
+
+        .summary-header {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        .summary-header td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: center;
             font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
+            font-size: 11px;
         }
 
-        .header .tanggal {
-            color: #666;
-        }
-
-        /* Table */
-        table {
+        .main-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
-            font-size: 14px;
+            margin-bottom: 15px;
+            font-size: 9px;
+            /* Ukuran font tabel utama */
         }
 
-        th,
-        td {
-            padding: 8px;
-            border: 1px solid #ddd;
-            text-align: left;
+        .main-table th,
+        .main-table td {
+            border: 1px solid black;
+            padding: 3px 4px;
         }
 
-        th {
-            background-color: #f5f5f5;
+        .main-table th {
+            background-color: #f0f0f0;
             font-weight: bold;
-        }
-
-        /* Summary */
-        .summary {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-        }
-
-        .summary h2 {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .summary p {
-            margin-bottom: 5px;
-        }
-
-        /* Utilities */
-        .text-right {
-            text-align: right;
-        }
-
-        .text-center {
             text-align: center;
+            font-size: 9px;
         }
 
-        .text-bold {
+        .amount {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .total-row {
             font-weight: bold;
+            background-color: #f0f0f0;
         }
 
-        .bg-light {
-            background-color: #f8f9fa;
+        .operational-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 11px;
         }
 
-        .text-success {
-            color: #28a745;
+        .operational-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9px;
         }
 
-        .text-danger {
-            color: #dc3545;
+        .operational-table th,
+        .operational-table td {
+            border: 1px solid black;
+            padding: 3px 4px;
         }
 
-        .mt-4 {
-            margin-top: 20px;
+        .header-section {
+            font-weight: bold;
+            background-color: #f0f0f0;
         }
 
-        .mb-4 {
-            margin-bottom: 20px;
+        @page {
+            margin: 20px;
+            /* Margin halaman saat print */
         }
 
         @media print {
             body {
-                padding: 0;
-                margin: 0;
-            }
-
-            .no-print {
-                display: none;
+                padding: 20px;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Header -->
-    <div class="header">
-        {{-- <img src="{{ $perusahaan->logo }}" alt="Logo"> --}}
+    <!-- Report Header -->
+    <div class="report-header">
         <h2>{{ $perusahaan->name }}</h2>
-        <h2>Laporan Keuangan Harian</h2>
-        <p class="tanggal">Tanggal: {{ Carbon\Carbon::parse($startDate)->isoFormat('dddd, D MMMM Y') }}</p>
+        <h3>LAPORAN KEUANGAN HARIAN</h3>
+        <p>{{ Carbon\Carbon::parse($tanggal)->isoFormat('dddd, D MMMM Y') }}</p>
     </div>
 
-    <!-- Transaksi DO -->
-    <div class="mt-4">
-        <h3>Transaksi DO</h3>
-        <table>
-            <thead>
+    <!-- Summary Header -->
+    <table class="summary-header">
+        <tr>
+            <td style="width: 33%;">SISA SALDO<br>Rp {{ number_format($saldoAwal, 0, ',', '.') }}</td>
+            <td style="width: 33%;">TOTAL SALDO/UANG MASUK<br>Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</td>
+            <td style="width: 33%;">PENGELUARAN/UANG KELUAR<br>Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}
+            </td>
+        </tr>
+    </table>
+
+    <!-- Main Transactions Table -->
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th style="width: 3%;">NO</th>
+                <th style="width: 12%;">PENJUAL</th>
+                <th style="width: 10%;">SUPIR</th>
+                <th style="width: 8%;">TONASE</th>
+                <th style="width: 8%;">HARGA</th>
+                <th style="width: 10%;">SUB TOTAL</th>
+                <th style="width: 8%;">BIAYA</th>
+                <th style="width: 8%;">BAYAR HUTANG</th>
+                <th style="width: 8%;">TUNAI</th>
+                <th style="width: 8%;">TRANSFER</th>
+                <th style="width: 8%;">CAIR DILUAR</th>
+                <th style="width: 8%;">BELUM DIBAYAR</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($transaksiDo as $index => $transaksi)
                 <tr>
-                    <th>No.</th>
-                    <th>Nomor DO</th>
-                    <th>Penjual</th>
-                    <th>Tonase</th>
-                    <th>Cara Bayar</th>
-                    <th>Total</th>
-                    <th>Biaya</th>
-                    <th>Bayar Hutang</th>
-                    <th>Sisa Hutang</th>
+                    <td class="amount">{{ $index + 1 }}</td>
+                    <td>{{ $transaksi->penjual->nama ?? '-' }}</td>
+                    <td>{{ $transaksi->supir->nama ?? '-' }}</td>
+                    <td class="amount">{{ number_format($transaksi->tonase, 0) }}</td>
+                    <td class="amount">{{ number_format($transaksi->harga_satuan, 0) }}</td>
+                    <td class="amount">{{ number_format($transaksi->sub_total, 0) }}</td>
+                    <td class="amount">{{ number_format($transaksi->biaya_lain + $transaksi->upah_bongkar, 0) }}</td>
+                    <td class="amount">{{ number_format($transaksi->pembayaran_hutang, 0) }}</td>
+                    <td class="amount">
+                        {{ strtolower($transaksi->cara_bayar) === 'tunai' ? number_format($transaksi->sisa_bayar, 0) : '' }}
+                    </td>
+                    <td class="amount">
+                        {{ strtolower($transaksi->cara_bayar) === 'transfer' ? number_format($transaksi->sisa_bayar, 0) : '' }}
+                    </td>
+                    <td class="amount">
+                        {{ strtolower($transaksi->cara_bayar) === 'cair di luar' ? number_format($transaksi->sisa_bayar, 0) : '' }}
+                    </td>
+                    <td class="amount">
+                        {{ strtolower($transaksi->cara_bayar) === 'belum Dibayar' ? number_format($transaksi->sisa_bayar, 0) : '' }}
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @forelse($transaksiDo as $index => $do)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $do->nomor }}</td>
-                        <td>{{ $do->penjual->nama }}</td>
-                        <td class="text-right">{{ number_format($do->tonase, 0) }}</td>
-                        <td>{{ $do->cara_bayar }}</td>
-                        <td class="text-right">{{ number_format($do->sub_total) }}</td>
-                        <td class="text-right">{{ number_format($do->biaya_lain + $do->upah_bongkar) }}</td>
-                        <td class="text-right">{{ number_format($do->pembayaran_hutang) }}</td>
-                        <td class="text-right">{{ number_format($do->sisa_hutang_penjual) }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="9" class="text-center">Tidak ada transaksi DO</td>
-                    </tr>
-                @endforelse
-                <tr class="bg-light text-bold">
-                    <td colspan="3">Total</td>
-                    <td class="text-right">{{ number_format($totalTonase, 0) }}</td>
-                    <td></td>
-                    <td class="text-right">{{ number_format($totalSubTotal) }}</td>
-                    <td class="text-right">{{ number_format($totalBiaya) }}</td>
-                    <td class="text-right">{{ number_format($totalBayarHutang) }}</td>
-                    <td class="text-right">{{ number_format($totalBelumBayar) }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+            @endforeach
+            <!-- Total Row -->
+            <tr class="total-row">
+                <td colspan="3">TOTAL</td>
+                <td class="amount">{{ number_format($totalTonase, 0) }}</td>
+                <td></td>
+                <td class="amount">{{ number_format($totalSubTotal, 0) }}</td>
+                <td class="amount">{{ number_format($totalBiaya, 0) }}</td>
+                <td class="amount">{{ number_format($totalBayarHutang, 0) }}</td>
+                <td class="amount">{{ number_format($pembayaran['tunai'], 0) }}</td>
+                <td class="amount">{{ number_format($pembayaran['transfer'], 0) }}</td>
+                <td class="amount">{{ number_format($pembayaran['cairDiluar'], 0) }}</td>
+                <td class="amount">{{ number_format($pembayaran['belumDiBayar'], 0) }}</td>
+            </tr>
+        </tbody>
+    </table>
 
-    <!-- Transaksi Operasional -->
-    <div class="mt-4">
-        <h3>Transaksi Operasional</h3>
-        <table>
-            <thead>
+
+
+    <!-- Operasional Section -->
+    <!-- resources/views/laporan/keuangan-harian.blade.php -->
+
+    <!-- Perbaiki bagian Operasional section -->
+    <div class="operational-title">OPERASIONAL</div>
+    <table class="operational-table">
+        <tr>
+            <td colspan="2" class="header-section">PEMASUKAN</td>
+            <td colspan="2" class="header-section">PENGELUARAN</td>
+        </tr>
+
+        @php
+            // Move this outside of transaksiDo loop
+            $pemasukan = $operasional->where('operasional', 'pemasukan')->values();
+            $pengeluaran = $operasional->where('operasional', 'pengeluaran')->values();
+            $maxRows = max($pemasukan->count(), $pengeluaran->count());
+        @endphp
+
+        @if ($maxRows == 0)
+            <tr>
+                <td colspan="4" style="text-align: center;">Tidak ada data operasional untuk periode ini</td>
+            </tr>
+        @else
+            @foreach (range(0, $maxRows - 1) as $i)
                 <tr>
-                    <th>No.</th>
-                    <th>Kategori</th>
-                    <th>Jenis</th>
-                    <th>Nominal</th>
-                    <th>Keterangan</th>
+                    <!-- Pemasukan -->
+                    @if ($i < $pemasukan->count())
+                        <td style="width: 25%;">
+                            {{ strtoupper($pemasukan[$i]->kategoriLabel) }}
+                            @if ($pemasukan[$i]->keterangan)
+                                <br><small>{{ $pemasukan[$i]->keterangan }}</small>
+                            @endif
+                        </td>
+                        <td style="width: 25%;" class="amount">
+                            Rp {{ number_format($pemasukan[$i]->nominal, 0) }}
+                        </td>
+                    @else
+                        <td style="width: 25%;"></td>
+                        <td style="width: 25%;"></td>
+                    @endif
+
+                    <!-- Pengeluaran -->
+                    @if ($i < $pengeluaran->count())
+                        <td style="width: 25%;">
+                            {{ strtoupper($pengeluaran[$i]->kategoriLabel) }}
+                            @if ($pengeluaran[$i]->keterangan)
+                                <br><small>{{ $pengeluaran[$i]->keterangan }}</small>
+                            @endif
+                        </td>
+                        <td style="width: 25%;" class="amount">
+                            Rp {{ number_format($pengeluaran[$i]->nominal, 0) }}
+                        </td>
+                    @else
+                        <td style="width: 25%;"></td>
+                        <td style="width: 25%;"></td>
+                    @endif
                 </tr>
-            </thead>
-            <tbody>
-                @forelse($transaksiOperasional as $index => $op)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $op->kategori?->label() ?? '-' }}</td>
-                        <td>{{ ucfirst($op->operasional) }}</td>
-                        <td class="text-right">{{ number_format($op->nominal) }}</td>
-                        <td>{{ $op->keterangan ?: '-' }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="text-center">Tidak ada transaksi operasional</td>
-                    </tr>
-                @endforelse
+            @endforeach
 
-                <tr class="bg-light text-bold">
-                    <td colspan="3">Total Operasional</td>
-                    <td class="text-right">{{ number_format($transaksiOperasional->sum('nominal')) }}</td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Ringkasan -->
-    <div class="mt-4 summary">
-        <h3>Ringkasan Transaksi DO</h3>
-        <table class="summary-table">
-            <tr>
-                <td width="200">Total Tonase</td>
-                <td width="20">:</td>
-                <td class="text-right">{{ number_format($totalTonase, 0) }} Kg</td>
+            <tr class="total-row">
+                <td>TOTAL</td>
+                <td class="amount">Rp {{ number_format($pemasukan->sum('nominal'), 0) }}</td>
+                <td>TOTAL</td>
+                <td class="amount">Rp {{ number_format($pengeluaran->sum('nominal'), 0) }}</td>
             </tr>
-            <tr>
-                <td>Total Transaksi</td>
-                <td>:</td>
-                <td class="text-right">{{ number_format($totalSubTotal) }}</td>
-            </tr>
-            <tr>
-                <td>Total Biaya</td>
-                <td>:</td>
-                <td class="text-right">{{ number_format($totalBiaya) }}</td>
-            </tr>
-            <tr>
-                <td>Total Bayar Hutang</td>
-                <td>:</td>
-                <td class="text-right">{{ number_format($totalBayarHutang) }}</td>
-            </tr>
-            <tr>
-                <td>Total Belum Bayar</td>
-                <td>:</td>
-                <td class="text-right">{{ number_format($totalBelumBayar) }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- Ringkasan Operasional -->
-    <div class="mt-4 summary">
-        <h3>Ringkasan Transaksi Operasional</h3>
-        <table class="summary-table">
-            <tr>
-                <td width="200">Total Operasional</td>
-                <td width="20">:</td>
-                <td class="text-right">{{ number_format($transaksiOperasional->sum('nominal')) }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- Ringkasan Gabungan -->
-    <div class="mt-4 summary">
-        <h3>Ringkasan Gabungan DO & Operasional</h3>
-        <table class="summary-table">
-            <tr>
-                <td width="200">Total Pemasukan (DO)</td>
-                <td width="20">:</td>
-                <td class="text-right">{{ number_format($totalSubTotal) }}</td>
-            </tr>
-            <tr>
-                <td>Total Pengeluaran</td>
-                <td>:</td>
-                <td class="text-right">{{ number_format($totalBiaya + $transaksiOperasional->sum('nominal')) }}</td>
-            </tr>
-            <tr class="text-bold">
-                <td>Saldo</td>
-                <td>:</td>
-                <td class="text-right">{{ number_format($totalSubTotal - ($totalBiaya + $transaksiOperasional->sum('nominal'))) }}</td>
-            </tr>
-            <tr>
-                <td>Total Hutang Belum Bayar</td>
-                <td>:</td>
-                <td class="text-right">{{ number_format($totalBelumBayar) }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- Footer -->
-    <div class="mt-4">
-        <p class="text-center">
-            Dicetak pada {{ now()->isoFormat('dddd, D MMMM Y HH:mm:ss') }}
-            oleh {{ auth()->user()->name }}
-        </p>
-    </div>
+        @endif
+    </table>
 </body>
 
 </html>

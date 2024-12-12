@@ -83,6 +83,11 @@ class LaporanKeuanganResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('jenis_transaksi')
                     ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'Pemasukan' => 'success',
+                        'Pengeluaran' => 'danger',
+                        default => 'primary',
+                    })
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('kategori')
@@ -143,70 +148,25 @@ class LaporanKeuanganResource extends Resource
                                     ->required()
                                     ->default(now())
                                     ->displayFormat('d/m/Y')
-                                    // ->default(now()->startOfMonth()),
                                     ->native(false),
                                 Forms\Components\DatePicker::make('end_date')
                                     ->label('Sampai Tanggal')
                                     ->required()
                                     ->default(now())
                                     ->displayFormat('d/m/Y')
-                                    // ->minDate(fn($get) => $get('start_date'))
                                     ->native(false),
                             ])
                             ->columns(2)
                     ])
+                    // Action download PDF
                     ->action(function (array $data) {
                         try {
                             $startDate = Carbon::parse($data['start_date'])->startOfDay();
                             $endDate = Carbon::parse($data['end_date'])->endOfDay();
 
-
-                            // Get laporan data dari service
-                            $laporanService = app(LaporanKeuanganService::class);
-                            $laporanData = $laporanService->getLaporanData($startDate, $endDate);
-
-                            // Get perusahaan data
-                            $perusahaan = \App\Models\Perusahaan::firstOrFail();
-
-                            // Hitung saldo awal (saldo saat ini dikurangi mutasi periode ini)
-                            $saldoAwal = $perusahaan->saldo - ($laporanData['totalPemasukan'] - $laporanData['totalPengeluaran']);
-
-
-                            // Prepare additional data
-                            $viewData = array_merge($laporanData, [
-                                'startDate' => $startDate,
-                                'endDate' => $endDate,
-                                'perusahaan' => $perusahaan,
-                                'saldoAwal' => $saldoAwal, // Tambahkan saldo awal
-                                'saldoAkhir' => $perusahaan->saldo, // Gunakan saldo terkini
-                                'user' => auth()->user(),
-                                'jenisTransaksi' => [
-                                    'Pemasukan' => 'success',
-                                    'Pengeluaran' => 'danger'
-                                ]
-                            ]);
-
-                            // Get transaksi data
-                            $transaksi = LaporanKeuangan::whereBetween('tanggal', [$startDate, $endDate])
-                                ->get()
-                                ->map(fn($item) => [
-                                    'tanggal' => $item->tanggal,
-                                    'nomor_referensi' => $item->nomor_referensi,
-                                    'jenis_transaksi' => $item->jenis_transaksi,
-                                    'sub_kategori' => $item->sub_kategori,
-                                    'pihak_terkait' => $item->pihak_terkait,
-                                    'cara_pembayaran' => $item->cara_pembayaran,
-                                    'nominal' => $item->nominal,
-                                ]);
-
-                            // Get totals
-                            $totalPemasukan = $transaksi
-                                ->where('jenis_transaksi', 'Pemasukan')
-                                ->sum('nominal');
-
-                            $totalPengeluaran = $transaksi
-                                ->where('jenis_transaksi', 'Pengeluaran')
-                                ->sum('nominal');
+                            // Get report data from service
+                            $service = app(LaporanKeuanganService::class);
+                            $viewData = $service->generatePdfReport($startDate, $endDate);
 
                             // Generate PDF
                             $pdf = Pdf::loadView('laporan.keuangan-harian', $viewData);
@@ -217,10 +177,15 @@ class LaporanKeuanganResource extends Resource
                                 "laporan-keuangan-{$startDate->format('Y-m-d')}-{$endDate->format('Y-m-d')}.pdf"
                             );
                         } catch (\Exception $e) {
+                            Log::error('Error generating PDF:', [
+                                'error' => $e->getMessage(),
+                                'trace' => $e->getTraceAsString()
+                            ]);
+
                             Notification::make()
                                 ->danger()
-                                ->duration(3000) // Set durasi 3 detik
-                                ->persistent(false) // Notifikasi akan otomatis hilang
+                                ->duration(3000)
+                                ->persistent(false)
                                 ->title('Error')
                                 ->body('Gagal membuat laporan: ' . $e->getMessage())
                                 ->send();

@@ -54,13 +54,16 @@ class LaporanKeuangan extends Model
 
     public function transaksiDo()
     {
-        return $this->belongsTo(TransaksiDo::class);
+        return $this->belongsTo(TransaksiDo::class, 'referensi_id')
+            ->where('sumber_transaksi', 'DO');
     }
 
     public function operasional()
     {
-        return $this->belongsTo(Operasional::class);
+        return $this->belongsTo(Operasional::class, 'referensi_id')
+            ->where('sumber_transaksi', 'Operasional');
     }
+
 
     public function createdBy()
     {
