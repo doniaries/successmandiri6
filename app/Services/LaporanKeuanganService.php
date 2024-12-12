@@ -11,10 +11,8 @@ class LaporanKeuanganService
     public function generatePdfReport($startDate, $endDate)
     {
         try {
-            // Get base data
             $perusahaan = Perusahaan::firstOrFail();
 
-            // Get transactions in date range
             $transaksiDo = TransaksiDo::with(['penjual', 'supir'])
                 ->whereBetween('tanggal', [
                     Carbon::parse($startDate)->startOfDay(),
@@ -23,75 +21,77 @@ class LaporanKeuanganService
                 ->orderBy('tanggal', 'asc')
                 ->get();
 
-            // Get operational transactions
             $operasional = Operasional::whereBetween('tanggal', [
                 Carbon::parse($startDate)->startOfDay(),
                 Carbon::parse($endDate)->endOfDay()
             ])->get();
 
-            // Calculate payment breakdowns
+            // Hitung jumlah transaksi per cara bayar
+            $transaksiCount = [
+                'tunai' => $transaksiDo->where('cara_bayar', 'Tunai')->count(),
+                'transfer' => $transaksiDo->where('cara_bayar', 'Transfer')->count(),
+                'cairDiluar' => $transaksiDo->where('cara_bayar', 'cair di luar')->count(),
+                'belumDibayar' => $transaksiDo->where('cara_bayar', 'belum dibayar')->count() // Perbaikan lowercase
+            ];
+
+            // Hitung total pembayaran per jenis
             $pembayaran = [
                 'tunai' => $transaksiDo->where('cara_bayar', 'Tunai')->sum('sisa_bayar'),
                 'transfer' => $transaksiDo->where('cara_bayar', 'Transfer')->sum('sisa_bayar'),
                 'cairDiluar' => $transaksiDo->where('cara_bayar', 'cair di luar')->sum('sisa_bayar'),
-                'belumDiBayar' => $transaksiDo->where('cara_bayar', 'belum Dibayar')->sum('sisa_bayar')
+                'belumDibayar' => $transaksiDo->where('cara_bayar', 'belum dibayar')->sum('sisa_bayar') // Perbaikan lowercase
             ];
 
-            // Total hutang payments
-            $totalBayarHutang = $transaksiDo->sum('pembayaran_hutang');
 
-            // Calculate operational totals
             $pemasukanOperasional = $operasional->where('operasional', 'pemasukan')->sum('nominal');
             $pengeluaranOperasional = $operasional->where('operasional', 'pengeluaran')->sum('nominal');
+            $totalBayarHutang = $transaksiDo->sum('pembayaran_hutang');
 
-            // Calculate total income components (TOTAL SALDO/UANG MASUK)
-            $totalPemasukan = $totalBayarHutang +
-                $pembayaran['tunai'] +
-                $pembayaran['transfer'] +
-                $pembayaran['cairDiluar'] +
-                $pembayaran['belumDiBayar'] +
-                $pemasukanOperasional;
+            // TOTAL SALDO/UANG MASUK
+            $totalPemasukan = ($pembayaran['tunai'] + $pembayaran['transfer']) + // Pemasukan tunai + transfer
+                $pembayaran['cairDiluar'] + // Cair diluar
+                $totalBayarHutang + // Bayar hutang
+                $pemasukanOperasional; // Pemasukan operasional
 
-            // Calculate total expenses (PENGELUARAN/UANG KELUAR)
-            $totalPengeluaran = $transaksiDo->sum('sub_total') + $pengeluaranOperasional;
+            // PENGELUARAN/UANG KELUAR
+            $totalPengeluaran = $transaksiDo->sum('sub_total') + // Total DO
+                $pengeluaranOperasional; // Total operasional
 
-            // Calculate remaining balance (SISA SALDO)
+            // SISA SALDO
             $sisaSaldo = $totalPemasukan - $totalPengeluaran;
 
-            // Calculate additional totals
+            // Hitung total lainnya
             $totalTonase = $transaksiDo->sum('tonase');
             $totalSubTotal = $transaksiDo->sum('sub_total');
-            $totalBiaya = $transaksiDo->sum(function ($item) {
-                return $item->biaya_lain + $item->upah_bongkar;
-            });
+            $totalBiaya = $transaksiDo->sum(fn($item) => $item->biaya_lain + $item->upah_bongkar);
 
             Log::info('Report Calculations:', [
-                'date_range' => "$startDate to $endDate",
-                'sisa_saldo' => $sisaSaldo,
-                'total_pemasukan' => $totalPemasukan,
+                'pemasukan_tunai_transfer' => $pembayaran['tunai'] + $pembayaran['transfer'],
+                'pemasukan_cair_diluar' => $pembayaran['cairDiluar'],
+                'bayar_hutang' => $totalBayarHutang,
+                'pemasukan_operasional' => $pemasukanOperasional,
+                'total_saldo_masuk' => $totalPemasukan,
                 'total_pengeluaran' => $totalPengeluaran,
-                'pembayaran_breakdown' => $pembayaran,
-                'operasional' => [
-                    'pemasukan' => $pemasukanOperasional,
-                    'pengeluaran' => $pengeluaranOperasional
-                ]
+                'sisa_saldo' => $sisaSaldo,
+                'transaksi_count' => $transaksiCount
             ]);
 
             return [
                 'perusahaan' => $perusahaan,
                 'transaksiDo' => $transaksiDo,
                 'operasional' => $operasional,
-                'saldoAwal' => $sisaSaldo,
                 'totalPemasukan' => $totalPemasukan,
                 'totalPengeluaran' => $totalPengeluaran,
+                'saldoAwal' => $sisaSaldo,
                 'pembayaran' => $pembayaran,
+                'transaksiCount' => $transaksiCount,
                 'totalTonase' => $totalTonase,
                 'totalSubTotal' => $totalSubTotal,
                 'totalBiaya' => $totalBiaya,
                 'totalBayarHutang' => $totalBayarHutang,
-                'tanggal' => $startDate,
-                'pemasukanOperasional' => $operasional->where('operasional', 'pemasukan'),
-                'pengeluaranOperasional' => $operasional->where('operasional', 'pengeluaran')
+                'pemasukanOperasional' => $pemasukanOperasional,
+                'pengeluaranOperasional' => $pengeluaranOperasional,
+                'tanggal' => $startDate
             ];
         } catch (\Exception $e) {
             Log::error('Error generating report:', [

@@ -15,9 +15,7 @@
 
         body {
             padding: 30px;
-            /* Margin dari tepi kertas */
             font-size: 10px;
-            /* Ukuran font default lebih kecil */
             line-height: 1.3;
         }
 
@@ -40,26 +38,37 @@
             font-size: 11px;
         }
 
-        .summary-header {
-            width: 100%;
-            margin-bottom: 20px;
-            border-collapse: collapse;
-        }
-
-        .summary-header td {
-            border: 1px solid black;
-            padding: 6px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 11px;
-        }
-
-        .main-table {
+        /* New Summary Header Style */
+        .saldo-header {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 15px;
+            font-size: 11px;
+        }
+
+        .saldo-header td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid black;
+        }
+
+        .saldo-title {
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .saldo-amount {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Rest of the styles remain the same */
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 15px;
             font-size: 9px;
-            /* Ukuran font tabel utama */
         }
 
         .main-table th,
@@ -110,7 +119,6 @@
 
         @page {
             margin: 20px;
-            /* Margin halaman saat print */
         }
 
         @media print {
@@ -122,19 +130,35 @@
 </head>
 
 <body>
-    <!-- Report Header -->
     <div class="report-header">
         <h2>{{ $perusahaan->name }}</h2>
         <h3>LAPORAN KEUANGAN HARIAN</h3>
         <p>{{ Carbon\Carbon::parse($tanggal)->isoFormat('dddd, D MMMM Y') }}</p>
     </div>
 
-    <!-- Summary Header -->
-    <table class="summary-header">
+    <table class="saldo-header">
         <tr>
-            <td style="width: 33%;">SISA SALDO<br>Rp {{ number_format($saldoAwal, 0, ',', '.') }}</td>
-            <td style="width: 33%;">TOTAL SALDO/UANG MASUK<br>Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</td>
-            <td style="width: 33%;">PENGELUARAN/UANG KELUAR<br>Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}
+            <td>
+                <div class="saldo-title">SISA SALDO</div>
+                <div class="saldo-amount">Rp {{ number_format($saldoAwal, 0, ',', '.') }}</div>
+            </td>
+            <td>
+                <div class="saldo-title">TOTAL SALDO/UANG MASUK</div>
+                <div class="saldo-amount">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</div>
+                <div class="transaction-count">
+                    Total {{ array_sum($transaksiCount) }} Transaksi (Tunai: {{ $transaksiCount['tunai'] }},
+                    Transfer: {{ $transaksiCount['transfer'] }},
+                    Cair di Luar: {{ $transaksiCount['cairDiluar'] }},
+                    Belum Dibayar: {{ $transaksiCount['belumDibayar'] }})
+                </div>
+            </td>
+            <td>
+                <div class="saldo-title">PENGELUARAN/UANG KELUAR</div>
+                <div class="saldo-amount">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</div>
+                <div>
+                    Total DO: Rp {{ number_format($totalSubTotal, 0, ',', '.') }}<br>
+                    Total Operasional: Rp {{ number_format($pengeluaranOperasional, 0, ',', '.') }}
+                </div>
             </td>
         </tr>
     </table>
@@ -178,7 +202,7 @@
                         {{ strtolower($transaksi->cara_bayar) === 'cair di luar' ? number_format($transaksi->sisa_bayar, 0) : '' }}
                     </td>
                     <td class="amount">
-                        {{ strtolower($transaksi->cara_bayar) === 'belum Dibayar' ? number_format($transaksi->sisa_bayar, 0) : '' }}
+                        {{ strtolower($transaksi->cara_bayar) === 'belum dibayar' ? number_format($transaksi->sisa_bayar, 0) : '' }}
                     </td>
                 </tr>
             @endforeach
@@ -193,17 +217,13 @@
                 <td class="amount">{{ number_format($pembayaran['tunai'], 0) }}</td>
                 <td class="amount">{{ number_format($pembayaran['transfer'], 0) }}</td>
                 <td class="amount">{{ number_format($pembayaran['cairDiluar'], 0) }}</td>
-                <td class="amount">{{ number_format($pembayaran['belumDiBayar'], 0) }}</td>
+                <td class="amount">{{ number_format($pembayaran['belumDibayar'], 0) }}</td>
             </tr>
         </tbody>
     </table>
 
 
 
-    <!-- Operasional Section -->
-    <!-- resources/views/laporan/keuangan-harian.blade.php -->
-
-    <!-- Perbaiki bagian Operasional section -->
     <div class="operational-title">OPERASIONAL</div>
     <table class="operational-table">
         <tr>

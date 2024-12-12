@@ -421,7 +421,7 @@ class TransaksiDoResource extends Resource
                                         static::hitungSisaBayar($state, $get, $set)),
 
                                     Forms\Components\TextInput::make('biaya_lain')
-                                        ->label('Biaya Lain')
+                                        ->label('Biaya')
                                         ->hint('*jika ada')
                                         ->hintColor('primary')
                                         ->currencyMask(
