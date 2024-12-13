@@ -6,6 +6,7 @@ use URL;
 use Carbon\Carbon;
 use App\Events\RefreshDashboardWidgets;
 use Illuminate\Support\ServiceProvider;
+use App\Services\LaporanKeuanganService;
 use App\Models\{Operasional, TransaksiDo, LaporanKeuangan};
 use App\Observers\{OperasionalObserver, TransaksiDoObserver, LaporanKeuanganObserver};
 
