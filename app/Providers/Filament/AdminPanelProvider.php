@@ -43,24 +43,6 @@ class AdminPanelProvider extends PanelProvider
                 'success' => Color::Green,
                 'info' => Color::Blue,
             ])
-            ->navigationItems([
-                NavigationItem::make('Dashboard')
-                    ->icon('heroicon-o-home')
-                    ->isActiveWhen(fn(): bool => request()->routeIs('filament.admin.pages.dashboard'))
-                    ->url(fn(): string => \Filament\Pages\Dashboard::getUrl()),
-                NavigationItem::make('Transaksi DO')
-                    ->icon('heroicon-o-document-text')
-                    ->isActiveWhen(fn(): bool => request()->routeIs('filament.admin.resources.transaksi-dos.*'))
-                    ->url(fn(): string => route('filament.admin.resources.transaksi-dos.index')),
-                NavigationItem::make('Laporan Keuangan')
-                    ->icon('heroicon-o-currency-dollar')
-                    ->isActiveWhen(fn(): bool => request()->routeIs('filament.admin.resources.laporan-keuangans.*'))
-                    ->url(fn(): string => route('filament.admin.resources.laporan-keuangans.index')),
-                NavigationItem::make('Penjual')
-                    ->icon('heroicon-o-users')
-                    ->isActiveWhen(fn(): bool => request()->routeIs('filament.admin.resources.penjuals.*'))
-                    ->url(fn(): string => route('filament.admin.resources.penjuals.index')),
-            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -82,8 +64,8 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->authMiddleware([
-                Authenticate::class
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
             ]);
     }
 }
