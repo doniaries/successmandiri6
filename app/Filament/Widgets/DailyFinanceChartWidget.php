@@ -7,26 +7,23 @@ use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class MonthlyFinanceChartWidget extends ChartWidget
+class DailyFinanceChartWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Grafik Keuangan Bulanan';
-    protected static ?int $sort = 3;
+    protected static ?string $heading = 'Grafik Keuangan Harian';
+    protected static ?int $sort = 2;
     protected int | string | array $columnSpan = 'full';
 
     protected function getData(): array
     {
-        $months = collect(range(1, 12))->map(function ($month) {
-            return Carbon::now()->startOfYear()->addMonths($month - 1);
+        $days = collect(range(1, Carbon::now()->daysInMonth))->map(function ($day) {
+            return Carbon::now()->startOfMonth()->addDays($day - 1);
         });
 
-        $monthlyData = $months->map(function ($date) {
-            $startOfMonth = $date->copy()->startOfMonth();
-            $endOfMonth = $date->copy()->endOfMonth();
-
+        $dailyData = $days->map(function ($date) {
             // Get DO income
             $doIncome = DB::table('transaksi_do')
                 ->whereNull('deleted_at')
-                ->whereBetween('tanggal', [$startOfMonth, $endOfMonth])
+                ->whereDate('tanggal', $date)
                 ->select([
                     DB::raw('COALESCE(SUM(pembayaran_hutang), 0) as debt_payments'),
                     DB::raw('COALESCE(SUM(CASE
@@ -39,19 +36,19 @@ class MonthlyFinanceChartWidget extends ChartWidget
             // Get operational income
             $operationalIncome = DB::table('operasional')
                 ->whereNull('deleted_at')
-                ->whereBetween('tanggal', [$startOfMonth, $endOfMonth])
+                ->whereDate('tanggal', $date)
                 ->where('operasional', 'pemasukan')
                 ->sum('nominal');
 
             // Get expenses
             $doExpense = DB::table('transaksi_do')
                 ->whereNull('deleted_at')
-                ->whereBetween('tanggal', [$startOfMonth, $endOfMonth])
+                ->whereDate('tanggal', $date)
                 ->sum('sub_total');
 
             $operationalExpense = DB::table('operasional')
                 ->whereNull('deleted_at')
-                ->whereBetween('tanggal', [$startOfMonth, $endOfMonth])
+                ->whereDate('tanggal', $date)
                 ->where('operasional', 'pengeluaran')
                 ->sum('nominal');
 
@@ -60,7 +57,7 @@ class MonthlyFinanceChartWidget extends ChartWidget
             $profit = $totalIncome - $totalExpense;
 
             return [
-                'date' => $date->format('M Y'),
+                'date' => $date->format('d M'),
                 'income' => $totalIncome,
                 'expense' => $totalExpense,
                 'profit' => $profit,
@@ -71,7 +68,7 @@ class MonthlyFinanceChartWidget extends ChartWidget
             'datasets' => [
                 [
                     'label' => 'Pemasukan',
-                    'data' => $monthlyData->pluck('income')->toArray(),
+                    'data' => $dailyData->pluck('income')->toArray(),
                     'borderColor' => '#10B981',
                     'backgroundColor' => 'rgba(16, 185, 129, 0.1)',
                     'fill' => true,
@@ -79,7 +76,7 @@ class MonthlyFinanceChartWidget extends ChartWidget
                 ],
                 [
                     'label' => 'Pengeluaran',
-                    'data' => $monthlyData->pluck('expense')->toArray(),
+                    'data' => $dailyData->pluck('expense')->toArray(),
                     'borderColor' => '#EF4444',
                     'backgroundColor' => 'rgba(239, 68, 68, 0.1)',
                     'fill' => true,
@@ -87,14 +84,14 @@ class MonthlyFinanceChartWidget extends ChartWidget
                 ],
                 [
                     'label' => 'Keuntungan',
-                    'data' => $monthlyData->pluck('profit')->toArray(),
+                    'data' => $dailyData->pluck('profit')->toArray(),
                     'borderColor' => '#3B82F6',
                     'backgroundColor' => 'rgba(59, 130, 246, 0.1)',
                     'fill' => true,
                     'tension' => 0.3,
                 ],
             ],
-            'labels' => $monthlyData->pluck('date')->toArray(),
+            'labels' => $dailyData->pluck('date')->toArray(),
         ];
     }
 

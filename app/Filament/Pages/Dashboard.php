@@ -3,8 +3,9 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Resources\TransaksiDoResource\Widgets\TransaksiDoStatWidget;
-use App\Filament\Widgets\{DashboardStatsWidget, MonthlyFinanceChartWidget};
+use App\Filament\Widgets\{DashboardStatsWidget, DailyFinanceChartWidget, MonthlyFinanceChartWidget};
 use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Widgets\AccountWidget;
 
 class Dashboard extends BaseDashboard
 {
@@ -14,7 +15,9 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            DashboardStatsWidget::class,  // Comment out or remove this line
+            // AccountWidget::class,
+            DashboardStatsWidget::class,
+            DailyFinanceChartWidget::class,
             MonthlyFinanceChartWidget::class,
         ];
     }
