@@ -16,7 +16,7 @@ class Dashboard extends BaseDashboard
     {
         return [
             // AccountWidget::class,
-            DashboardStatsWidget::class,
+            // DashboardStatsWidget::class,
             DailyFinanceChartWidget::class,
             MonthlyFinanceChartWidget::class,
         ];
