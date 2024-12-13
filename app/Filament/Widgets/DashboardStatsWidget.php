@@ -39,8 +39,8 @@ class DashboardStatsWidget extends BaseWidget
             ->sum('nominal');
 
         // Calculate total monthly income
-        $monthlyIncome = $incomingFunds->total_debt_payments + 
-            $incomingFunds->remaining_payments + 
+        $monthlyIncome = $incomingFunds->total_debt_payments +
+            $incomingFunds->remaining_payments +
             $operationalIncome;
 
         // Calculate expenses
@@ -57,13 +57,58 @@ class DashboardStatsWidget extends BaseWidget
 
         $monthlyExpense = $monthlyDOExpense + $monthlyOperationalExpense;
 
-        // Calculate monthly profit
-        $monthlyProfit = $monthlyIncome - $monthlyExpense;
+        // Get monthly transactions count
+        $monthlyTransactions = TransaksiDo::whereBetween('tanggal', [$startOfMonth, $endOfMonth])->count();
+
+        // Calculate profit/loss
+        $profit = $monthlyIncome - $monthlyExpense;
+        $profitColor = $profit >= 0 ? 'success' : 'danger';
+        $profitIcon = $profit >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
+        $profitPrefix = $profit >= 0 ? 'Rp ' : '-Rp ';
+        $profitDescription = $profit >= 0 ? 'Keuntungan bulan ini' : 'Kerugian bulan ini';
+
+        // Get current balance using same logic
+        $totalIncomingFunds = DB::table('transaksi_do')
+            ->whereNull('deleted_at')
+            ->select([
+                DB::raw('COALESCE(SUM(pembayaran_hutang), 0) as total_debt_payments'),
+                DB::raw('COALESCE(SUM(CASE
+                    WHEN cara_bayar IN ("transfer", "cair di luar", "belum dibayar")
+                    THEN sisa_bayar
+                    ELSE 0
+                END), 0) as remaining_payments')
+            ])->first();
+
+        $totalOperationalIncome = DB::table('operasional')
+            ->whereNull('deleted_at')
+            ->where('operasional', 'pemasukan')
+            ->sum('nominal');
+
+        $totalIncome = $totalIncomingFunds->total_debt_payments +
+            $totalIncomingFunds->remaining_payments +
+            $totalOperationalIncome;
+
+        $totalDOExpense = DB::table('transaksi_do')
+            ->whereNull('deleted_at')
+            ->sum('sub_total');
+
+        $totalOperationalExpense = DB::table('operasional')
+            ->whereNull('deleted_at')
+            ->where('operasional', 'pengeluaran')
+            ->sum('nominal');
+
+        $totalExpense = $totalDOExpense + $totalOperationalExpense;
+        $currentBalance = $totalIncome - $totalExpense;
 
         // Format date range
         $dateRange = "Periode: {$startOfMonth->format('d M Y')} - {$endOfMonth->format('d M Y')}";
 
         return [
+            // Stat::make('Sisa Saldo', 'Rp ' . number_format($currentBalance, 0, ',', '.'))
+            //     ->description('Total saldo masuk - Total pengeluaran')
+            //     ->icon('heroicon-m-banknotes')
+            //     ->color($currentBalance >= 0 ? 'success' : 'danger'),
+
             Stat::make('Pemasukan Bulan Ini', 'Rp ' . number_format($monthlyIncome, 0, ',', '.'))
                 ->description(sprintf(
                     "Hutang: Rp %s\nSisa: Rp %s\nOperasional: Rp %s",
@@ -83,12 +128,7 @@ class DashboardStatsWidget extends BaseWidget
                 ->icon('heroicon-m-arrow-trending-down')
                 ->color('danger'),
 
-            Stat::make('Keuntungan Bulan Ini', 'Rp ' . number_format(abs($monthlyProfit), 0, ',', '.'))
-                ->description($monthlyProfit >= 0 ? 'Profit' : 'Rugi')
-                ->icon($monthlyProfit >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
-                ->color($monthlyProfit >= 0 ? 'success' : 'danger'),
-
-            Stat::make('Total Transaksi', TransaksiDo::whereBetween('tanggal', [$startOfMonth, $endOfMonth])->count())
+            Stat::make('Total Transaksi', $monthlyTransactions)
                 ->description($dateRange)
                 ->icon('heroicon-m-document-text')
                 ->color('primary'),
