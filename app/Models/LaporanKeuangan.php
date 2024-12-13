@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\TipeNama;
 use App\Models\{Operasional, TransaksiDo};
+use App\Observers\LaporanKeuanganObserver;
 use App\Traits\{LaporanKeuanganTrait, DokumentasiTrait};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Enums\TipeNama;
 
 class LaporanKeuangan extends Model
 {
@@ -112,5 +113,27 @@ class LaporanKeuangan extends Model
     public function scopeDateRange($query, $startDate, $endDate)
     {
         return $query->whereBetween('tanggal', [$startDate, $endDate]);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Auto sync setelah setiap transaksi kas
+        static::created(function ($model) {
+            if ($model->mempengaruhi_kas) {
+                try {
+                    app(LaporanKeuanganObserver::class)->syncSaldoPerusahaan();
+                } catch (\Exception $e) {
+                    Log::error('Auto-sync error: ' . $e->getMessage());
+                }
+            }
+        });
+
+        // Sync juga untuk update & delete
+        static::updated(function ($model) { /* sama seperti created */
+        });
+        static::deleted(function ($model) { /* sama seperti created */
+        });
     }
 }

@@ -51,14 +51,21 @@ class UserResource extends Resource
                             ->unique(ignoreRecord: true)
                             ->maxLength(20),
 
+                        Forms\Components\Select::make('roles')
+                            ->relationship('roles', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->required()
+                            ->label('Hak Akses'),
+
                         Forms\Components\TextInput::make('password')
                             ->label('Password')
                             ->password()
                             ->revealable(true)
                             ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
                             ->required(fn(string $operation): bool => $operation === 'create')
-                            ->minLength(8)
-                            ->maxLength(255)
+                            ->minLength(6)
+                            ->maxLength(50)
                             ->same('passwordConfirmation')
                             ->dehydrated(fn($state) => filled($state))
                             ->live(true),
@@ -67,6 +74,8 @@ class UserResource extends Resource
                             ->label('Konfirmasi Password')
                             ->password()
                             ->revealable(true)
+                            ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
+                            ->required(fn(string $operation): bool => $operation === 'create')
                             ->required(
                                 fn(string $operation, ?Forms\Get $get): bool =>
                                 $operation === 'create' || filled($get('password'))
@@ -88,7 +97,6 @@ class UserResource extends Resource
             ]);
     }
 
-    // Rest of the class remains the same...
     public static function table(Table $table): Table
     {
         return $table
@@ -110,10 +118,9 @@ class UserResource extends Resource
                     ->copyMessage('Email disalin')
                     ->copyMessageDuration(1500),
 
-                // Tables\Columns\IconColumn::make('is_active')
-                //     ->label('Status')
-                //     ->boolean()
-                //     ->sortable(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Hak Akses')
+                    ->sortable(),
 
                 Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Status')

@@ -2,32 +2,33 @@
 
 namespace App\Filament\Resources;
 
-use Carbon\Carbon;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-use Filament\Notifications\Notification;
-use Filament\Support\Exceptions\Halt;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
-use Filament\Forms;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use App\Models\LaporanKeuangan;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Filament\Resources\Resource;
-use Filament\Tables\Filters\Filter;
-use Filament\Actions\Action;
-use Filament\Tables\Actions\Action as TableAction;
-use Filament\Tables\Enums\FiltersLayout;
-use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
-use App\Services\LaporanKeuanganService;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\LaporanKeuanganResource\Pages;
 use App\Filament\Resources\LaporanKeuanganResource\RelationManagers;
 use App\Filament\Resources\LaporanKeuanganResource\Widgets\LaporanKeuanganDoStatsWidget;
 use App\Filament\Resources\TransaksiDoResource\Widgets\TransaksiDoStatWidget;
+use App\Models\LaporanKeuangan;
+use App\Observers\LaporanKeuanganObserver;
+use App\Services\LaporanKeuanganService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Support\Exceptions\Halt;
+use Filament\Tables;
+use Filament\Tables\Actions\Action as TableAction;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class LaporanKeuanganResource extends Resource
 {
@@ -137,6 +138,33 @@ class LaporanKeuanganResource extends Resource
             ])
             //download PDF//
             ->headerActions([
+                Tables\Actions\Action::make('syncSaldo')
+                    ->label('Sync Saldo')
+                    ->icon('heroicon-o-arrow-path') // Icon sync
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Sinkronisasi Saldo')
+                    ->modalDescription('Yakin ingin mensinkronkan ulang saldo?')
+                    ->modalSubmitActionLabel('Ya, Sinkronkan')
+                    ->action(function () {
+                        try {
+                            // Jalankan sync
+                            app(LaporanKeuanganObserver::class)->syncSaldoPerusahaan();
+
+                            // Notifikasi sukses
+                            Notification::make()
+                                ->title('Saldo Berhasil Disinkronkan')
+                                ->success()
+                                ->send();
+                        } catch (\Exception $e) {
+                            // Notifikasi error
+                            Notification::make()
+                                ->title('Gagal Sinkronisasi')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
                 Tables\Actions\Action::make('downloadPdf')
                     ->label('Download PDF')
                     ->icon('heroicon-o-document-arrow-down')

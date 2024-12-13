@@ -18,6 +18,7 @@ class TransaksiTerakhir extends BaseWidget
     protected static ?string $pollingInterval = '10s';
 
 
+
     public function table(Table $table): Table
     {
         return $table
