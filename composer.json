@@ -9,6 +9,7 @@
         "ariaieboy/filament-currency": "*",
         "bacon/bacon-qr-code": "^2.0",
         "barryvdh/laravel-dompdf": "^3.0",
+        "bezhansalleh/filament-shield": "^3.3",
         "deployer/deployer": "^7.5",
         "doctrine/dbal": "^4.2",
         "filament/filament": "^3.2",
