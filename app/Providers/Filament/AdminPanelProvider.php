@@ -25,12 +25,6 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        // try {
-        //     $settings = app(GeneralSettings::class);
-        //     $themeColor = $settings->tema_warna ?? 'amber';
-        // } catch (\Exception $e) {
-        //     $themeColor = 'amber';
-        // }
 
         return $panel
             ->default()
