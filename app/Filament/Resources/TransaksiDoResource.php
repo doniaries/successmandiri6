@@ -39,12 +39,12 @@ class TransaksiDoResource extends Resource
     protected static ?int $navigationSort = 1;
 
 
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::getEloquentQuery()
-    //         // ->whereDate('created_at', today())
-    //         ->count();
-    // }
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getEloquentQuery()
+            ->whereDate('created_at', today())
+            ->count();
+    }
 
     public static function getWidgets(): array
     {
