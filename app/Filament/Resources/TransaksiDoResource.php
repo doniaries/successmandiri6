@@ -42,7 +42,7 @@ class TransaksiDoResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getEloquentQuery()
-            ->whereDate('created_at', today())
+            // ->whereDate('created_at', today())
             ->count();
     }
 
