@@ -117,7 +117,7 @@ class PerusahaanResource extends Resource
                 Tables\Columns\TextColumn::make('saldo')
                     ->weight('5')
                     ->badge()
-                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->alignRight()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('alamat')
