@@ -141,7 +141,7 @@ class OperasionalResource extends Resource
                                         ->prefix('Rp')
                                         ->numeric()
                                         ->live()
-                                        ->currencyMask(),
+                                        ->currencyMask('thousandSeparator', ',', 'decimalSeparator', '.', 'precision', 0),
 
                                     Forms\Components\TextInput::make('keterangan')
                                         ->label('Keterangan')

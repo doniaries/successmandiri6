@@ -38,12 +38,12 @@ class PekerjaResource extends Resource
                 Forms\Components\TextInput::make('pendapatan')
                     ->disabled()
                     ->prefix('Rp. ')
-                    ->currencyMask(thousandSeparator: ',', decimalSeparator: '.', precision: 2)
+                    ->currencyMask(thousandSeparator: ',', decimalSeparator: '.', precision: 0)
                     ->default(0),
                 Forms\Components\TextInput::make('total_hutang')
                     ->disabled()
                     ->prefix('Rp. ')
-                    ->currencyMask(thousandSeparator: ',', decimalSeparator: '.', precision: 2)
+                    ->currencyMask(thousandSeparator: ',', decimalSeparator: '.', precision: 0)
                     ->default(0),
                 // Forms\Components\TextInput::make('created_by')
                 //     ->numeric(),

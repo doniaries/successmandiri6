@@ -39,10 +39,12 @@ class TransaksiDoResource extends Resource
     protected static ?int $navigationSort = 1;
 
 
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::getModel()::count();
-    // }
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getEloquentQuery()
+            ->whereDate('created_at', today())
+            ->count();
+    }
 
     public static function getWidgets(): array
     {
@@ -968,7 +970,7 @@ class TransaksiDoResource extends Resource
 
                 // ]),
             ])
-            ->emptyStateHeading('Belum ada data Transaksi DO')
+            ->emptyStateHeading('Belum ada data Transaksi DO Hari Ini')
             ->emptyStateDescription('Silakan tambah Transaksi DO baru dengan klik tombol di atas')
             ->emptyStateIcon('heroicon-o-banknotes')
             ->defaultSort('tanggal', 'desc')

@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
-use App\Models\Supir;
-use App\Models\Penjual;
 use App\Models\Kendaraan;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Penjual;
+use App\Models\Supir;
 use App\Traits\DokumentasiTrait;
-use App\Traits\LaporanKeuanganTrait;
 use App\Traits\GenerateMonthlyNumber;
+use App\Traits\LaporanKeuanganTrait;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\{HasMany, BelongsTo};
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\{DB, Log, Cache};
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\{HasMany, BelongsTo};
 // use BaconQrCode\Renderer\ImageRenderer;
 // use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 // use BaconQrCode\Renderer\RendererStyle\RendererStyle;
