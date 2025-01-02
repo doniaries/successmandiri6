@@ -16,6 +16,7 @@ class TransaksiTerakhir extends BaseWidget
     protected int|string|null $defaultTableRecordsPerPageSelectOption = 5;
     protected int | string | array $columnSpan = 'full';
     protected static ?string $pollingInterval = '10s';
+    protected static bool $shouldRegister = false;
 
 
 
