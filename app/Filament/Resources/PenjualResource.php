@@ -71,7 +71,7 @@ class PenjualResource extends Resource
                                 'Hutang Awal' : 'Total Hutang')
                             ->helperText(fn($context) => $context === 'create' ?
                                 'Masukkan hutang awal jika ada. Input ini hanya bisa dilakukan sekali saat pendaftaran penjual.' : '')
-                            ->disabled(fn($context) => $context !== 'create')
+                            // ->disabled(fn($context) => $context !== 'create')
                             ->dehydrated()
                             ->prefix('Rp')
                             ->numeric()
@@ -121,7 +121,7 @@ class PenjualResource extends Resource
                     ->label('Total Hutang')
                     ->tooltip(fn($record) =>
                     "Hutang Awal: Rp " . number_format($record->getOriginal('hutang'), 0, ',', '.'))
-                    ->money('IDR')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->alignment('right')
                     ->sortable()
                     ->color(fn($state) => $state > 0 ? 'danger' : 'success')
