@@ -28,7 +28,7 @@ class PenjualResource extends Resource
     protected static ?string $model = Penjual::class;
     protected static ?string $navigationGroup = 'Master Data';//
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 1;
 
 
 
