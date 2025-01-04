@@ -39,6 +39,7 @@ class OperasionalResource extends Resource
     protected static ?string $model = Operasional::class;
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?string $navigationLabel = 'Operasional';
+    // protected static ?string $navigationGroup = 'Operasional dan Laporan';
     protected static ?int $navigationSort = 2;
 
     public static function getNavigationBadge(): ?string

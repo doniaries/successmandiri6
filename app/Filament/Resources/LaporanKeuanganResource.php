@@ -33,9 +33,10 @@ use Illuminate\Support\Facades\Log;
 class LaporanKeuanganResource extends Resource
 {
     protected static ?string $model = LaporanKeuangan::class;
-
+    // protected static ?string $navigationGroup = 'Operasional dan Laporan';
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
-    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationLabel = 'Laporan';
+    protected static ?int $navigationSort = 2;
 
 
     public static function form(Form $form): Form
