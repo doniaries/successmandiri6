@@ -8,6 +8,8 @@ use Filament\Notifications\Notification;
 
 class LaporanKeuanganObserver
 {
+
+
     protected function createLaporan(array $data): void
     {
         try {
@@ -51,8 +53,6 @@ class LaporanKeuanganObserver
             throw $e;
         }
     }
-
-
 
     public function handleTransaksiDO(TransaksiDo $transaksiDo)
     {
