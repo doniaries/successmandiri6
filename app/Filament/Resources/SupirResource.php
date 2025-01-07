@@ -29,31 +29,27 @@ class SupirResource extends Resource
             ->schema([
                 Section::make()
                     ->schema([
-                        Grid::make(2)
+                        Grid::make(4)
                             ->schema([
                                 TextInput::make('nama')
                                     ->required()
                                     ->maxLength(255),
 
                                 TextInput::make('telepon')
-                                    ->tel()
-                                    ->maxLength(255),
+                                    ->tel(),
 
-                                TextInput::make('alamat')
-                                    ->columnSpan(2)
-                                    ->maxLength(255),
+                                TextInput::make('alamat'),
 
                                 TextInput::make('hutang')
+                                    ->prefix('Rp')
                                     ->numeric()
                                     ->default(0)
-                                    ->disabled()
-                                    ->dehydrated()
-                                    ->mask(
-                                        fn(TextInput\Mask $mask) => $mask
-                                            ->numeric()
-                                            ->thousandsSeparator('.')
-                                            ->decimalSeparator(',')
+                                    ->currencyMask(
+                                        thousandSeparator: ',',
+                                        decimalSeparator: '.',
+                                        precision: 0
                                     ),
+
                             ]),
                     ])
             ]);
@@ -67,24 +63,19 @@ class SupirResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('telepon')
-                    ->searchable(),
-
                 TextColumn::make('alamat')
                     ->searchable()
                     ->wrap(),
 
-                TextColumn::make('formatted_hutang')
-                    ->label('Hutang')
-                    ->sortable('hutang'),
+                TextColumn::make('telepon')
+                    ->searchable(),
 
-                TextColumn::make('kendaraan_count')
-                    ->label('Total Kendaraan')
-                    ->counts('kendaraan'),
+                TextColumn::make('hutang')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                    ->label('Hutang'),
 
-                TextColumn::make('transaksiDo_count')
-                    ->label('Total DO')
-                    ->counts('transaksiDo'),
+
+
             ])
             ->defaultSort('nama', 'asc')
             ->filters([
@@ -126,5 +117,10 @@ class SupirResource extends Resource
         return parent::getEloquentQuery()
             ->withCount(['kendaraan', 'transaksiDo'])
             ->withTrashed();
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }
