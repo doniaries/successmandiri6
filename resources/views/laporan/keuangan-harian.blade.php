@@ -139,8 +139,52 @@
     <table class="saldo-header">
         <tr>
             <td>
-                <div style="text-align: center" class="saldo-title">SISA SALDO</div>
-                <div style="text-align: center" class="saldo-amount">Rp {{ number_format($saldoAwal, 0, ',', '.') }}</div>
+                <div style="text-align: center" class="saldo-title">TOTAL SALDO/UANG MASUK</div>
+                <div style="text-align: center" class="saldo-amount">
+                    Rp {{ number_format($totalPemasukan, 0, ',', '.') }}
+                </div>
+                <div style="text-align: center" class="transaction-details">
+                    @foreach ($pemasukan as $kategori => $items)
+                        <strong>{{ $kategori }}:</strong><br>
+                        @foreach ($items as $item)
+                            {{ $item->keterangan }} -
+                            Rp {{ number_format($item->nominal, 0, ',', '.') }}<br>
+                            @if ($item->pihak_terkait)
+                                ({{ $item->tipe_pihak }}: {{ $item->pihak_terkait }})
+                                <br>
+                            @endif
+                        @endforeach
+                    @endforeach
+                </div>
+                <div style="text-align: center" class="transaction-count">
+                    Total
+                    {{ $transaksiCount['tunai'] + $transaksiCount['transfer'] + $transaksiCount['cairDiluar'] + $transaksiCount['belumDibayar'] }}
+                    Transaksi (tunai: {{ $transaksiCount['tunai'] }},
+                    transfer: {{ $transaksiCount['transfer'] }},
+                    cair di luar: {{ $transaksiCount['cairDiluar'] }},
+                    belum dibayar: {{ $transaksiCount['belumDibayar'] }})
+                </div>
+            </td>
+            <td>
+                <div style="text-align: center" class="saldo-title">PENGELUARAN/UANG KELUAR</div>
+                <div style="text-align: center" class="saldo-amount">
+                    Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}
+                </div>
+                <div style="text-align: center" class="expenses-details">
+                    <strong>Delivery Order:</strong><br>
+                    Total DO: Rp {{ number_format($totalSubTotal, 0, ',', '.') }}<br>
+
+                    <strong>Operasional:</strong><br>
+                    Total: Rp {{ number_format($pengeluaranOperasional, 0, ',', '.') }}<br>
+
+                    @if (isset($pinjaman) && count($pinjaman) > 0)
+                        <strong>Pinjaman:</strong><br>
+                        @foreach ($pinjaman as $p)
+                            {{ $p->tipe_pihak }}: {{ $p->pihak_terkait }} -
+                            Rp {{ number_format($p->nominal, 0, ',', '.') }}<br>
+                        @endforeach
+                    @endif
+                </div>
             </td>
             <td>
                 <div style="text-align: center" class="saldo-title">TOTAL SALDO/UANG MASUK</div>

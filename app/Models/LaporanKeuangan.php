@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use App\Models\Supir;
 use App\Enums\TipeNama;
+use App\Models\Pekerja;
+use App\Models\Penjual;
+use Illuminate\Database\Eloquent\Relations\BelongsTo as EloquentBelongsTo;
+use Illuminate\Database\Eloquent\Model;
 use App\Models\{Operasional, TransaksiDo};
 use App\Observers\LaporanKeuanganObserver;
-use App\Traits\{LaporanKeuanganTrait, DokumentasiTrait};
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\{LaporanKeuanganTrait, DokumentasiTrait};
 
 class LaporanKeuangan extends Model
 {
@@ -58,13 +63,30 @@ class LaporanKeuangan extends Model
         return $this->belongsTo(TransaksiDo::class, 'referensi_id')
             ->where('sumber_transaksi', 'DO');
     }
-
-    public function operasional()
+    public function supir(): EloquentBelongsTo
     {
-        return $this->belongsTo(Operasional::class, 'referensi_id')
-            ->where('sumber_transaksi', 'Operasional');
+        return $this->belongsTo(Supir::class, 'referensi_id');
     }
 
+    public function pekerja(): EloquentBelongsTo
+    {
+        return $this->belongsTo(Pekerja::class, 'referensi_id');
+    }
+
+    public function penjual(): EloquentBelongsTo
+    {
+        return $this->belongsTo(Penjual::class, 'referensi_id');
+    }
+
+    public function user(): EloquentBelongsTo
+    {
+        return $this->belongsTo(User::class, 'referensi_id');
+    }
+
+    public function operasional(): EloquentBelongsTo
+    {
+        return $this->belongsTo(Operasional::class, 'referensi_id');
+    }
 
     public function createdBy()
     {

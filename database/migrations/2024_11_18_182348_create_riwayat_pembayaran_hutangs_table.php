@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->timestamp('tanggal');
             $table->decimal('nominal', 15, 0);
-            $table->string('tipe_nama');
+            $table->string('tipe_nama')->nullable();
             $table->foreignId('penjual_id')->nullable()->constrained('penjuals')->cascadeOnDelete();
             $table->foreignId('pekerja_id')->nullable()->constrained('pekerja')->cascadeOnDelete();
             $table->foreignId('operasional_id')->constrained('operasional')->cascadeOnDelete();

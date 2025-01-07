@@ -17,8 +17,14 @@ class LaporanKeuanganObserver
                 'jenis_transaksi',
                 'kategori',
                 'nominal',
+                'sub_kategori',
                 'sumber_transaksi',
-                'referensi_id'
+                'referensi_id',
+                'nomor_referensi',
+                'pihak_terkait',
+                'tipe_pihak',
+                'cara_pembayaran',
+                'keterangan',
             ];
 
             foreach ($requiredFields as $field) {
@@ -93,7 +99,7 @@ class LaporanKeuanganObserver
         }
     }
 
-    protected function handleTransaksitunai(TransaksiDo $transaksiDo, Perusahaan $perusahaan)
+    protected function handleTransaksiNontunai(TransaksiDo $transaksiDo)
     {
         // Catat komponen pemasukan
         $komponenPemasukan = [
@@ -102,9 +108,10 @@ class LaporanKeuanganObserver
             ['sub_kategori' => 'Bayar Hutang', 'nominal' => $transaksiDo->pembayaran_hutang],
         ];
 
-        // Total pemasukan tunai
         $totalPemasukan = 0;
+        $pihakTerkait = $transaksiDo->penjual ? $transaksiDo->penjual->nama : 'Penjual tidak ditemukan';
 
+        // Catat setiap komponen pemasukan
         foreach ($komponenPemasukan as $komponen) {
             if ($komponen['nominal'] > 0) {
                 $this->createLaporan([
@@ -117,65 +124,10 @@ class LaporanKeuanganObserver
                     'referensi_id' => $transaksiDo->id,
                     'nomor_referensi' => $transaksiDo->nomor,
                     'pihak_terkait' => $transaksiDo->penjual->nama,
-                    'cara_pembayaran' => 'tunai',
-                    'keterangan' => "Pemasukan tunai DO #{$transaksiDo->nomor}",
-                    'mempengaruhi_kas' => true,
-                ]);
-
-                $totalPemasukan += $komponen['nominal'];
-            }
-        }
-
-        // Catat pengeluaran sisa bayar
-        if ($transaksiDo->sisa_bayar > 0) {
-            $this->createLaporan([
-                'tanggal' => $transaksiDo->tanggal,
-                'jenis_transaksi' => 'Pengeluaran',
-                'kategori' => 'DO',
-                'sub_kategori' => 'Pembayaran DO',
-                'nominal' => $transaksiDo->sisa_bayar,
-                'sumber_transaksi' => 'DO',
-                'referensi_id' => $transaksiDo->id,
-                'nomor_referensi' => $transaksiDo->nomor,
-                'pihak_terkait' => $transaksiDo->penjual->nama,
-                'cara_pembayaran' => 'tunai',
-                'keterangan' => "Pembayaran DO #{$transaksiDo->nomor}",
-                'mempengaruhi_kas' => true,
-            ]);
-        }
-
-        // Log perubahan saldo dengan informasi minimal
-        Log::info("DO #{$transaksiDo->nomor} selesai: +{$totalPemasukan}, -{$transaksiDo->sisa_bayar}");
-    }
-
-    protected function handleTransaksiNontunai(TransaksiDo $transaksiDo, Perusahaan $perusahaan)
-    {
-        // Catat semua komponen pemasukan tunai jika ada
-        $komponenPemasukan = [
-            ['sub_kategori' => 'Upah Bongkar', 'nominal' => $transaksiDo->upah_bongkar],
-            ['sub_kategori' => 'Biaya Lain', 'nominal' => $transaksiDo->biaya_lain],
-            ['sub_kategori' => 'Bayar Hutang', 'nominal' => $transaksiDo->pembayaran_hutang],
-        ];
-
-        $totalPemasukan = 0;
-        $pihakTerkait = $transaksiDo->penjual ? $transaksiDo->penjual->nama : 'Penjual tidak ditemukan';
-
-        // Catat setiap komponen pemasukan tunai
-        foreach ($komponenPemasukan as $komponen) {
-            if ($komponen['nominal'] > 0) {
-                $this->createLaporan([
-                    'tanggal' => $transaksiDo->tanggal,
-                    'jenis_transaksi' => 'Pemasukan',
-                    'kategori' => 'DO',
-                    'sub_kategori' => $komponen['sub_kategori'],
-                    'nominal' => $komponen['nominal'],
-                    'sumber_transaksi' => 'DO',
-                    'referensi_id' => $transaksiDo->id,
-                    'nomor_referensi' => $transaksiDo->nomor,
-                    'pihak_terkait' => $pihakTerkait,
-                    'cara_pembayaran' => 'tunai',
-                    'keterangan' => "Pemasukan tunai DO #{$transaksiDo->nomor}",
-                    'mempengaruhi_kas' => true,
+                    'tipe_pihak' => 'penjual',
+                    'cara_pembayaran' => 'nontunai',
+                    'keterangan' => "Pemasukan nontunai DO #{$transaksiDo->nomor}",
+                    'mempengaruhi_kas' => false,
                 ]);
 
                 $totalPemasukan += $komponen['nominal'];
@@ -194,13 +146,13 @@ class LaporanKeuanganObserver
                 'referensi_id' => $transaksiDo->id,
                 'nomor_referensi' => $transaksiDo->nomor,
                 'pihak_terkait' => $pihakTerkait,
+                'tipe_pihak' => 'penjual',
                 'cara_pembayaran' => $transaksiDo->cara_bayar,
                 'keterangan' => "Pembayaran DO via {$transaksiDo->cara_bayar}",
                 'mempengaruhi_kas' => false,
             ]);
         }
 
-        // Log perubahan saldo dengan informasi minimal
         Log::info("DO non-tunai #{$transaksiDo->nomor} selesai: +{$totalPemasukan}");
     }
 

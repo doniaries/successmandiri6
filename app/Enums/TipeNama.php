@@ -12,10 +12,10 @@ enum TipeNama: string
     public function getLabel(): string
     {
         return match ($this) {
-            self::PENJUAL => '🏢 Penjual',
-            self::PEKERJA => '👷 Pekerja',
-            self::USER => '👨‍💼 Karyawan',
-            self::SUPIR => '🚗 Supir',
+            self::PENJUAL => 'Penjual',
+            self::PEKERJA => 'Pekerja',
+            self::USER => 'Karyawan',
+            self::SUPIR => 'Supir',
         };
     }
 

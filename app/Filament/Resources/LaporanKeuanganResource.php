@@ -105,7 +105,7 @@ class LaporanKeuanganResource extends Resource
                     ])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('sumber_transaksi')
-                    ->label('dari')
+                    ->label('Kategori')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('referensi_id')
                     // ->numeric()
@@ -119,9 +119,30 @@ class LaporanKeuanganResource extends Resource
                     ->copyMessage('Nomor DO berhasil disalin')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('pihak_terkait')
+                    ->label('Nama')
+                    ->formatStateUsing(function ($record) {
+                        return match ($record->tipe_pihak?->value) {
+                            'supir' => $record->supir?->nama ?? $record->pihak_terkait,
+                            'pekerja' => $record->pekerja?->nama ?? $record->pihak_terkait,
+                            'penjual' => $record->penjual?->nama ?? $record->pihak_terkait,
+                            'user' => $record->user?->name ?? $record->pihak_terkait,
+                            default => $record->pihak_terkait
+                        };
+                    })
+                    ->searchable([
+                        'pihak_terkait',
+                        'supir.nama',
+                        'pekerja.nama',
+                        'penjual.nama',
+                        'user.name'
+                    ])
+                    ->badge(),
+                Tables\Columns\TextColumn::make('tipe_pihak')
+                    ->label('Tipe')
+                    ->formatStateUsing(fn($state) => $state?->getLabel())
                     ->badge()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('tipe_pihak'),
+
                 Tables\Columns\TextColumn::make('cara_pembayaran')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -137,6 +158,7 @@ class LaporanKeuanganResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+
             //download PDF//
             ->headerActions([
                 Tables\Actions\Action::make('syncSaldo')
@@ -305,13 +327,7 @@ class LaporanKeuanganResource extends Resource
         ];
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
-    }
+
     // Override canCreate untuk mencegah pembuatan data
     public static function canCreate(): bool
     {
@@ -330,8 +346,12 @@ class LaporanKeuanganResource extends Resource
         return 'primary';
     }
 
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::getModel()::count();
-    // }
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->with(['supir', 'pekerja', 'penjual', 'user'])
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
 }
