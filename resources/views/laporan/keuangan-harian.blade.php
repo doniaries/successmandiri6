@@ -278,6 +278,8 @@
                         <td style="width: 25%;">
                             {{ strtoupper($pengeluaran[$i]->kategoriLabel) }}
                             @if ($pengeluaran[$i]->kategori === 'pinjaman')
+                            @endif
+                            @if ($pengeluaran[$i]->tipe_nama)
                                 <br><small>
                                     @switch($pengeluaran[$i]->tipe_nama)
                                         @case('supir')
@@ -293,9 +295,6 @@
                                         @break
                                     @endswitch
                                 </small>
-                            @endif
-                            @if ($pengeluaran[$i]->keterangan)
-                                <br><small>Ket: {{ $pengeluaran[$i]->keterangan }}</small>
                             @endif
                         </td>
                         <td style="width: 25%;" class="amount">
