@@ -32,7 +32,7 @@ class TransaksiDoResource extends Resource
 {
     protected static ?string $model = TransaksiDo::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationLabel = 'Transaksi DO';
+    protected static ?string $navigationLabel = 'Transaksi';
     protected static ?string $modelLabel = 'Transaksi DO';
     protected static ?string $pluralModelLabel = 'Transaksi DO';
     protected static ?string $pollingInterval = '15s';

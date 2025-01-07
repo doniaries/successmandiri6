@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Operasional;
+use App\Enums\KategoriOperasional;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -52,5 +54,19 @@ class Supir extends Model
     {
         return $query->withCount('transaksiDo')
             ->withSum('transaksiDo', 'total');
+    }
+
+    // Add relationship with Operasional
+    public function pinjaman()
+    {
+        return $this->hasMany(Operasional::class, 'penjual_id')
+            ->where('tipe_nama', 'supir')
+            ->where('kategori', KategoriOperasional::PINJAMAN);
+    }
+
+    // Add total pinjaman accessor
+    public function getTotalPinjamanAttribute()
+    {
+        return $this->pinjaman()->sum('nominal');
     }
 }

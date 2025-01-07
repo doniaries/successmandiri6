@@ -18,6 +18,7 @@ class RiwayatPembayaranHutang extends Model
         'tipe',
         'penjual_id',
         'pekerja_id',
+        'supir_id',
         'operasional_id',
         'keterangan'
     ];
@@ -31,6 +32,12 @@ class RiwayatPembayaranHutang extends Model
     public function penjual(): BelongsTo
     {
         return $this->belongsTo(Penjual::class);
+    }
+
+    public function supir()
+    {
+        return $this->belongsTo(Supir::class, 'pekerja_id')
+            ->where('tipe', 'supir');
     }
 
     public function pekerja(): BelongsTo

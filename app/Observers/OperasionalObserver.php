@@ -2,11 +2,13 @@
 
 namespace App\Observers;
 
+use App\Models\Supir;
 use App\Enums\KategoriOperasional;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\{DB, Log};
 use Filament\Notifications\Actions\Action;
-use App\Models\{Operasional, Penjual, Perusahaan, LaporanKeuangan};
+use App\Models\{Operasional, Penjual, Perusahaan, LaporanKeuangan, RiwayatPembayaranHutang};
+
 
 class OperasionalObserver
 {
@@ -62,6 +64,7 @@ class OperasionalObserver
             throw $e;
         }
     }
+
 
     public function created(Operasional $operasional): void
     {
@@ -235,65 +238,57 @@ class OperasionalObserver
 
     private function processHutang(Operasional $operasional): void
     {
-        // Only process if it's a loan transaction for a seller
         if (
             $operasional->kategori === KategoriOperasional::PINJAMAN &&
-            $operasional->tipe_nama === 'penjual'
+            ($operasional->tipe_nama === 'penjual' || $operasional->tipe_nama === 'supir')
         ) {
-
-            if (!$operasional->penjual_id) {
-                throw new \Exception("Data penjual harus diisi untuk transaksi pinjaman");
-            }
-
             try {
-                // Lock the seller record for update
-                $penjual = Penjual::lockForUpdate()->findOrFail($operasional->penjual_id);
+                DB::beginTransaction();
 
-                $hutangSebelum = $penjual->hutang;
+                if ($operasional->tipe_nama === 'supir') {
+                    $model = Supir::lockForUpdate()->findOrFail($operasional->supir_id);
+                    $riwayatData = [
+                        'tanggal' => $operasional->tanggal,
+                        'nominal' => $operasional->nominal,
+                        'tipe' => 'supir',
+                        'supir_id' => $model->id,
+                        'operasional_id' => $operasional->id,
+                        'keterangan' => "Penambahan pinjaman: " . ($operasional->keterangan ?: 'Via operasional')
+                    ];
+                } else {
+                    $model = Penjual::lockForUpdate()->findOrFail($operasional->penjual_id);
+                    $riwayatData = [
+                        'tanggal' => $operasional->tanggal,
+                        'nominal' => $operasional->nominal,
+                        'tipe' => 'penjual',
+                        'penjual_id' => $model->id,
+                        'operasional_id' => $operasional->id,
+                        'keterangan' => "Penambahan pinjaman: " . ($operasional->keterangan ?: 'Via operasional')
+                    ];
+                }
 
-                // Update seller's debt
-                $penjual->increment('hutang', $operasional->nominal);
+                $hutangSebelum = $model->hutang;
+                $model->increment('hutang', $operasional->nominal);
 
-                // Create payment history record
-                $penjual->riwayatPembayaran()->create([
-                    'tanggal' => $operasional->tanggal,
-                    'nominal' => $operasional->nominal,
-                    'tipe' => 'penjual',
-                    'operasional_id' => $operasional->id,
-                    'keterangan' => sprintf(
-                        "Penambahan pinjaman: %s",
-                        $operasional->keterangan ?: 'Via operasional'
-                    )
-                ]);
+                // Create history record
+                RiwayatPembayaranHutang::create($riwayatData);
 
-                Log::info('Pinjaman penjual diproses:', [
-                    'operasional_id' => $operasional->id,
-                    'penjual_id' => $penjual->id,
-                    'penjual_nama' => $penjual->nama,
+                DB::commit();
+
+                Log::info('Pinjaman diproses', [
+                    'tipe' => $operasional->tipe_nama,
+                    'id' => $model->id,
                     'hutang_sebelum' => $hutangSebelum,
-                    'nominal_pinjaman' => $operasional->nominal,
-                    'hutang_setelah' => $penjual->fresh()->hutang
+                    'nominal' => $operasional->nominal,
+                    'hutang_setelah' => $model->fresh()->hutang
                 ]);
-
-                // Show notification
-                // Notification::make()
-                //     ->title('Pinjaman Berhasil Dicatat')
-                //     ->success()
-                //     ->body(
-                //         "Detail Pinjaman:\n" .
-                //             "• Penjual: {$penjual->nama}\n" .
-                //             "• Nominal: Rp " . number_format($operasional->nominal, 0, ',', '.') . "\n" .
-                //             "• Total Hutang: Rp " . number_format($penjual->fresh()->hutang, 0, ',', '.')
-                //     )
-                //     ->duration(3000)
-                //     ->send();
             } catch (\Exception $e) {
+                DB::rollBack();
                 Log::error('Error memproses pinjaman:', [
                     'error' => $e->getMessage(),
-                    'operasional_id' => $operasional->id,
-                    'penjual_id' => $operasional->penjual_id
+                    'operasional_id' => $operasional->id
                 ]);
-                throw new \Exception("Gagal memproses pinjaman: " . $e->getMessage());
+                throw $e;
             }
         }
     }

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('penjual_id')->nullable()->constrained('penjuals')->cascadeOnDelete();
             $table->foreignId('pekerja_id')->nullable()->constrained('pekerja')->cascadeOnDelete();
             $table->foreignId('operasional_id')->constrained('operasional')->cascadeOnDelete();
+            $table->foreignId('supir_id')->nullable()->constrained('supir')->cascadeOnDelete();
             $table->text('keterangan')->nullable();
             $table->timestamps();
             $table->softDeletes();

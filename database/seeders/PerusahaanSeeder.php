@@ -18,6 +18,8 @@ class PerusahaanSeeder extends Seeder
         // Disable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
+
+
         // Clear existing records
         DB::table('users')->where('perusahaan_id', '!=', null)->delete();
         Perusahaan::truncate();

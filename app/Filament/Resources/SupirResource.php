@@ -19,9 +19,9 @@ class SupirResource extends Resource
 {
     protected static ?string $model = Supir::class;
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationLabel = 'Data Supir';
-    protected static ?string $navigationGroup = 'Master Data';
-    protected static ?int $navigationSort = 3;
+    // protected static ?string $navigationLabel = 'Supir';
+    // protected static ?string $navigationGroup = 'Master Data';
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {
@@ -71,13 +71,21 @@ class SupirResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('hutang')
+                    ->label('Total Hutang')
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
-                    ->label('Hutang'),
-
+                    ->alignRight()
+                    ->sortable()
+                    ->color(fn($state) => $state > 0 ? 'danger' : 'success'),
+                TextColumn::make('total_pinjaman')
+                    ->label('Total Pinjaman')
+                    ->formatStateUsing(fn($record) => 'Rp ' . number_format($record->total_pinjaman ?? 0, 0, ',', '.'))
+                    ->alignRight()
+                    ->sortable()
+                    ->color('danger'),
 
 
             ])
-            ->defaultSort('nama', 'asc')
+            ->defaultSort('nama', 'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\Filter::make('has_hutang')
@@ -122,5 +130,15 @@ class SupirResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
+    }
+
+    private static function formatCurrency($number): int
+    {
+        if (empty($number)) return 0;
+        // Handle string format currency
+        if (is_string($number)) {
+            return (int) str_replace(['.', ','], ['', '.'], $number);
+        }
+        return (int) $number;
     }
 }
