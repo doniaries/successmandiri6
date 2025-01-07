@@ -59,14 +59,25 @@ class Supir extends Model
     // Add relationship with Operasional
     public function pinjaman()
     {
-        return $this->hasMany(Operasional::class, 'penjual_id')
+        return $this->hasMany(Operasional::class, 'supir_id')
             ->where('tipe_nama', 'supir')
             ->where('kategori', KategoriOperasional::PINJAMAN);
+    }
+
+    // Add relationship to RiwayatPembayaranHutang
+    public function riwayatHutang()
+    {
+        return $this->hasMany(RiwayatPembayaranHutang::class);
     }
 
     // Add total pinjaman accessor
     public function getTotalPinjamanAttribute()
     {
-        return $this->pinjaman()->sum('nominal');
+        return $this->riwayatHutang()
+            ->where('tipe', 'supir')
+            ->sum('nominal');
     }
+
+    // Add total hutang accessor
+
 }

@@ -76,16 +76,8 @@ class SupirResource extends Resource
                     ->alignRight()
                     ->sortable()
                     ->color(fn($state) => $state > 0 ? 'danger' : 'success'),
-                TextColumn::make('total_pinjaman')
-                    ->label('Total Pinjaman')
-                    ->formatStateUsing(fn($record) => 'Rp ' . number_format($record->total_pinjaman ?? 0, 0, ',', '.'))
-                    ->alignRight()
-                    ->sortable()
-                    ->color('danger'),
-
-
             ])
-            ->defaultSort('nama', 'desc')
+            ->defaultSort('nama', 'asc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\Filter::make('has_hutang')

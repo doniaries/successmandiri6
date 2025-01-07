@@ -182,10 +182,38 @@ class OperasionalResource extends Resource
                     ->formatStateUsing(fn($record) => $record->kategoriLabel)
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('nama')
-                    ->label('Nama')
-                    ->description(fn($record) => ucfirst($record->tipe_nama))
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('tipe_nama')
+                //     ->label('Tipe')
+                //     ->description(function ($record) {
+                //         return match ($record->tipe_nama) {
+                //             'supir' => $record->supir?->nama ?? '-',
+                //             'penjual' => $record->penjual?->nama ?? '-',
+                //             'user' => $record->user?->name ?? '-',
+                //             'pekerja' => $record->pekerja?->nama ?? '-',
+                //             default => ucfirst($record->tipe_nama)
+                //         };
+                //     })
+                //     ->searchable(),
+
+                Tables\Columns\TextColumn::make('user_id')
+                    ->label('Karyawan')
+                    ->searchable()
+                    ->formatStateUsing(fn($record) => $record->user?->name ?? '-'),
+
+                Tables\Columns\TextColumn::make('penjual_id')
+                    ->label('Penjual')
+                    ->searchable()
+                    ->formatStateUsing(fn($record) => $record->penjual?->nama ?? '-'),
+
+                Tables\Columns\TextColumn::make('supir_id')
+                    ->label('Supir')
+                    ->searchable()
+                    ->formatStateUsing(fn($record) => $record->supir?->nama ?? '-'),
+
+                Tables\Columns\TextColumn::make('pekerja_id')
+                    ->label('Pekerja')
+                    ->searchable()
+                    ->formatStateUsing(fn($record) => $record->pekerja?->nama ?? '-'),
 
                 Tables\Columns\TextColumn::make('nominal')
                     ->label('Nominal')
@@ -195,7 +223,7 @@ class OperasionalResource extends Resource
                     ->sortable()
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->money('IDR')
+                            ->currency('IDR')
                     ]),
 
                 // Tables\Columns\ImageColumn::make('file_bukti')

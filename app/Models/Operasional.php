@@ -57,7 +57,7 @@ class Operasional extends Model
 
     public function supir()
     {
-        return $this->belongsTo(Supir::class, 'supir_id');
+        return $this->belongsTo(Supir::class);
     }
 
 

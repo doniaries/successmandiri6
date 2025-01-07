@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TipeNama;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,17 +16,18 @@ class RiwayatPembayaranHutang extends Model
     protected $fillable = [
         'tanggal',
         'nominal',
-        'tipe',
+        'tipe_nama',
         'penjual_id',
         'pekerja_id',
         'supir_id',
         'operasional_id',
         'keterangan'
     ];
-    // const TIPE_PINJAMAN = 'pinjaman';
+
     protected $casts = [
         'tanggal' => 'datetime',
-        'nominal' => 'decimal:0'
+        'nominal' => 'decimal:0',
+        'tipe_nama' => TipeNama::class,
     ];
 
     // Relations
@@ -36,8 +38,7 @@ class RiwayatPembayaranHutang extends Model
 
     public function supir()
     {
-        return $this->belongsTo(Supir::class, 'pekerja_id')
-            ->where('tipe', 'supir');
+        return $this->belongsTo(Supir::class);
     }
 
     public function pekerja(): BelongsTo
@@ -62,6 +63,7 @@ class RiwayatPembayaranHutang extends Model
         return match ($this->tipe) {
             'penjual' => $this->penjual?->nama ?? '-',
             'pekerja' => $this->pekerja?->nama ?? '-',
+            'supir' => $this->supir?->nama ?? '-',
             default => '-'
         };
     }

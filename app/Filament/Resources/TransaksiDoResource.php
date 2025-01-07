@@ -786,7 +786,7 @@ class TransaksiDoResource extends Resource
                     ->weight('bold')
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->money('IDR')
+                            ->currency('IDR')
                     ])
                     ->sortable(),
 
@@ -795,7 +795,7 @@ class TransaksiDoResource extends Resource
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->money('IDR')
+                            ->currency('IDR')
                     ])
                     ->sortable(),
 
@@ -803,7 +803,7 @@ class TransaksiDoResource extends Resource
                     ->label('Biaya')
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->money('IDR')
+                            ->currency('IDR')
                     ])
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
@@ -822,7 +822,7 @@ class TransaksiDoResource extends Resource
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->money('IDR')
+                            ->currency('IDR')
                     ])
                     ->color(Color::Orange)
                     ->sortable(),
@@ -837,7 +837,7 @@ class TransaksiDoResource extends Resource
                     ->sortable()
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->money('IDR')
+                            ->currency('IDR')
                     ])
                     ->alignRight() // Opsional: untuk alignment nominal uang
                     ->color(
@@ -876,7 +876,7 @@ class TransaksiDoResource extends Resource
                     ->weight('bold')
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->money('IDR')
+                            ->currency('IDR')
                     ])
                     ->sortable(),
 
