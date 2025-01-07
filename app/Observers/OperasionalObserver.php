@@ -183,7 +183,7 @@ class OperasionalObserver
                         ->button()
                 ])
                 ->success()
-                ->duration(5000)
+                ->duration(3000)
                 ->send();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -224,7 +224,7 @@ class OperasionalObserver
                         "• Nominal: Rp " . number_format($operasional->nominal, 0, ',', '.')
                 )
                 ->warning()
-                ->duration(5000)
+                ->duration(3000)
                 ->send();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -276,17 +276,17 @@ class OperasionalObserver
                 ]);
 
                 // Show notification
-                Notification::make()
-                    ->title('Pinjaman Berhasil Dicatat')
-                    ->success()
-                    ->body(
-                        "Detail Pinjaman:\n" .
-                            "• Penjual: {$penjual->nama}\n" .
-                            "• Nominal: Rp " . number_format($operasional->nominal, 0, ',', '.') . "\n" .
-                            "• Total Hutang: Rp " . number_format($penjual->fresh()->hutang, 0, ',', '.')
-                    )
-                    ->duration(5000)
-                    ->send();
+                // Notification::make()
+                //     ->title('Pinjaman Berhasil Dicatat')
+                //     ->success()
+                //     ->body(
+                //         "Detail Pinjaman:\n" .
+                //             "• Penjual: {$penjual->nama}\n" .
+                //             "• Nominal: Rp " . number_format($operasional->nominal, 0, ',', '.') . "\n" .
+                //             "• Total Hutang: Rp " . number_format($penjual->fresh()->hutang, 0, ',', '.')
+                //     )
+                //     ->duration(3000)
+                //     ->send();
             } catch (\Exception $e) {
                 Log::error('Error memproses pinjaman:', [
                     'error' => $e->getMessage(),
@@ -461,7 +461,7 @@ class OperasionalObserver
             ->iconColor($type)  // Gunakan warna sesuai type
             ->body($message ?: $body)  // Body wajib di Filament 3
             ->persistent(false)
-            ->duration(5000)    // Durasi tampil 5 detik
+            ->duration(3000)    // Durasi tampil 5 detik
             ->send();
     }
 

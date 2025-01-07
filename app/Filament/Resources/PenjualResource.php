@@ -125,8 +125,8 @@ class PenjualResource extends Resource
 
                 Tables\Columns\TextColumn::make('hutang')
                     ->label('Total Hutang')
-                    ->tooltip(fn($record) =>
-                    "Hutang Awal: Rp " . number_format($record->getOriginal('hutang'), 0, ',', '.'))
+                    // ->tooltip(fn($record) =>
+                    // "Hutang Awal: Rp " . number_format($record->getOriginal('hutang'), 0, ',', '.'))
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->alignment('right')
                     ->sortable()
