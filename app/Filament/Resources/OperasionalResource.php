@@ -141,10 +141,14 @@ class OperasionalResource extends Resource
                                     Forms\Components\TextInput::make('nominal')
                                         ->label('Nominal')
                                         ->required()
+                                        ->currencyMask(
+                                            thousandSeparator: ',',
+                                            decimalSeparator: '.',
+                                            precision: 0
+                                        )
                                         ->prefix('Rp')
                                         ->numeric()
-                                        ->live()
-                                        ->currencyMask('thousandSeparator', ',', 'decimalSeparator', '.', 'precision', 0),
+                                        ->live(),
 
                                     Forms\Components\TextInput::make('keterangan')
                                         ->label('Keterangan')
@@ -234,6 +238,17 @@ class OperasionalResource extends Resource
             'edit' => Pages\EditOperasional::route('/{record}/edit'),
         ];
     }
+
+    private static function formatCurrency($number): int
+    {
+        if (empty($number)) return 0;
+        // Handle string format currency
+        if (is_string($number)) {
+            return (int) str_replace(['.', ','], ['', '.'], $number);
+        }
+        return (int) $number;
+    }
+
 
     // public static function getHeaderActions(): array
     // {

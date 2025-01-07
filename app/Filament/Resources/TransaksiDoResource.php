@@ -986,6 +986,7 @@ class TransaksiDoResource extends Resource
     {
         return parent::getEloquentQuery()
             ->with(['penjual', 'supir', 'kendaraan']) // Eager loading
+            // ->whereDate('created_at', today())
             ->latest('tanggal');
     }
 
