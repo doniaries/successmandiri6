@@ -117,6 +117,12 @@ class PenjualResource extends Resource
                 //     ]),
 
                 // Tampilkan hutang awal di tooltip/hover
+
+                // Tables\Columns\TextColumn::make('total_pinjaman')
+                //     ->label('Total Pinjaman')
+                //     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                //     ->sortable(),
+
                 Tables\Columns\TextColumn::make('hutang')
                     ->label('Total Hutang')
                     ->tooltip(fn($record) =>

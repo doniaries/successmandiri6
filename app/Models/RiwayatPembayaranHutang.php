@@ -21,7 +21,7 @@ class RiwayatPembayaranHutang extends Model
         'operasional_id',
         'keterangan'
     ];
-
+    // const TIPE_PINJAMAN = 'pinjaman';
     protected $casts = [
         'tanggal' => 'datetime',
         'nominal' => 'decimal:0'

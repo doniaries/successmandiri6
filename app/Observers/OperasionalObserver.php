@@ -2,12 +2,11 @@
 
 namespace App\Observers;
 
-
-use App\Models\{Operasional, Penjual, Perusahaan, LaporanKeuangan};
 use App\Enums\KategoriOperasional;
-use Illuminate\Support\Facades\{DB, Log};
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\{DB, Log};
 use Filament\Notifications\Actions\Action;
+use App\Models\{Operasional, Penjual, Perusahaan, LaporanKeuangan};
 
 class OperasionalObserver
 {
@@ -69,66 +68,16 @@ class OperasionalObserver
         try {
             DB::beginTransaction();
 
-            // Tangani berdasarkan jenis operasional
-            if ($operasional->kategori === 'bayar_hutang') {
-                /// 1. Untuk bayar hutang, proses hutang dulu
-                if ($operasional->kategori === 'bayar_hutang') {
-                    $this->processHutang($operasional);
-                }
+            // Process loan/debt if applicable
+            $this->processHutang($operasional);
 
-                // 2. Lalu create laporan keuangan khusus bayar hutang
-                $this->createLaporanKeuangan($operasional);
-                LaporanKeuangan::create([
-                    'tanggal' => $operasional->tanggal,
-                    'jenis_transaksi' => ucfirst($operasional->operasional),
-                    'kategori' => 'Operasional',
-                    'sub_kategori' => "Pembayaran Hutang {$operasional->tipe_nama}",
-                    'nominal' => $operasional->nominal,
-                    'sumber_transaksi' => 'Operasional',
-                    'referensi_id' => $operasional->id,
-                    'nomor_referensi' => sprintf('OP-%s', str_pad($operasional->id, 5, '0', STR_PAD_LEFT)),
-                    'pihak_terkait' => $operasional->nama,
-                    'tipe_pihak' => $operasional->tipe_nama,
-                    'cara_pembayaran' => 'tunai',
-                    'keterangan' => "Pembayaran hutang {$operasional->tipe_nama}" .
-                        ($operasional->keterangan ? ": {$operasional->keterangan}" : ''),
-                    'mempengaruhi_kas' => true,
-                    'saldo_sebelum' => optional(Perusahaan::first())->saldo ?? 0,
-                ]);
-            } else {
-                // Untuk operasional umum (non bayar hutang)
-                // 1. Create laporan keuangan biasa
-                LaporanKeuangan::create([
-                    'tanggal' => $operasional->tanggal,
-                    'jenis_transaksi' => ucfirst($operasional->operasional),
-                    'kategori' => 'Operasional',
-                    'sub_kategori' => $operasional->kategori?->label() ?? '-',
-                    'nominal' => $operasional->nominal,
-                    'sumber_transaksi' => 'Operasional',
-                    'referensi_id' => $operasional->id,
-                    'nomor_referensi' => sprintf('OP-%s', str_pad($operasional->id, 5, '0', STR_PAD_LEFT)),
-                    'pihak_terkait' => $operasional->nama,
-                    'tipe_pihak' => $operasional->tipe_nama,
-                    'cara_pembayaran' => 'tunai',
-                    'keterangan' => $operasional->keterangan ?: '-',
-                    'mempengaruhi_kas' => true,
-                    'saldo_sebelum' => optional(Perusahaan::first())->saldo ?? 0,
-                ]);
-            }
-
-            // 3. Update saldo perusahaan (berlaku untuk semua jenis)
+            // Update company balance
             $this->updateSaldoPerusahaan($operasional);
 
-            DB::commit();
+            // Create financial report entry
+            $this->createLaporanKeuangan($operasional);
 
-            // Log untuk tracking
-            Log::info('Operasional berhasil dibuat:', [
-                'jenis' => $operasional->operasional,
-                'kategori' => $operasional->kategori,
-                'nominal' => $operasional->nominal,
-                'tipe' => $operasional->tipe_nama,
-                'pihak' => $operasional->nama
-            ]);
+            DB::commit();
 
             $this->showTransactionNotification($operasional, 'created');
         } catch (\Exception $e) {
@@ -137,6 +86,7 @@ class OperasionalObserver
             throw $e;
         }
     }
+
 
     public function updated(Operasional $operasional): void
     {
@@ -283,111 +233,101 @@ class OperasionalObserver
         }
     }
 
-    // Helper Methods
-    // Modifikasi method processHutang
     private function processHutang(Operasional $operasional): void
     {
-        // Perbaikan: Cek kategori bayar_hutang dahulu
-        if ($operasional->kategori === 'bayar_hutang') {
-            DB::beginTransaction();
+        // Only process if it's a loan transaction for a seller
+        if (
+            $operasional->kategori === KategoriOperasional::PINJAMAN &&
+            $operasional->tipe_nama === 'penjual'
+        ) {
+
+            if (!$operasional->penjual_id) {
+                throw new \Exception("Data penjual harus diisi untuk transaksi pinjaman");
+            }
+
             try {
-                // 1. Dapatkan pihak dengan lock
-                $pihak = match ($operasional->tipe_nama) {
-                    'penjual' => Penjual::lockForUpdate()->find($operasional->penjual_id),
-                    'pekerja' => Pekerja::lockForUpdate()->find($operasional->pekerja_id),
-                    default => null
-                };
+                // Lock the seller record for update
+                $penjual = Penjual::lockForUpdate()->findOrFail($operasional->penjual_id);
 
-                if (!$pihak) {
-                    throw new \Exception("Data {$operasional->tipe_nama} tidak ditemukan");
-                }
+                $hutangSebelum = $penjual->hutang;
 
-                // 2. Validasi hutang
-                if ($operasional->nominal > $pihak->hutang) {
-                    throw new \Exception(
-                        "Pembayaran Rp " . number_format($operasional->nominal, 0, ',', '.') .
-                            " melebihi total hutang Rp " . number_format($pihak->hutang, 0, ',', '.')
-                    );
-                }
+                // Update seller's debt
+                $penjual->increment('hutang', $operasional->nominal);
 
-                // 3. Update hutang langsung di database untuk atomic operation
-                $hutangSebelum = $pihak->hutang;
-                $hutangBaru = max(0, $hutangSebelum - $operasional->nominal);
-
-                DB::table($pihak->getTable())
-                    ->where('id', $pihak->id)
-                    ->update(['hutang' => $hutangBaru]);
-
-                // 4. Catat riwayat pembayaran jika available
-                if (method_exists($pihak, 'riwayatPembayaran')) {
-                    $pihak->riwayatPembayaran()->create([
-                        'tanggal' => $operasional->tanggal,
-                        'nominal' => $operasional->nominal,
-                        'tipe' => $operasional->tipe_nama,
-                        'operasional_id' => $operasional->id,
-                        'keterangan' => "Pembayaran hutang via operasional"
-                    ]);
-                }
-
-                // 5. Log perubahan
-                Log::info('Hutang berhasil dibayar:', [
-                    'pihak' => $pihak->nama,
-                    'tipe' => $operasional->tipe_nama,
-                    'hutang_awal' => $hutangSebelum,
-                    'pembayaran' => $operasional->nominal,
-                    'hutang_akhir' => $hutangBaru
+                // Create payment history record
+                $penjual->riwayatPembayaran()->create([
+                    'tanggal' => $operasional->tanggal,
+                    'nominal' => $operasional->nominal,
+                    'tipe' => 'penjual',
+                    'operasional_id' => $operasional->id,
+                    'keterangan' => sprintf(
+                        "Penambahan pinjaman: %s",
+                        $operasional->keterangan ?: 'Via operasional'
+                    )
                 ]);
 
-                DB::commit();
+                Log::info('Pinjaman penjual diproses:', [
+                    'operasional_id' => $operasional->id,
+                    'penjual_id' => $penjual->id,
+                    'penjual_nama' => $penjual->nama,
+                    'hutang_sebelum' => $hutangSebelum,
+                    'nominal_pinjaman' => $operasional->nominal,
+                    'hutang_setelah' => $penjual->fresh()->hutang
+                ]);
+
+                // Show notification
+                Notification::make()
+                    ->title('Pinjaman Berhasil Dicatat')
+                    ->success()
+                    ->body(
+                        "Detail Pinjaman:\n" .
+                            "• Penjual: {$penjual->nama}\n" .
+                            "• Nominal: Rp " . number_format($operasional->nominal, 0, ',', '.') . "\n" .
+                            "• Total Hutang: Rp " . number_format($penjual->fresh()->hutang, 0, ',', '.')
+                    )
+                    ->duration(5000)
+                    ->send();
             } catch (\Exception $e) {
-                DB::rollBack();
-                Log::error('Error proses pembayaran hutang:', [
+                Log::error('Error memproses pinjaman:', [
                     'error' => $e->getMessage(),
-                    'operasional' => $operasional->toArray()
+                    'operasional_id' => $operasional->id,
+                    'penjual_id' => $operasional->penjual_id
                 ]);
-                throw $e;
+                throw new \Exception("Gagal memproses pinjaman: " . $e->getMessage());
             }
         }
     }
 
+
+
     // Modifikasi method rollbackHutang juga agar konsisten
-    private function rollbackHutang($operasional): void
+    private function rollbackHutang(Operasional $operasional): void
     {
-        if ($operasional->kategori === 'bayar_hutang') {
-            $pihak = match ($operasional->tipe_nama) {
-                'penjual' => $operasional->penjual,
-                'pekerja' => $operasional->pekerja,
-                default => null
-            };
+        if (
+            $operasional->kategori === KategoriOperasional::PINJAMAN &&
+            $operasional->tipe_nama === 'penjual' &&
+            $operasional->penjual
+        ) {
 
-            if (!$pihak) return;
+            DB::transaction(function () use ($operasional) {
+                $penjual = $operasional->penjual;
+                $hutangSebelum = $penjual->hutang;
 
-            $hutangSebelum = $pihak->hutang;
+                // Reverse the debt
+                $penjual->decrement('hutang', $operasional->nominal);
 
-            // Kembalikan hutang yang sudah dibayar
-            DB::transaction(function () use ($pihak, $operasional, $hutangSebelum) {
-                $pihak->update([
-                    'hutang' => $hutangSebelum + $operasional->nominal
-                ]);
-
-                // Refresh model
-                $pihak->refresh();
-
-                Log::info('Hutang dikembalikan:', [
-                    'operasional_id' => $operasional->id,
-                    'pihak' => $pihak->nama,
-                    'hutang_sebelum' => $hutangSebelum,
-                    'penambahan' => $operasional->nominal,
-                    'hutang_sesudah' => $pihak->hutang
-                ]);
-            });
-
-            // Hapus riwayat pembayaran jika ada
-            if (method_exists($pihak, 'riwayatPembayaran')) {
-                $pihak->riwayatPembayaran()
+                // Delete related payment history
+                $penjual->riwayatPembayaran()
                     ->where('operasional_id', $operasional->id)
                     ->delete();
-            }
+
+                Log::info('Pinjaman dibatalkan:', [
+                    'penjual' => $penjual->nama,
+                    'hutang_sebelum' => $hutangSebelum,
+                    'nominal_dibatalkan' => $operasional->nominal,
+                    'hutang_setelah' => $penjual->fresh()->hutang
+                ]);
+            });
         }
     }
 

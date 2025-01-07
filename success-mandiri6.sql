@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 13 Des 2024 pada 16.47
+-- Waktu pembuatan: 07 Jan 2025 pada 11.45
 -- Versi server: 8.0.30
 -- Versi PHP: 8.2.12
 
@@ -38,14 +38,13 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('a17961fa74e9275d529f489537f179c05d50c2f3', 'i:2;', 1733992450),
-('a17961fa74e9275d529f489537f179c05d50c2f3:timer', 'i:1733992450;', 1733992450),
-('a5953fb5e1c86b5792734a0b4775a77519f2794f', 'i:2;', 1734082969),
-('a5953fb5e1c86b5792734a0b4775a77519f2794f:timer', 'i:1734082969;', 1734082969),
-('perusahaan-stats', 'a:3:{i:0;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:6:\"danger\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:26:\"Belum ada penambahan saldo\";s:18:\"\0*\0descriptionIcon\";s:20:\"heroicon-m-banknotes\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:16:\"Saldo Perusahaan\";s:8:\"\0*\0value\";s:14:\"Rp -21.141.980\";}i:1;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:4:\"info\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:27:\"Kasir: Topit, Wendy, Yondra\";s:18:\"\0*\0descriptionIcon\";s:21:\"heroicon-m-user-group\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:18:\"CV SUCCESS MANDIRI\";s:8:\"\0*\0value\";s:6:\"Yondra\";}i:2;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:33:\"Total Pengeluaran: Rp 291.843.980\";s:18:\"\0*\0descriptionIcon\";s:21:\"heroicon-m-arrow-path\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:15:\"Total Pemasukan\";s:8:\"\0*\0value\";s:14:\"Rp 270.702.000\";}}', 1734083256),
-('saldo_perusahaan', 'i:-21141980;', 1734077878),
-('spatie.permission.cache', 'a:3:{s:5:\"alias\";a:4:{s:1:\"a\";s:2:\"id\";s:1:\"b\";s:4:\"name\";s:1:\"c\";s:10:\"guard_name\";s:1:\"r\";s:5:\"roles\";}s:11:\"permissions\";a:118:{i:0;a:4:{s:1:\"a\";i:1;s:1:\"b\";s:9:\"view_role\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:1;a:4:{s:1:\"a\";i:2;s:1:\"b\";s:13:\"view_any_role\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:2;a:4:{s:1:\"a\";i:3;s:1:\"b\";s:11:\"create_role\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:3;a:4:{s:1:\"a\";i:4;s:1:\"b\";s:11:\"update_role\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:4;a:4:{s:1:\"a\";i:5;s:1:\"b\";s:11:\"delete_role\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:5;a:4:{s:1:\"a\";i:6;s:1:\"b\";s:15:\"delete_any_role\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:6;a:4:{s:1:\"a\";i:7;s:1:\"b\";s:14:\"view_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:7;a:4:{s:1:\"a\";i:8;s:1:\"b\";s:18:\"view_any_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:8;a:4:{s:1:\"a\";i:9;s:1:\"b\";s:16:\"create_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:9;a:4:{s:1:\"a\";i:10;s:1:\"b\";s:16:\"update_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:10;a:4:{s:1:\"a\";i:11;s:1:\"b\";s:17:\"restore_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:11;a:4:{s:1:\"a\";i:12;s:1:\"b\";s:21:\"restore_any_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:12;a:4:{s:1:\"a\";i:13;s:1:\"b\";s:19:\"replicate_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:13;a:4:{s:1:\"a\";i:14;s:1:\"b\";s:17:\"reorder_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:14;a:4:{s:1:\"a\";i:15;s:1:\"b\";s:16:\"delete_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:15;a:4:{s:1:\"a\";i:16;s:1:\"b\";s:20:\"delete_any_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:16;a:4:{s:1:\"a\";i:17;s:1:\"b\";s:22:\"force_delete_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:17;a:4:{s:1:\"a\";i:18;s:1:\"b\";s:26:\"force_delete_any_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:18;a:4:{s:1:\"a\";i:19;s:1:\"b\";s:22:\"view_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:19;a:4:{s:1:\"a\";i:20;s:1:\"b\";s:26:\"view_any_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:20;a:4:{s:1:\"a\";i:21;s:1:\"b\";s:24:\"create_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:21;a:4:{s:1:\"a\";i:22;s:1:\"b\";s:24:\"update_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:22;a:4:{s:1:\"a\";i:23;s:1:\"b\";s:25:\"restore_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:23;a:4:{s:1:\"a\";i:24;s:1:\"b\";s:29:\"restore_any_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:24;a:4:{s:1:\"a\";i:25;s:1:\"b\";s:27:\"replicate_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:25;a:4:{s:1:\"a\";i:26;s:1:\"b\";s:25:\"reorder_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:26;a:4:{s:1:\"a\";i:27;s:1:\"b\";s:24:\"delete_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:27;a:4:{s:1:\"a\";i:28;s:1:\"b\";s:28:\"delete_any_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:28;a:4:{s:1:\"a\";i:29;s:1:\"b\";s:30:\"force_delete_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:29;a:4:{s:1:\"a\";i:30;s:1:\"b\";s:34:\"force_delete_any_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:30;a:4:{s:1:\"a\";i:31;s:1:\"b\";s:16:\"view_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:31;a:4:{s:1:\"a\";i:32;s:1:\"b\";s:20:\"view_any_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:32;a:4:{s:1:\"a\";i:33;s:1:\"b\";s:18:\"create_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:33;a:4:{s:1:\"a\";i:34;s:1:\"b\";s:18:\"update_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:34;a:4:{s:1:\"a\";i:35;s:1:\"b\";s:19:\"restore_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:35;a:4:{s:1:\"a\";i:36;s:1:\"b\";s:23:\"restore_any_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:36;a:4:{s:1:\"a\";i:37;s:1:\"b\";s:21:\"replicate_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:37;a:4:{s:1:\"a\";i:38;s:1:\"b\";s:19:\"reorder_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:38;a:4:{s:1:\"a\";i:39;s:1:\"b\";s:18:\"delete_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:39;a:4:{s:1:\"a\";i:40;s:1:\"b\";s:22:\"delete_any_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:40;a:4:{s:1:\"a\";i:41;s:1:\"b\";s:24:\"force_delete_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:41;a:4:{s:1:\"a\";i:42;s:1:\"b\";s:28:\"force_delete_any_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:42;a:4:{s:1:\"a\";i:43;s:1:\"b\";s:12:\"view_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:43;a:4:{s:1:\"a\";i:44;s:1:\"b\";s:16:\"view_any_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:44;a:4:{s:1:\"a\";i:45;s:1:\"b\";s:14:\"create_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:45;a:4:{s:1:\"a\";i:46;s:1:\"b\";s:14:\"update_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:46;a:4:{s:1:\"a\";i:47;s:1:\"b\";s:15:\"restore_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:47;a:4:{s:1:\"a\";i:48;s:1:\"b\";s:19:\"restore_any_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:48;a:4:{s:1:\"a\";i:49;s:1:\"b\";s:17:\"replicate_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:49;a:4:{s:1:\"a\";i:50;s:1:\"b\";s:15:\"reorder_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:50;a:4:{s:1:\"a\";i:51;s:1:\"b\";s:14:\"delete_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:51;a:4:{s:1:\"a\";i:52;s:1:\"b\";s:18:\"delete_any_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:52;a:4:{s:1:\"a\";i:53;s:1:\"b\";s:20:\"force_delete_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:53;a:4:{s:1:\"a\";i:54;s:1:\"b\";s:24:\"force_delete_any_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:54;a:4:{s:1:\"a\";i:55;s:1:\"b\";s:12:\"view_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:55;a:4:{s:1:\"a\";i:56;s:1:\"b\";s:16:\"view_any_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:56;a:4:{s:1:\"a\";i:57;s:1:\"b\";s:14:\"create_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:57;a:4:{s:1:\"a\";i:58;s:1:\"b\";s:14:\"update_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:58;a:4:{s:1:\"a\";i:59;s:1:\"b\";s:15:\"restore_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:59;a:4:{s:1:\"a\";i:60;s:1:\"b\";s:19:\"restore_any_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:60;a:4:{s:1:\"a\";i:61;s:1:\"b\";s:17:\"replicate_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:61;a:4:{s:1:\"a\";i:62;s:1:\"b\";s:15:\"reorder_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:62;a:4:{s:1:\"a\";i:63;s:1:\"b\";s:14:\"delete_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:63;a:4:{s:1:\"a\";i:64;s:1:\"b\";s:18:\"delete_any_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:64;a:4:{s:1:\"a\";i:65;s:1:\"b\";s:20:\"force_delete_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:65;a:4:{s:1:\"a\";i:66;s:1:\"b\";s:24:\"force_delete_any_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:66;a:4:{s:1:\"a\";i:67;s:1:\"b\";s:15:\"view_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:67;a:4:{s:1:\"a\";i:68;s:1:\"b\";s:19:\"view_any_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:68;a:4:{s:1:\"a\";i:69;s:1:\"b\";s:17:\"create_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:69;a:4:{s:1:\"a\";i:70;s:1:\"b\";s:17:\"update_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:70;a:4:{s:1:\"a\";i:71;s:1:\"b\";s:18:\"restore_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:71;a:4:{s:1:\"a\";i:72;s:1:\"b\";s:22:\"restore_any_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:72;a:4:{s:1:\"a\";i:73;s:1:\"b\";s:20:\"replicate_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:73;a:4:{s:1:\"a\";i:74;s:1:\"b\";s:18:\"reorder_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:74;a:4:{s:1:\"a\";i:75;s:1:\"b\";s:17:\"delete_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:75;a:4:{s:1:\"a\";i:76;s:1:\"b\";s:21:\"delete_any_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:76;a:4:{s:1:\"a\";i:77;s:1:\"b\";s:23:\"force_delete_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:77;a:4:{s:1:\"a\";i:78;s:1:\"b\";s:27:\"force_delete_any_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:78;a:4:{s:1:\"a\";i:79;s:1:\"b\";s:10:\"view_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:79;a:4:{s:1:\"a\";i:80;s:1:\"b\";s:14:\"view_any_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:80;a:4:{s:1:\"a\";i:81;s:1:\"b\";s:12:\"create_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:81;a:4:{s:1:\"a\";i:82;s:1:\"b\";s:12:\"update_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:82;a:4:{s:1:\"a\";i:83;s:1:\"b\";s:13:\"restore_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:83;a:4:{s:1:\"a\";i:84;s:1:\"b\";s:17:\"restore_any_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:84;a:4:{s:1:\"a\";i:85;s:1:\"b\";s:15:\"replicate_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:85;a:4:{s:1:\"a\";i:86;s:1:\"b\";s:13:\"reorder_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:86;a:4:{s:1:\"a\";i:87;s:1:\"b\";s:12:\"delete_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:87;a:4:{s:1:\"a\";i:88;s:1:\"b\";s:16:\"delete_any_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:88;a:4:{s:1:\"a\";i:89;s:1:\"b\";s:18:\"force_delete_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:89;a:4:{s:1:\"a\";i:90;s:1:\"b\";s:22:\"force_delete_any_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:90;a:4:{s:1:\"a\";i:91;s:1:\"b\";s:18:\"view_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:91;a:4:{s:1:\"a\";i:92;s:1:\"b\";s:22:\"view_any_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:92;a:4:{s:1:\"a\";i:93;s:1:\"b\";s:20:\"create_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:93;a:4:{s:1:\"a\";i:94;s:1:\"b\";s:20:\"update_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:94;a:4:{s:1:\"a\";i:95;s:1:\"b\";s:21:\"restore_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:95;a:4:{s:1:\"a\";i:96;s:1:\"b\";s:25:\"restore_any_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:96;a:4:{s:1:\"a\";i:97;s:1:\"b\";s:23:\"replicate_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:97;a:4:{s:1:\"a\";i:98;s:1:\"b\";s:21:\"reorder_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:98;a:4:{s:1:\"a\";i:99;s:1:\"b\";s:20:\"delete_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:99;a:4:{s:1:\"a\";i:100;s:1:\"b\";s:24:\"delete_any_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:100;a:4:{s:1:\"a\";i:101;s:1:\"b\";s:26:\"force_delete_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:101;a:4:{s:1:\"a\";i:102;s:1:\"b\";s:30:\"force_delete_any_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:102;a:4:{s:1:\"a\";i:103;s:1:\"b\";s:9:\"view_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:103;a:4:{s:1:\"a\";i:104;s:1:\"b\";s:13:\"view_any_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:104;a:4:{s:1:\"a\";i:105;s:1:\"b\";s:11:\"create_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:105;a:4:{s:1:\"a\";i:106;s:1:\"b\";s:11:\"update_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:106;a:4:{s:1:\"a\";i:107;s:1:\"b\";s:12:\"restore_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:107;a:4:{s:1:\"a\";i:108;s:1:\"b\";s:16:\"restore_any_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:108;a:4:{s:1:\"a\";i:109;s:1:\"b\";s:14:\"replicate_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:109;a:4:{s:1:\"a\";i:110;s:1:\"b\";s:12:\"reorder_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:110;a:4:{s:1:\"a\";i:111;s:1:\"b\";s:11:\"delete_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:111;a:4:{s:1:\"a\";i:112;s:1:\"b\";s:15:\"delete_any_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:112;a:4:{s:1:\"a\";i:113;s:1:\"b\";s:17:\"force_delete_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:113;a:4:{s:1:\"a\";i:114;s:1:\"b\";s:21:\"force_delete_any_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:114;a:4:{s:1:\"a\";i:115;s:1:\"b\";s:24:\"widget_TransaksiTerakhir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}}i:115;a:4:{s:1:\"a\";i:116;s:1:\"b\";s:27:\"widget_DashboardStatsWidget\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:116;a:4:{s:1:\"a\";i:117;s:1:\"b\";s:30:\"widget_DailyFinanceChartWidget\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:117;a:4:{s:1:\"a\";i:118;s:1:\"b\";s:32:\"widget_MonthlyFinanceChartWidget\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}}s:5:\"roles\";a:3:{i:0;a:3:{s:1:\"a\";i:1;s:1:\"b\";s:11:\"super_admin\";s:1:\"c\";s:3:\"web\";}i:1;a:3:{s:1:\"a\";i:2;s:1:\"b\";s:5:\"admin\";s:1:\"c\";s:3:\"web\";}i:2;a:3:{s:1:\"a\";i:3;s:1:\"b\";s:5:\"kasir\";s:1:\"c\";s:3:\"web\";}}}', 1734169517),
-('transaksi-stats', 'a:4:{i:0;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:37:\"Total saldo masuk - Total pengeluaran\";s:18:\"\0*\0descriptionIcon\";s:20:\"heroicon-m-banknotes\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:10:\"Sisa Saldo\";s:8:\"\0*\0value\";s:14:\"Rp 134.876.700\";}i:1;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:101:\"Pembayaran Hutang: Rp 2.000.000\nPembayaran Sisa: Rp 164.128.680\nPemasukan Operasional: Rp 265.647.000\";s:18:\"\0*\0descriptionIcon\";s:28:\"heroicon-m-arrow-trending-up\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:22:\"Total Saldo/Uang Masuk\";s:8:\"\0*\0value\";s:14:\"Rp 431.775.680\";}i:2;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:6:\"danger\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:54:\"Total DO: Rp 296.694.980\nTotal Operasional: Rp 204.000\";s:18:\"\0*\0descriptionIcon\";s:30:\"heroicon-m-arrow-trending-down\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:23:\"Pengeluaran/Uang Keluar\";s:8:\"\0*\0value\";s:14:\"Rp 296.898.980\";}i:3;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"primary\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:54:\"tunai: 13\ntransfer: 4\ncair di luar: 2\nbelum dibayar: 0\";s:18:\"\0*\0descriptionIcon\";s:24:\"heroicon-m-document-text\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:15:\"Total Transaksi\";s:8:\"\0*\0value\";i:19;}}', 1734083278);
+('a17961fa74e9275d529f489537f179c05d50c2f3', 'i:1;', 1736221982),
+('a17961fa74e9275d529f489537f179c05d50c2f3:timer', 'i:1736221982;', 1736221982),
+('a5953fb5e1c86b5792734a0b4775a77519f2794f', 'i:1;', 1734114753),
+('a5953fb5e1c86b5792734a0b4775a77519f2794f:timer', 'i:1734114753;', 1734114753),
+('spatie.permission.cache', 'a:3:{s:5:\"alias\";a:4:{s:1:\"a\";s:2:\"id\";s:1:\"b\";s:4:\"name\";s:1:\"c\";s:10:\"guard_name\";s:1:\"r\";s:5:\"roles\";}s:11:\"permissions\";a:118:{i:0;a:4:{s:1:\"a\";i:1;s:1:\"b\";s:14:\"view_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:1;a:4:{s:1:\"a\";i:2;s:1:\"b\";s:18:\"view_any_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:2;a:4:{s:1:\"a\";i:3;s:1:\"b\";s:16:\"create_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:3;a:4:{s:1:\"a\";i:4;s:1:\"b\";s:16:\"update_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:4;a:4:{s:1:\"a\";i:5;s:1:\"b\";s:17:\"restore_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:5;a:4:{s:1:\"a\";i:6;s:1:\"b\";s:21:\"restore_any_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:6;a:4:{s:1:\"a\";i:7;s:1:\"b\";s:19:\"replicate_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:7;a:4:{s:1:\"a\";i:8;s:1:\"b\";s:17:\"reorder_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:8;a:4:{s:1:\"a\";i:9;s:1:\"b\";s:16:\"delete_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:9;a:4:{s:1:\"a\";i:10;s:1:\"b\";s:20:\"delete_any_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:10;a:4:{s:1:\"a\";i:11;s:1:\"b\";s:22:\"force_delete_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:11;a:4:{s:1:\"a\";i:12;s:1:\"b\";s:26:\"force_delete_any_kendaraan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:12;a:4:{s:1:\"a\";i:13;s:1:\"b\";s:22:\"view_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:13;a:4:{s:1:\"a\";i:14;s:1:\"b\";s:26:\"view_any_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:14;a:4:{s:1:\"a\";i:15;s:1:\"b\";s:24:\"create_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:15;a:4:{s:1:\"a\";i:16;s:1:\"b\";s:24:\"update_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:16;a:4:{s:1:\"a\";i:17;s:1:\"b\";s:25:\"restore_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:17;a:4:{s:1:\"a\";i:18;s:1:\"b\";s:29:\"restore_any_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:18;a:4:{s:1:\"a\";i:19;s:1:\"b\";s:27:\"replicate_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:19;a:4:{s:1:\"a\";i:20;s:1:\"b\";s:25:\"reorder_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:20;a:4:{s:1:\"a\";i:21;s:1:\"b\";s:24:\"delete_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:21;a:4:{s:1:\"a\";i:22;s:1:\"b\";s:28:\"delete_any_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:22;a:4:{s:1:\"a\";i:23;s:1:\"b\";s:30:\"force_delete_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:23;a:4:{s:1:\"a\";i:24;s:1:\"b\";s:34:\"force_delete_any_laporan::keuangan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:24;a:4:{s:1:\"a\";i:25;s:1:\"b\";s:16:\"view_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:25;a:4:{s:1:\"a\";i:26;s:1:\"b\";s:20:\"view_any_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:26;a:4:{s:1:\"a\";i:27;s:1:\"b\";s:18:\"create_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:27;a:4:{s:1:\"a\";i:28;s:1:\"b\";s:18:\"update_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:28;a:4:{s:1:\"a\";i:29;s:1:\"b\";s:19:\"restore_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:29;a:4:{s:1:\"a\";i:30;s:1:\"b\";s:23:\"restore_any_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:30;a:4:{s:1:\"a\";i:31;s:1:\"b\";s:21:\"replicate_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:31;a:4:{s:1:\"a\";i:32;s:1:\"b\";s:19:\"reorder_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:32;a:4:{s:1:\"a\";i:33;s:1:\"b\";s:18:\"delete_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:33;a:4:{s:1:\"a\";i:34;s:1:\"b\";s:22:\"delete_any_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:34;a:4:{s:1:\"a\";i:35;s:1:\"b\";s:24:\"force_delete_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:35;a:4:{s:1:\"a\";i:36;s:1:\"b\";s:28:\"force_delete_any_operasional\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:36;a:4:{s:1:\"a\";i:37;s:1:\"b\";s:12:\"view_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:37;a:4:{s:1:\"a\";i:38;s:1:\"b\";s:16:\"view_any_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:38;a:4:{s:1:\"a\";i:39;s:1:\"b\";s:14:\"create_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:39;a:4:{s:1:\"a\";i:40;s:1:\"b\";s:14:\"update_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:40;a:4:{s:1:\"a\";i:41;s:1:\"b\";s:15:\"restore_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:41;a:4:{s:1:\"a\";i:42;s:1:\"b\";s:19:\"restore_any_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:42;a:4:{s:1:\"a\";i:43;s:1:\"b\";s:17:\"replicate_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:43;a:4:{s:1:\"a\";i:44;s:1:\"b\";s:15:\"reorder_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:44;a:4:{s:1:\"a\";i:45;s:1:\"b\";s:14:\"delete_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:45;a:4:{s:1:\"a\";i:46;s:1:\"b\";s:18:\"delete_any_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:46;a:4:{s:1:\"a\";i:47;s:1:\"b\";s:20:\"force_delete_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:47;a:4:{s:1:\"a\";i:48;s:1:\"b\";s:24:\"force_delete_any_pekerja\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:48;a:4:{s:1:\"a\";i:49;s:1:\"b\";s:12:\"view_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:49;a:4:{s:1:\"a\";i:50;s:1:\"b\";s:16:\"view_any_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:50;a:4:{s:1:\"a\";i:51;s:1:\"b\";s:14:\"create_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:51;a:4:{s:1:\"a\";i:52;s:1:\"b\";s:14:\"update_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:52;a:4:{s:1:\"a\";i:53;s:1:\"b\";s:15:\"restore_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:53;a:4:{s:1:\"a\";i:54;s:1:\"b\";s:19:\"restore_any_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:54;a:4:{s:1:\"a\";i:55;s:1:\"b\";s:17:\"replicate_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:55;a:4:{s:1:\"a\";i:56;s:1:\"b\";s:15:\"reorder_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:56;a:4:{s:1:\"a\";i:57;s:1:\"b\";s:14:\"delete_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:57;a:4:{s:1:\"a\";i:58;s:1:\"b\";s:18:\"delete_any_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:58;a:4:{s:1:\"a\";i:59;s:1:\"b\";s:20:\"force_delete_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:59;a:4:{s:1:\"a\";i:60;s:1:\"b\";s:24:\"force_delete_any_penjual\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:60;a:4:{s:1:\"a\";i:61;s:1:\"b\";s:15:\"view_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:61;a:4:{s:1:\"a\";i:62;s:1:\"b\";s:19:\"view_any_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:62;a:4:{s:1:\"a\";i:63;s:1:\"b\";s:17:\"create_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:63;a:4:{s:1:\"a\";i:64;s:1:\"b\";s:17:\"update_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:64;a:4:{s:1:\"a\";i:65;s:1:\"b\";s:18:\"restore_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:65;a:4:{s:1:\"a\";i:66;s:1:\"b\";s:22:\"restore_any_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:66;a:4:{s:1:\"a\";i:67;s:1:\"b\";s:20:\"replicate_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:67;a:4:{s:1:\"a\";i:68;s:1:\"b\";s:18:\"reorder_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:68;a:4:{s:1:\"a\";i:69;s:1:\"b\";s:17:\"delete_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:69;a:4:{s:1:\"a\";i:70;s:1:\"b\";s:21:\"delete_any_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:70;a:4:{s:1:\"a\";i:71;s:1:\"b\";s:23:\"force_delete_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:71;a:4:{s:1:\"a\";i:72;s:1:\"b\";s:27:\"force_delete_any_perusahaan\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:72;a:4:{s:1:\"a\";i:73;s:1:\"b\";s:9:\"view_role\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:73;a:4:{s:1:\"a\";i:74;s:1:\"b\";s:13:\"view_any_role\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:74;a:4:{s:1:\"a\";i:75;s:1:\"b\";s:11:\"create_role\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:75;a:4:{s:1:\"a\";i:76;s:1:\"b\";s:11:\"update_role\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:76;a:4:{s:1:\"a\";i:77;s:1:\"b\";s:11:\"delete_role\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:77;a:4:{s:1:\"a\";i:78;s:1:\"b\";s:15:\"delete_any_role\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:78;a:4:{s:1:\"a\";i:79;s:1:\"b\";s:10:\"view_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:79;a:4:{s:1:\"a\";i:80;s:1:\"b\";s:14:\"view_any_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:80;a:4:{s:1:\"a\";i:81;s:1:\"b\";s:12:\"create_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:81;a:4:{s:1:\"a\";i:82;s:1:\"b\";s:12:\"update_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:82;a:4:{s:1:\"a\";i:83;s:1:\"b\";s:13:\"restore_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:83;a:4:{s:1:\"a\";i:84;s:1:\"b\";s:17:\"restore_any_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:84;a:4:{s:1:\"a\";i:85;s:1:\"b\";s:15:\"replicate_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:85;a:4:{s:1:\"a\";i:86;s:1:\"b\";s:13:\"reorder_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:86;a:4:{s:1:\"a\";i:87;s:1:\"b\";s:12:\"delete_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:87;a:4:{s:1:\"a\";i:88;s:1:\"b\";s:16:\"delete_any_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:88;a:4:{s:1:\"a\";i:89;s:1:\"b\";s:18:\"force_delete_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:89;a:4:{s:1:\"a\";i:90;s:1:\"b\";s:22:\"force_delete_any_supir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:90;a:4:{s:1:\"a\";i:91;s:1:\"b\";s:18:\"view_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:91;a:4:{s:1:\"a\";i:92;s:1:\"b\";s:22:\"view_any_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:92;a:4:{s:1:\"a\";i:93;s:1:\"b\";s:20:\"create_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:93;a:4:{s:1:\"a\";i:94;s:1:\"b\";s:20:\"update_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:94;a:4:{s:1:\"a\";i:95;s:1:\"b\";s:21:\"restore_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:95;a:4:{s:1:\"a\";i:96;s:1:\"b\";s:25:\"restore_any_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:96;a:4:{s:1:\"a\";i:97;s:1:\"b\";s:23:\"replicate_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:97;a:4:{s:1:\"a\";i:98;s:1:\"b\";s:21:\"reorder_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:98;a:4:{s:1:\"a\";i:99;s:1:\"b\";s:20:\"delete_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:99;a:4:{s:1:\"a\";i:100;s:1:\"b\";s:24:\"delete_any_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:100;a:4:{s:1:\"a\";i:101;s:1:\"b\";s:26:\"force_delete_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:101;a:4:{s:1:\"a\";i:102;s:1:\"b\";s:30:\"force_delete_any_transaksi::do\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:102;a:4:{s:1:\"a\";i:103;s:1:\"b\";s:9:\"view_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:103;a:4:{s:1:\"a\";i:104;s:1:\"b\";s:13:\"view_any_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:104;a:4:{s:1:\"a\";i:105;s:1:\"b\";s:11:\"create_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:105;a:4:{s:1:\"a\";i:106;s:1:\"b\";s:11:\"update_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:106;a:4:{s:1:\"a\";i:107;s:1:\"b\";s:12:\"restore_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:107;a:4:{s:1:\"a\";i:108;s:1:\"b\";s:16:\"restore_any_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:108;a:4:{s:1:\"a\";i:109;s:1:\"b\";s:14:\"replicate_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:109;a:4:{s:1:\"a\";i:110;s:1:\"b\";s:12:\"reorder_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:110;a:4:{s:1:\"a\";i:111;s:1:\"b\";s:11:\"delete_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:111;a:4:{s:1:\"a\";i:112;s:1:\"b\";s:15:\"delete_any_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:112;a:4:{s:1:\"a\";i:113;s:1:\"b\";s:17:\"force_delete_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:113;a:4:{s:1:\"a\";i:114;s:1:\"b\";s:21:\"force_delete_any_user\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:1;}}i:114;a:4:{s:1:\"a\";i:115;s:1:\"b\";s:27:\"widget_DashboardStatsWidget\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:115;a:4:{s:1:\"a\";i:116;s:1:\"b\";s:30:\"widget_DailyFinanceChartWidget\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:116;a:4:{s:1:\"a\";i:117;s:1:\"b\";s:24:\"widget_TransaksiTerakhir\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:117;a:4:{s:1:\"a\";i:118;s:1:\"b\";s:32:\"widget_MonthlyFinanceChartWidget\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}}s:5:\"roles\";a:2:{i:0;a:3:{s:1:\"a\";i:1;s:1:\"b\";s:11:\"super_admin\";s:1:\"c\";s:3:\"web\";}i:1;a:3:{s:1:\"a\";i:2;s:1:\"b\";s:5:\"kasir\";s:1:\"c\";s:3:\"web\";}}}', 1736308324),
+('transaksi-stats', 'a:4:{i:0;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:37:\"Total saldo masuk - Total pengeluaran\";s:18:\"\0*\0descriptionIcon\";s:20:\"heroicon-m-banknotes\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:10:\"Sisa Saldo\";s:8:\"\0*\0value\";s:14:\"Rp 134.876.700\";}i:1;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:101:\"Pembayaran Hutang: Rp 2.000.000\nPembayaran Sisa: Rp 164.128.680\nPemasukan Operasional: Rp 265.647.000\";s:18:\"\0*\0descriptionIcon\";s:28:\"heroicon-m-arrow-trending-up\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:22:\"Total Saldo/Uang Masuk\";s:8:\"\0*\0value\";s:14:\"Rp 431.775.680\";}i:2;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:6:\"danger\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:54:\"Total DO: Rp 296.694.980\nTotal Operasional: Rp 204.000\";s:18:\"\0*\0descriptionIcon\";s:30:\"heroicon-m-arrow-trending-down\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:23:\"Pengeluaran/Uang Keluar\";s:8:\"\0*\0value\";s:14:\"Rp 296.898.980\";}i:3;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"primary\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:54:\"tunai: 13\ntransfer: 4\ncair di luar: 2\nbelum dibayar: 0\";s:18:\"\0*\0descriptionIcon\";s:24:\"heroicon-m-document-text\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:15:\"Total Transaksi\";s:8:\"\0*\0value\";i:19;}}', 1736018525),
+('transaksi-stats-2024-12-14-2024-12-14', 'a:4:{i:0;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:23:\"Data tanggal 14/12/2024\";s:18:\"\0*\0descriptionIcon\";s:20:\"heroicon-m-banknotes\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:10:\"Sisa Saldo\";s:8:\"\0*\0value\";s:4:\"Rp 0\";}i:1;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"success\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:73:\"Pembayaran Hutang: Rp 0\nPembayaran Sisa: Rp 0\nPemasukan Operasional: Rp 0\";s:18:\"\0*\0descriptionIcon\";s:28:\"heroicon-m-arrow-trending-up\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:22:\"Total Saldo/Uang Masuk\";s:8:\"\0*\0value\";s:4:\"Rp 0\";}i:2;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:6:\"danger\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:38:\"Total DO: Rp 0\nTotal Operasional: Rp 0\";s:18:\"\0*\0descriptionIcon\";s:30:\"heroicon-m-arrow-trending-down\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:23:\"Pengeluaran/Uang Keluar\";s:8:\"\0*\0value\";s:4:\"Rp 0\";}i:3;O:41:\"Filament\\Widgets\\StatsOverviewWidget\\Stat\":17:{s:9:\"\0*\0except\";a:0:{}s:13:\"componentName\";N;s:10:\"attributes\";N;s:8:\"\0*\0chart\";N;s:13:\"\0*\0chartColor\";N;s:8:\"\0*\0color\";s:7:\"primary\";s:7:\"\0*\0icon\";N;s:14:\"\0*\0description\";s:53:\"tunai: 0\ntransfer: 0\ncair di luar: 0\nbelum dibayar: 0\";s:18:\"\0*\0descriptionIcon\";s:24:\"heroicon-m-document-text\";s:26:\"\0*\0descriptionIconPosition\";N;s:19:\"\0*\0descriptionColor\";N;s:18:\"\0*\0extraAttributes\";a:0:{}s:24:\"\0*\0shouldOpenUrlInNewTab\";b:0;s:6:\"\0*\0url\";N;s:5:\"\0*\0id\";N;s:8:\"\0*\0label\";s:15:\"Total Transaksi\";s:8:\"\0*\0value\";i:0;}}', 1734119288);
 
 -- --------------------------------------------------------
 
@@ -200,7 +199,8 @@ INSERT INTO `laporan_keuangan` (`id`, `tanggal`, `jenis_transaksi`, `kategori`, 
 (42, '2024-12-10 01:42:24', 'Pemasukan', 'DO', 'Biaya Lain', 15000, 'DO', 13, 'DO-20241210-0011', 'AGUS', 'penjual', 'Tunai', 'Pemasukan tunai DO #DO-20241210-0011', 1, NULL, '2024-12-12 05:04:08', '2024-12-12 05:04:08', NULL),
 (43, '2024-12-10 01:42:24', 'Pengeluaran', 'DO', 'Pembayaran DO', 4386120, 'DO', 13, 'DO-20241210-0011', 'AGUS', 'penjual', 'Tunai', 'Pembayaran DO #DO-20241210-0011', 1, NULL, '2024-12-12 05:04:08', '2024-12-12 05:04:08', NULL),
 (44, '2024-12-12 00:36:06', 'Pengeluaran', 'DO', 'Pembayaran DO', 5469600, 'DO', 21, 'DO-20241212-0008', 'UCOK', 'penjual', 'belum dibayar', 'Pembayaran DO via belum dibayar', 1, NULL, '2024-12-12 06:43:04', '2024-12-12 07:12:25', '2024-12-12 07:12:25'),
-(45, '2024-12-12 00:36:06', 'Pengeluaran', 'DO', 'Pembayaran DO', 5469600, 'DO', 21, 'DO-20241212-0008', 'UCOK', 'penjual', 'tunai', 'Pembayaran DO #DO-20241212-0008', 1, NULL, '2024-12-12 07:12:25', '2024-12-12 07:12:25', NULL);
+(45, '2024-12-12 00:36:06', 'Pengeluaran', 'DO', 'Pembayaran DO', 5469600, 'DO', 21, 'DO-20241212-0008', 'UCOK', 'penjual', 'tunai', 'Pembayaran DO #DO-20241212-0008', 1, NULL, '2024-12-12 07:12:25', '2024-12-12 07:12:25', NULL),
+(46, '2025-01-07 11:31:22', 'Pengeluaran', 'Operasional', 'Pinjaman', 10000, 'Operasional', 8, 'OP-00008', 'AGUS', 'penjual', 'tunai', '-', 1, NULL, '2025-01-07 04:31:52', '2025-01-07 04:39:38', '2025-01-07 04:39:38');
 
 -- --------------------------------------------------------
 
@@ -235,7 +235,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (14, '2024_12_05_230524_add_sisa_saldo', 1),
 (15, '2024_01_10_000001_add_indexes_for_performance', 2),
 (16, '2024_01_10_000003_add_quick_indexes', 3),
-(19, '2024_12_12_143441_create_permission_tables', 4);
+(20, '2024_12_12_143441_create_permission_tables', 4);
 
 -- --------------------------------------------------------
 
@@ -245,7 +245,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 
 CREATE TABLE `model_has_permissions` (
   `permission_id` bigint UNSIGNED NOT NULL,
-  `model_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -257,7 +257,7 @@ CREATE TABLE `model_has_permissions` (
 
 CREATE TABLE `model_has_roles` (
   `role_id` bigint UNSIGNED NOT NULL,
-  `model_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -266,10 +266,7 @@ CREATE TABLE `model_has_roles` (
 --
 
 INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
-(1, 'App\\Models\\User', 1),
-(2, 'App\\Models\\User', 2),
-(2, 'App\\Models\\User', 3),
-(3, 'App\\Models\\User', 4);
+(1, 'App\\Models\\User', 1);
 
 -- --------------------------------------------------------
 
@@ -306,7 +303,11 @@ INSERT INTO `operasional` (`id`, `tanggal`, `operasional`, `kategori`, `tipe_nam
 (4, '2024-12-10 00:37:11', 'pemasukan', 'tambah_saldo', 'user', NULL, NULL, 4, NULL, 30000, 'SISA DITEG', NULL, '2024-12-09 17:37:41', '2024-12-09 17:37:41', NULL),
 (5, '2024-12-12 00:39:31', 'pengeluaran', 'pijakan_gas', 'supir', NULL, NULL, NULL, 19, 76000, NULL, NULL, '2024-12-11 17:40:00', '2024-12-11 17:40:00', NULL),
 (6, '2024-12-12 00:40:00', 'pengeluaran', 'lain_lain', 'user', NULL, NULL, 4, NULL, 50000, 'Belanja', NULL, '2024-12-11 17:40:36', '2024-12-11 17:40:36', NULL),
-(7, '2024-12-12 00:40:36', 'pengeluaran', 'pijakan_gas', 'supir', NULL, NULL, NULL, 8, 78000, NULL, NULL, '2024-12-11 17:41:10', '2024-12-11 17:41:10', NULL);
+(7, '2024-12-12 00:40:36', 'pengeluaran', 'pijakan_gas', 'supir', NULL, NULL, NULL, 8, 78000, NULL, NULL, '2024-12-11 17:41:10', '2024-12-11 17:41:10', NULL),
+(8, '2025-01-07 11:31:22', 'pengeluaran', 'pinjaman', 'penjual', 11, NULL, NULL, NULL, 10000, NULL, NULL, '2025-01-07 04:31:52', '2025-01-07 04:39:38', '2025-01-07 04:39:38'),
+(9, '2025-01-07 11:39:50', 'pengeluaran', 'pinjaman', 'penjual', 11, NULL, NULL, NULL, 20000, 'dgdfdgdg', NULL, '2025-01-07 04:40:26', '2025-01-07 04:40:26', NULL),
+(10, '2025-01-07 11:42:13', 'pengeluaran', 'pinjaman', 'penjual', 11, NULL, NULL, NULL, 10000, 'xcvxv', NULL, '2025-01-07 04:42:47', '2025-01-07 04:42:47', NULL),
+(11, '2025-01-07 11:43:48', 'pengeluaran', 'pinjaman', 'penjual', 11, NULL, NULL, NULL, 10000, 'cccccc', NULL, '2025-01-07 04:44:12', '2025-01-07 04:44:12', NULL);
 
 -- --------------------------------------------------------
 
@@ -372,9 +373,9 @@ INSERT INTO `penjuals` (`id`, `nama`, `alamat`, `telepon`, `hutang`, `riwayat_ba
 (8, 'SEBON', NULL, NULL, 0, NULL, '2024-12-09 17:25:56', '2024-12-09 17:25:56', NULL),
 (9, 'SISKA', NULL, NULL, 0, NULL, '2024-12-09 17:25:56', '2024-12-09 17:25:56', NULL),
 (10, 'JEKI', NULL, NULL, 0, NULL, '2024-12-09 17:25:56', '2024-12-09 17:25:56', NULL),
-(11, 'AGUS', NULL, NULL, 0, NULL, '2024-12-09 17:25:56', '2024-12-09 17:25:56', NULL),
+(11, 'AGUS', NULL, NULL, -10000, NULL, '2024-12-09 17:25:56', '2025-01-07 04:39:38', NULL),
 (12, 'JOKO', NULL, NULL, 0, NULL, '2024-12-09 17:25:56', '2024-12-09 17:25:56', NULL),
-(13, 'SUKARMIN', NULL, NULL, 500000, NULL, '2024-12-09 17:25:56', '2024-12-11 17:31:52', NULL),
+(13, 'SUKARMIN', NULL, NULL, 0, NULL, '2024-12-09 17:25:56', '2025-01-04 19:05:21', NULL),
 (14, 'DITEG', NULL, NULL, 0, NULL, '2024-12-09 17:25:56', '2024-12-09 17:25:56', NULL),
 (15, 'KELOMPOK 1', NULL, NULL, 0, NULL, '2024-12-09 17:25:56', '2024-12-09 17:53:36', NULL),
 (16, 'UCOK', NULL, NULL, 0, NULL, '2024-12-09 17:25:56', '2024-12-09 17:25:56', NULL),
@@ -389,8 +390,8 @@ INSERT INTO `penjuals` (`id`, `nama`, `alamat`, `telepon`, `hutang`, `riwayat_ba
 
 CREATE TABLE `permissions` (
   `id` bigint UNSIGNED NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `guard_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -400,124 +401,124 @@ CREATE TABLE `permissions` (
 --
 
 INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(1, 'view_role', 'web', '2024-12-12 08:22:15', '2024-12-12 08:22:15'),
-(2, 'view_any_role', 'web', '2024-12-12 08:22:15', '2024-12-12 08:22:15'),
-(3, 'create_role', 'web', '2024-12-12 08:22:15', '2024-12-12 08:22:15'),
-(4, 'update_role', 'web', '2024-12-12 08:22:15', '2024-12-12 08:22:15'),
-(5, 'delete_role', 'web', '2024-12-12 08:22:15', '2024-12-12 08:22:15'),
-(6, 'delete_any_role', 'web', '2024-12-12 08:22:15', '2024-12-12 08:22:15'),
-(7, 'view_kendaraan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(8, 'view_any_kendaraan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(9, 'create_kendaraan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(10, 'update_kendaraan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(11, 'restore_kendaraan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(12, 'restore_any_kendaraan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(13, 'replicate_kendaraan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(14, 'reorder_kendaraan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(15, 'delete_kendaraan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(16, 'delete_any_kendaraan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(17, 'force_delete_kendaraan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(18, 'force_delete_any_kendaraan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(19, 'view_laporan::keuangan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(20, 'view_any_laporan::keuangan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(21, 'create_laporan::keuangan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(22, 'update_laporan::keuangan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(23, 'restore_laporan::keuangan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(24, 'restore_any_laporan::keuangan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(25, 'replicate_laporan::keuangan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(26, 'reorder_laporan::keuangan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(27, 'delete_laporan::keuangan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(28, 'delete_any_laporan::keuangan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(29, 'force_delete_laporan::keuangan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(30, 'force_delete_any_laporan::keuangan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(31, 'view_operasional', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(32, 'view_any_operasional', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(33, 'create_operasional', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(34, 'update_operasional', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(35, 'restore_operasional', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(36, 'restore_any_operasional', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(37, 'replicate_operasional', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(38, 'reorder_operasional', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(39, 'delete_operasional', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(40, 'delete_any_operasional', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(41, 'force_delete_operasional', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(42, 'force_delete_any_operasional', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(43, 'view_pekerja', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(44, 'view_any_pekerja', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(45, 'create_pekerja', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(46, 'update_pekerja', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(47, 'restore_pekerja', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(48, 'restore_any_pekerja', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(49, 'replicate_pekerja', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(50, 'reorder_pekerja', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(51, 'delete_pekerja', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(52, 'delete_any_pekerja', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(53, 'force_delete_pekerja', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(54, 'force_delete_any_pekerja', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(55, 'view_penjual', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(56, 'view_any_penjual', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(57, 'create_penjual', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(58, 'update_penjual', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(59, 'restore_penjual', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(60, 'restore_any_penjual', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(61, 'replicate_penjual', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(62, 'reorder_penjual', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(63, 'delete_penjual', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(64, 'delete_any_penjual', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(65, 'force_delete_penjual', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(66, 'force_delete_any_penjual', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(67, 'view_perusahaan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(68, 'view_any_perusahaan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(69, 'create_perusahaan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(70, 'update_perusahaan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(71, 'restore_perusahaan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(72, 'restore_any_perusahaan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(73, 'replicate_perusahaan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(74, 'reorder_perusahaan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(75, 'delete_perusahaan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(76, 'delete_any_perusahaan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(77, 'force_delete_perusahaan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(78, 'force_delete_any_perusahaan', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(79, 'view_supir', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(80, 'view_any_supir', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(81, 'create_supir', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(82, 'update_supir', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(83, 'restore_supir', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(84, 'restore_any_supir', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(85, 'replicate_supir', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(86, 'reorder_supir', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(87, 'delete_supir', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(88, 'delete_any_supir', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(89, 'force_delete_supir', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(90, 'force_delete_any_supir', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(91, 'view_transaksi::do', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(92, 'view_any_transaksi::do', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(93, 'create_transaksi::do', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(94, 'update_transaksi::do', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(95, 'restore_transaksi::do', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(96, 'restore_any_transaksi::do', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(97, 'replicate_transaksi::do', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(98, 'reorder_transaksi::do', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(99, 'delete_transaksi::do', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(100, 'delete_any_transaksi::do', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(101, 'force_delete_transaksi::do', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(102, 'force_delete_any_transaksi::do', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(103, 'view_user', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(104, 'view_any_user', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(105, 'create_user', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(106, 'update_user', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(107, 'restore_user', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(108, 'restore_any_user', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(109, 'replicate_user', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(110, 'reorder_user', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(111, 'delete_user', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(112, 'delete_any_user', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(113, 'force_delete_user', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(114, 'force_delete_any_user', 'web', '2024-12-12 08:25:38', '2024-12-12 08:25:38'),
-(115, 'widget_TransaksiTerakhir', 'web', '2024-12-12 08:25:39', '2024-12-12 08:25:39'),
-(116, 'widget_DashboardStatsWidget', 'web', '2024-12-13 09:42:59', '2024-12-13 09:42:59'),
-(117, 'widget_DailyFinanceChartWidget', 'web', '2024-12-13 09:42:59', '2024-12-13 09:42:59'),
-(118, 'widget_MonthlyFinanceChartWidget', 'web', '2024-12-13 09:42:59', '2024-12-13 09:42:59');
+(1, 'view_kendaraan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(2, 'view_any_kendaraan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(3, 'create_kendaraan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(4, 'update_kendaraan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(5, 'restore_kendaraan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(6, 'restore_any_kendaraan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(7, 'replicate_kendaraan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(8, 'reorder_kendaraan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(9, 'delete_kendaraan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(10, 'delete_any_kendaraan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(11, 'force_delete_kendaraan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(12, 'force_delete_any_kendaraan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(13, 'view_laporan::keuangan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(14, 'view_any_laporan::keuangan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(15, 'create_laporan::keuangan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(16, 'update_laporan::keuangan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(17, 'restore_laporan::keuangan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(18, 'restore_any_laporan::keuangan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(19, 'replicate_laporan::keuangan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(20, 'reorder_laporan::keuangan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(21, 'delete_laporan::keuangan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(22, 'delete_any_laporan::keuangan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(23, 'force_delete_laporan::keuangan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(24, 'force_delete_any_laporan::keuangan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(25, 'view_operasional', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(26, 'view_any_operasional', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(27, 'create_operasional', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(28, 'update_operasional', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(29, 'restore_operasional', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(30, 'restore_any_operasional', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(31, 'replicate_operasional', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(32, 'reorder_operasional', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(33, 'delete_operasional', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(34, 'delete_any_operasional', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(35, 'force_delete_operasional', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(36, 'force_delete_any_operasional', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(37, 'view_pekerja', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(38, 'view_any_pekerja', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(39, 'create_pekerja', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(40, 'update_pekerja', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(41, 'restore_pekerja', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(42, 'restore_any_pekerja', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(43, 'replicate_pekerja', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(44, 'reorder_pekerja', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(45, 'delete_pekerja', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(46, 'delete_any_pekerja', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(47, 'force_delete_pekerja', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(48, 'force_delete_any_pekerja', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(49, 'view_penjual', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(50, 'view_any_penjual', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(51, 'create_penjual', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(52, 'update_penjual', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(53, 'restore_penjual', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(54, 'restore_any_penjual', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(55, 'replicate_penjual', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(56, 'reorder_penjual', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(57, 'delete_penjual', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(58, 'delete_any_penjual', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(59, 'force_delete_penjual', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(60, 'force_delete_any_penjual', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(61, 'view_perusahaan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(62, 'view_any_perusahaan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(63, 'create_perusahaan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(64, 'update_perusahaan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(65, 'restore_perusahaan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(66, 'restore_any_perusahaan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(67, 'replicate_perusahaan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(68, 'reorder_perusahaan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(69, 'delete_perusahaan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(70, 'delete_any_perusahaan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(71, 'force_delete_perusahaan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(72, 'force_delete_any_perusahaan', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(73, 'view_role', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(74, 'view_any_role', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(75, 'create_role', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(76, 'update_role', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(77, 'delete_role', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(78, 'delete_any_role', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(79, 'view_supir', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(80, 'view_any_supir', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(81, 'create_supir', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(82, 'update_supir', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(83, 'restore_supir', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(84, 'restore_any_supir', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(85, 'replicate_supir', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(86, 'reorder_supir', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(87, 'delete_supir', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(88, 'delete_any_supir', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(89, 'force_delete_supir', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(90, 'force_delete_any_supir', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(91, 'view_transaksi::do', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(92, 'view_any_transaksi::do', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(93, 'create_transaksi::do', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(94, 'update_transaksi::do', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(95, 'restore_transaksi::do', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(96, 'restore_any_transaksi::do', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(97, 'replicate_transaksi::do', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(98, 'reorder_transaksi::do', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(99, 'delete_transaksi::do', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(100, 'delete_any_transaksi::do', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(101, 'force_delete_transaksi::do', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(102, 'force_delete_any_transaksi::do', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(103, 'view_user', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(104, 'view_any_user', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(105, 'create_user', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(106, 'update_user', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(107, 'restore_user', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(108, 'restore_any_user', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(109, 'replicate_user', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(110, 'reorder_user', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(111, 'delete_user', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(112, 'delete_any_user', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(113, 'force_delete_user', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(114, 'force_delete_any_user', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(115, 'widget_DashboardStatsWidget', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(116, 'widget_DailyFinanceChartWidget', 'web', '2024-12-13 18:36:00', '2024-12-13 18:36:00'),
+(117, 'widget_TransaksiTerakhir', 'web', '2024-12-13 18:36:00', '2024-12-13 18:36:00'),
+(118, 'widget_MonthlyFinanceChartWidget', 'web', '2024-12-13 18:36:00', '2024-12-13 18:36:00');
 
 -- --------------------------------------------------------
 
@@ -549,7 +550,7 @@ CREATE TABLE `perusahaans` (
 --
 
 INSERT INTO `perusahaans` (`id`, `sisa_saldo_kemarin`, `tanggal_sisa_saldo`, `sudah_diproses`, `name`, `saldo`, `alamat`, `telepon`, `email`, `pimpinan`, `npwp`, `logo`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 0.00, '2024-12-10', 0, 'CV SUCCESS MANDIRI', 134876700, 'Dusun Sungai Moran Nagari Kamang', '+62 823-8921-9670', NULL, 'Yondra', '12.345.678.9-123.000', 'successw.png', 1, '2024-12-09 17:25:56', '2024-12-13 09:47:07', NULL);
+(1, 0.00, '2024-12-10', 0, 'CV SUCCESS MANDIRI', 134876700, 'Dusun Sungai Moran Nagari Kamang', '+62 823-8921-9670', NULL, 'Yondra', '12.345.678.9-123.000', 'successw.png', 1, '2024-12-09 17:25:56', '2025-01-07 04:39:38', NULL);
 
 -- --------------------------------------------------------
 
@@ -579,8 +580,8 @@ CREATE TABLE `riwayat_pembayaran_hutangs` (
 
 CREATE TABLE `roles` (
   `id` bigint UNSIGNED NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `guard_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -590,9 +591,8 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(1, 'super_admin', 'web', '2024-12-12 08:22:15', '2024-12-12 08:22:15'),
-(2, 'admin', 'web', '2024-12-12 08:27:32', '2024-12-12 08:27:32'),
-(3, 'kasir', 'web', '2024-12-12 08:28:12', '2024-12-12 08:28:12');
+(1, 'super_admin', 'web', '2024-12-13 18:35:59', '2024-12-13 18:35:59'),
+(2, 'kasir', 'web', '2024-12-13 18:37:40', '2024-12-13 18:37:40');
 
 -- --------------------------------------------------------
 
@@ -788,24 +788,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 (58, 2),
 (59, 2),
 (60, 2),
-(61, 2),
-(62, 2),
-(63, 2),
-(64, 2),
-(65, 2),
-(66, 2),
-(67, 2),
-(68, 2),
-(69, 2),
-(70, 2),
-(71, 2),
-(72, 2),
-(73, 2),
-(74, 2),
-(75, 2),
-(76, 2),
-(77, 2),
-(78, 2),
 (79, 2),
 (80, 2),
 (81, 2),
@@ -830,104 +812,10 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 (100, 2),
 (101, 2),
 (102, 2),
-(103, 2),
-(104, 2),
-(105, 2),
-(106, 2),
-(107, 2),
-(108, 2),
-(109, 2),
-(110, 2),
-(111, 2),
-(112, 2),
-(113, 2),
-(114, 2),
 (115, 2),
-(7, 3),
-(8, 3),
-(9, 3),
-(10, 3),
-(11, 3),
-(12, 3),
-(13, 3),
-(14, 3),
-(15, 3),
-(16, 3),
-(17, 3),
-(18, 3),
-(19, 3),
-(20, 3),
-(21, 3),
-(22, 3),
-(23, 3),
-(24, 3),
-(25, 3),
-(26, 3),
-(27, 3),
-(28, 3),
-(29, 3),
-(30, 3),
-(31, 3),
-(32, 3),
-(33, 3),
-(34, 3),
-(35, 3),
-(36, 3),
-(37, 3),
-(38, 3),
-(39, 3),
-(40, 3),
-(41, 3),
-(42, 3),
-(43, 3),
-(44, 3),
-(45, 3),
-(46, 3),
-(47, 3),
-(48, 3),
-(49, 3),
-(50, 3),
-(51, 3),
-(52, 3),
-(53, 3),
-(54, 3),
-(55, 3),
-(56, 3),
-(57, 3),
-(58, 3),
-(59, 3),
-(60, 3),
-(61, 3),
-(62, 3),
-(63, 3),
-(64, 3),
-(65, 3),
-(66, 3),
-(79, 3),
-(80, 3),
-(81, 3),
-(82, 3),
-(83, 3),
-(84, 3),
-(85, 3),
-(86, 3),
-(87, 3),
-(88, 3),
-(89, 3),
-(90, 3),
-(91, 3),
-(92, 3),
-(93, 3),
-(94, 3),
-(95, 3),
-(96, 3),
-(97, 3),
-(98, 3),
-(99, 3),
-(100, 3),
-(101, 3),
-(102, 3),
-(115, 3);
+(116, 2),
+(117, 2),
+(118, 2);
 
 -- --------------------------------------------------------
 
@@ -949,8 +837,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
+('7JzyoGAdqGJQiodd84JLQmTcVjexHM7bZdXiAlP6', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiZUYzMGNwNE5ObUlEOHJYWlZadzRWU3lLTkU2bkhIQmJQcmZkUldCUyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9vcGVyYXNpb25hbHMvY3JlYXRlIjt9czozOiJ1cmwiO2E6MDp7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7czoxNzoicGFzc3dvcmRfaGFzaF93ZWIiO3M6NjA6IiQyeSQxMiR3MmJiRUpUMTFQcksvdjlPcUNuaWZlUXBYV0lvV1htcXdyNVlFRmE3clk5c2dTRnhLcVd0UyI7czo2OiJ0YWJsZXMiO2E6MTp7czoxNzoiTGlzdFBlbmp1YWxzX3NvcnQiO2E6Mjp7czo2OiJjb2x1bW4iO047czo5OiJkaXJlY3Rpb24iO047fX1zOjg6ImZpbGFtZW50IjthOjE6e3M6MTM6Im5vdGlmaWNhdGlvbnMiO2E6MTp7aTowO2E6MTE6e3M6MjoiaWQiO3M6MzY6IjlkZThhM2MwLTZmNDctNGQyMi05MGFiLTczNzM1MWE0NzkwNyI7czo3OiJhY3Rpb25zIjthOjA6e31zOjQ6ImJvZHkiO3M6NDE3OiJUZXJqYWRpIGtlc2FsYWhhbiBzYWF0IGNyZWF0ZWQgdHJhbnNha3NpOiBTUUxTVEFURVswMTAwMF06IFdhcm5pbmc6IDEyNjUgRGF0YSB0cnVuY2F0ZWQgZm9yIGNvbHVtbiAndGlwZScgYXQgcm93IDEgKENvbm5lY3Rpb246IG15c3FsLCBTUUw6IGluc2VydCBpbnRvIGByaXdheWF0X3BlbWJheWFyYW5faHV0YW5nc2AgKGB0YW5nZ2FsYCwgYG5vbWluYWxgLCBgdGlwZWAsIGBvcGVyYXNpb25hbF9pZGAsIGBrZXRlcmFuZ2FuYCwgYHBlbmp1YWxfaWRgLCBgdXBkYXRlZF9hdGAsIGBjcmVhdGVkX2F0YCkgdmFsdWVzICgyMDI1LTAxLTA3IDExOjQzOjQ4LCAxMDAwMCwgcGluamFtYW4sIDExLCBQZW5hbWJhaGFuIGh1dGFuZyB2aWEgb3BlcmFzaW9uYWwsIDExLCAyMDI1LTAxLTA3IDExOjQ0OjEyLCAyMDI1LTAxLTA3IDExOjQ0OjEyKSkiO3M6NToiY29sb3IiO047czo4OiJkdXJhdGlvbiI7aTozMDAwO3M6NDoiaWNvbiI7czoxOToiaGVyb2ljb24tby14LWNpcmNsZSI7czo5OiJpY29uQ29sb3IiO3M6NjoiZGFuZ2VyIjtzOjY6InN0YXR1cyI7czo2OiJkYW5nZXIiO3M6NToidGl0bGUiO3M6NjoiRXJyb3IhIjtzOjQ6InZpZXciO3M6MzY6ImZpbGFtZW50LW5vdGlmaWNhdGlvbnM6Om5vdGlmaWNhdGlvbiI7czo4OiJ2aWV3RGF0YSI7YTowOnt9fX19fQ==', 1736225054),
+('bWuhSTN4wWCwucdiTUFdxetlbVZZz3C1x6D4ZABC', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiaWRiN0U3RXJIUEFoNDkyVGJkRlpaZ3FZRDZ3azljTk03RGNIZnVQMiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjg6Imh0dHA6Ly9sb2NhbGhvc3QvYWRtaW4vbG9naW4iO31zOjM6InVybCI7YToxOntzOjg6ImludGVuZGVkIjtzOjM2OiJodHRwOi8vbG9jYWxob3N0L2FkbWluL3RyYW5zYWtzaS1kb3MiO319', 1734119381),
 ('D0BA4bqMeC1NgZPvRj5oHOBUHrUZM6m7YT44Smux', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoicTF5YVZDRk1NcWdIaUoxV3pEVWV4NTlabUpRbGVNTlNUcnVDWHp4aSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjg6Imh0dHA6Ly8xMjcuMC4wLjEvYWRtaW4vbG9naW4iO319', 1733992745),
-('lybxV5an8avJpvM8BYEb9oDyIC2FGMPzgr1Gr8Ih', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiVWxhdnBUMGljS25GTld0ZXNhM1ZmYzJ4V0s0Um9CQVV0Q04xU0J5OCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly9sb2NhbGhvc3QvYWRtaW4vbGFwb3Jhbi1rZXVhbmdhbnMiO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO3M6MTc6InBhc3N3b3JkX2hhc2hfd2ViIjtzOjYwOiIkMnkkMTIkdzJiYkVKVDExUHJLL3Y5T3FDbmlmZVFwWFdJb1dYbXF3cjVZRUZhN3JZOXNnU0Z4S3FXdFMiO3M6ODoiZmlsYW1lbnQiO2E6MDp7fX0=', 1734083242),
 ('ni1c7wrdWDqqTmmFeOQJLeje6q2y5zG9E3iX7oYX', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiTUpZWGtUa3BXVnYxNDd3dlpiUkNhM3puSTlXaThrQ3VFaG9VeVFzQiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733992754),
 ('sfm5swdVkFDbhmMM64ksIPuV3uWeLJjYXIsyrcBa', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiMExxYlNHZHMyWENEN05uRG1MSk9jVW9LajRINTl3dGRsQXZSN3ZRQiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjI6Imh0dHA6Ly8xMjcuMC4wLjEvYWRtaW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO3M6MTc6InBhc3N3b3JkX2hhc2hfd2ViIjtzOjYwOiIkMnkkMTIkdzJiYkVKVDExUHJLL3Y5T3FDbmlmZVFwWFdJb1dYbXF3cjVZRUZhN3JZOXNnU0Z4S3FXdFMiO3M6ODoiZmlsYW1lbnQiO2E6MDp7fXM6NjoidGFibGVzIjthOjY6e3M6MjE6Ikxpc3RUcmFuc2Frc2lEb3Nfc29ydCI7YToyOntzOjY6ImNvbHVtbiI7TjtzOjk6ImRpcmVjdGlvbiI7Tjt9czoxNzoiTGlzdFBlbmp1YWxzX3NvcnQiO2E6Mjp7czo2OiJjb2x1bW4iO047czo5OiJkaXJlY3Rpb24iO047fXM6MjE6Ikxpc3RQZW5qdWFsc19wZXJfcGFnZSI7czozOiJhbGwiO3M6MjQ6Ikxpc3RUcmFuc2Frc2lEb3NfZmlsdGVycyI7YToyOntzOjEwOiJjcmVhdGVkX2F0IjthOjI6e3M6MTI6ImNyZWF0ZWRfZnJvbSI7TjtzOjEwOiJjcmVhdGVkX3RvIjtOO31zOjc6InRyYXNoZWQiO2E6MTp7czo1OiJ2YWx1ZSI7Tjt9fXM6MjU6Ikxpc3RUcmFuc2Frc2lEb3NfcGVyX3BhZ2UiO3M6MzoiYWxsIjtzOjI5OiJMaXN0TGFwb3JhbktldWFuZ2Fuc19wZXJfcGFnZSI7czozOiJhbGwiO319', 1733991876),
 ('uh9Ssvju2z6kgrCIThV08qSzw8oeRTMXDZsJvTD0', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiVzFSR1JUa01mbkdHcmMzbE14RGYzdVRFTVVYa1N0VERTdVYwS1JUTyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly9sb2NhbGhvc3QvYWRtaW4vbGFwb3Jhbi1rZXVhbmdhbnMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjM6InVybCI7YTowOnt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjE3OiJwYXNzd29yZF9oYXNoX3dlYiI7czo2MDoiJDJ5JDEyJHcyYmJFSlQxMVBySy92OU9xQ25pZmVRcFhXSW9XWG1xd3I1WUVGYTdyWTlzZ1NGeEtxV3RTIjtzOjY6InRhYmxlcyI7YToyOntzOjI0OiJMaXN0VHJhbnNha3NpRG9zX2ZpbHRlcnMiO2E6Mjp7czoxMDoiY3JlYXRlZF9hdCI7YToyOntzOjEyOiJjcmVhdGVkX2Zyb20iO047czoxMDoiY3JlYXRlZF90byI7Tjt9czo3OiJ0cmFzaGVkIjthOjE6e3M6NToidmFsdWUiO047fX1zOjIxOiJMaXN0VHJhbnNha3NpRG9zX3NvcnQiO2E6Mjp7czo2OiJjb2x1bW4iO047czo5OiJkaXJlY3Rpb24iO047fX1zOjg6ImZpbGFtZW50IjthOjA6e319', 1734074343);
@@ -1305,19 +1194,19 @@ ALTER TABLE `kendaraan`
 -- AUTO_INCREMENT untuk tabel `laporan_keuangan`
 --
 ALTER TABLE `laporan_keuangan`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT untuk tabel `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT untuk tabel `operasional`
 --
 ALTER TABLE `operasional`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT untuk tabel `pekerja`
@@ -1353,7 +1242,7 @@ ALTER TABLE `riwayat_pembayaran_hutangs`
 -- AUTO_INCREMENT untuk tabel `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `supir`

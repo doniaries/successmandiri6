@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\{Operasional, TransaksiDo, LaporanKeuangan, RiwayatPembayaranHutang};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\KategoriOperasional;
 
 class Penjual extends Model
 {
@@ -103,6 +104,21 @@ class Penjual extends Model
             ->orderBy('created_at', 'desc');
     }
 
+    public function scopePinjaman($query)
+    {
+        return $query->whereHas('operasional', function ($q) {
+            $q->where('kategori', KategoriOperasional::PINJAMAN)
+                ->where('tipe_nama', 'penjual');
+        });
+    }
+
+    public function getTotalPinjamanAttribute()
+    {
+        return $this->operasional()
+            ->where('kategori', KategoriOperasional::PINJAMAN)
+            ->where('tipe_nama', 'penjual')
+            ->sum('nominal');
+    }
 
 
     // Tambahkan relasi ke riwayat pembayaran
