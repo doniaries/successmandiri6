@@ -258,11 +258,25 @@
                     @if ($i < $pemasukan->count())
                         <td style="width: 25%;">
                             {{ strtoupper($pemasukan[$i]->kategoriLabel) }}
-                            @if ($pemasukan[$i]->user)
+                            {{-- @if ($pemasukan[$i]->user)
                                 <br><small>Oleh: {{ $pemasukan[$i]->user->name }}</small>
-                            @endif
-                            @if ($pemasukan[$i]->keterangan)
-                                <br><small>Ket: {{ $pemasukan[$i]->keterangan }}</small>
+                            @endif --}}
+                            @if ($pemasukan[$i]->tipe_nama)
+                                <br><small>
+                                    @switch($pemasukan[$i]->tipe_nama)
+                                        @case('supir')
+                                            Peminjam: {{ $pemasukan[$i]->supir->nama ?? '-' }} (Supir)
+                                        @break
+
+                                        @case('penjual')
+                                            Peminjam: {{ $pemasukan[$i]->penjual->nama ?? '-' }} (Penjual)
+                                        @break
+
+                                        @case('pekerja')
+                                            Peminjam: {{ $pemasukan[$i]->pekerja->nama ?? '-' }} (Pekerja)
+                                        @break
+                                    @endswitch
+                                </small>
                             @endif
                         </td>
                         <td style="width: 25%;" class="amount">
