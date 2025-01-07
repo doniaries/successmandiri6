@@ -688,7 +688,7 @@ return [
             'code'                => 360,
             'precision'           => 0,
             'subunit'             => 100,
-            'symbol'              => 'Rp',
+            'symbol'              => 'Rp ',
             'symbol_first'        => true,
             'decimal_mark'        => ',',
             'thousands_separator' => '.',

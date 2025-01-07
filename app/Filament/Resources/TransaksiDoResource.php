@@ -786,7 +786,7 @@ class TransaksiDoResource extends Resource
                     ->weight('bold')
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->currency('IDR')
+                            ->currency('IDR', 'true')
                     ])
                     ->sortable(),
 
@@ -795,7 +795,7 @@ class TransaksiDoResource extends Resource
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->currency('IDR')
+                            ->currency('IDR', 'true')
                     ])
                     ->sortable(),
 
@@ -803,7 +803,7 @@ class TransaksiDoResource extends Resource
                     ->label('Biaya')
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->currency('IDR')
+                            ->currency('IDR', 'true')
                     ])
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
@@ -822,7 +822,7 @@ class TransaksiDoResource extends Resource
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->currency('IDR')
+                            ->currency('IDR', 'true')
                     ])
                     ->color(Color::Orange)
                     ->sortable(),
@@ -835,10 +835,10 @@ class TransaksiDoResource extends Resource
                         return $record->sisa_hutang_penjual ?? max(0, $record->hutang_awal - $record->pembayaran_hutang);
                     })
                     ->sortable()
-                    ->summarize([
-                        Tables\Columns\Summarizers\Sum::make()
-                            ->currency('IDR')
-                    ])
+                    // ->summarize([
+                    //     Tables\Columns\Summarizers\Sum::make()
+                    //         ->currency('IDR')
+                    // ])
                     ->alignRight() // Opsional: untuk alignment nominal uang
                     ->color(
                         fn(TransaksiDo $record): string =>
@@ -876,7 +876,7 @@ class TransaksiDoResource extends Resource
                     ->weight('bold')
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->currency('IDR')
+                            ->currency('IDR', 'true')
                     ])
                     ->sortable(),
 
