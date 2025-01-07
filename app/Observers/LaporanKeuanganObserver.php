@@ -39,6 +39,7 @@ class LaporanKeuanganObserver
             $data['sub_kategori'] = $data['sub_kategori'] ?? '-';
             $data['nomor_referensi'] = $data['nomor_referensi'] ?? '-';
             $data['pihak_terkait'] = $data['pihak_terkait'] ?? '-';
+            $data['tipe_pihak'] = $data['tipe_pihak'] ?? '-';
             $data['cara_pembayaran'] = $data['cara_pembayaran'] ?? 'tunai';
             $data['keterangan'] = $data['keterangan'] ?? '-';
             $data['mempengaruhi_kas'] = $data['mempengaruhi_kas'] ?? true;
@@ -59,7 +60,13 @@ class LaporanKeuanganObserver
         try {
             DB::beginTransaction();
 
-            // Untuk data yang dihapus, hanya buat laporan tanpa mempengaruhi saldo
+            // Lock perusahaan untuk update
+            $perusahaan = Perusahaan::lockForUpdate()->first();
+            if (!$perusahaan) {
+                throw new \Exception('Data perusahaan tidak ditemukan');
+            }
+
+            // Handle deleted transactions
             if ($transaksiDo->trashed()) {
                 if ($transaksiDo->cara_bayar === 'tunai') {
                     $this->createLaporan([
@@ -72,29 +79,72 @@ class LaporanKeuanganObserver
                         'referensi_id' => $transaksiDo->id,
                         'nomor_referensi' => $transaksiDo->nomor,
                         'pihak_terkait' => $transaksiDo->penjual->nama,
+                        'tipe_pihak' => 'penjual',
                         'cara_pembayaran' => 'tunai',
                         'keterangan' => "Pembatalan DO #{$transaksiDo->nomor}",
                         'mempengaruhi_kas' => false
                     ]);
                 }
-
                 DB::commit();
                 return;
             }
 
-            // Proses normal
+            // Handle normal transactions
             if ($transaksiDo->cara_bayar === 'tunai') {
-                $this->handleTransaksitunai($transaksiDo);
-            } else {
-                $this->handleTransaksiNontunai($transaksiDo);
-            }
+                $perusahaan->increment('saldo', $transaksiDo->total);
 
-            // Sinkronkan ulang saldo
-            $this->syncSaldoPerusahaan();
+                $this->createLaporan([
+                    'tanggal' => $transaksiDo->tanggal,
+                    'jenis_transaksi' => 'Pemasukan',
+                    'kategori' => 'DO',
+                    'sub_kategori' => 'Pembayaran DO',
+                    'nominal' => $transaksiDo->total,
+                    'sumber_transaksi' => 'DO',
+                    'referensi_id' => $transaksiDo->id,
+                    'nomor_referensi' => $transaksiDo->nomor,
+                    'pihak_terkait' => $transaksiDo->penjual->nama,
+                    'tipe_pihak' => 'penjual', // Add this line
+                    'cara_pembayaran' => 'tunai',
+                    'keterangan' => "Pembayaran DO Tunai #{$transaksiDo->nomor}",
+                    'mempengaruhi_kas' => true
+                ]);
+
+                Log::info('Transaksi DO Tunai:', [
+                    'nomor' => $transaksiDo->nomor,
+                    'total' => $transaksiDo->total,
+                    'saldo_akhir' => $perusahaan->fresh()->saldo
+                ]);
+            } else {
+                $this->createLaporan([
+                    'tanggal' => $transaksiDo->tanggal,
+                    'jenis_transaksi' => 'Pemasukan',
+                    'kategori' => 'DO',
+                    'sub_kategori' => 'Pembayaran DO',
+                    'nominal' => $transaksiDo->total,
+                    'sumber_transaksi' => 'DO',
+                    'referensi_id' => $transaksiDo->id,
+                    'nomor_referensi' => $transaksiDo->nomor,
+                    'pihak_terkait' => $transaksiDo->penjual->nama,
+                    'tipe_pihak' => 'penjual', // Add this line
+                    'cara_pembayaran' => $transaksiDo->cara_bayar,
+                    'keterangan' => "Pembayaran DO Non-Tunai #{$transaksiDo->nomor}",
+                    'mempengaruhi_kas' => false
+                ]);
+
+                Log::info('Transaksi DO Non-Tunai:', [
+                    'nomor' => $transaksiDo->nomor,
+                    'total' => $transaksiDo->total,
+                    'cara_bayar' => $transaksiDo->cara_bayar
+                ]);
+            }
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error transaksi DO:', [
+                'error' => $e->getMessage(),
+                'transaksi' => $transaksiDo->toArray()
+            ]);
             throw $e;
         }
     }

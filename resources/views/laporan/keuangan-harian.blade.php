@@ -242,7 +242,6 @@
         </tr>
 
         @php
-            // Move this outside of transaksiDo loop
             $pemasukan = $operasional->where('operasional', 'pemasukan')->values();
             $pengeluaran = $operasional->where('operasional', 'pengeluaran')->values();
             $maxRows = max($pemasukan->count(), $pengeluaran->count());
@@ -259,12 +258,15 @@
                     @if ($i < $pemasukan->count())
                         <td style="width: 25%;">
                             {{ strtoupper($pemasukan[$i]->kategoriLabel) }}
+                            @if ($pemasukan[$i]->user)
+                                <br><small>Oleh: {{ $pemasukan[$i]->user->name }}</small>
+                            @endif
                             @if ($pemasukan[$i]->keterangan)
-                                <br><small>{{ $pemasukan[$i]->keterangan }}</small>
+                                <br><small>Ket: {{ $pemasukan[$i]->keterangan }}</small>
                             @endif
                         </td>
                         <td style="width: 25%;" class="amount">
-                            Rp {{ number_format($pemasukan[$i]->nominal, 0) }}
+                            Rp {{ number_format($pemasukan[$i]->nominal, 0, ',', '.') }}
                         </td>
                     @else
                         <td style="width: 25%;"></td>
@@ -275,12 +277,29 @@
                     @if ($i < $pengeluaran->count())
                         <td style="width: 25%;">
                             {{ strtoupper($pengeluaran[$i]->kategoriLabel) }}
-                            @if ($pengeluaran[$i]->pihak_terkait)
-                                <br><small>{{ $pengeluaran[$i]->pihak_terkait }}</small>
+                            @if ($pengeluaran[$i]->kategori === 'pinjaman')
+                                <br><small>
+                                    @switch($pengeluaran[$i]->tipe_nama)
+                                        @case('supir')
+                                            Peminjam: {{ $pengeluaran[$i]->supir->nama ?? '-' }} (Supir)
+                                        @break
+
+                                        @case('penjual')
+                                            Peminjam: {{ $pengeluaran[$i]->penjual->nama ?? '-' }} (Penjual)
+                                        @break
+
+                                        @case('pekerja')
+                                            Peminjam: {{ $pengeluaran[$i]->pekerja->nama ?? '-' }} (Pekerja)
+                                        @break
+                                    @endswitch
+                                </small>
+                            @endif
+                            @if ($pengeluaran[$i]->keterangan)
+                                <br><small>Ket: {{ $pengeluaran[$i]->keterangan }}</small>
                             @endif
                         </td>
                         <td style="width: 25%;" class="amount">
-                            Rp {{ number_format($pengeluaran[$i]->nominal, 0) }}
+                            Rp {{ number_format($pengeluaran[$i]->nominal, 0, ',', '.') }}
                         </td>
                     @else
                         <td style="width: 25%;"></td>
@@ -291,9 +310,9 @@
 
             <tr class="total-row">
                 <td>TOTAL</td>
-                <td class="amount">Rp {{ number_format($pemasukan->sum('nominal'), 0) }}</td>
+                <td class="amount">Rp {{ number_format($pemasukan->sum('nominal'), 0, ',', '.') }}</td>
                 <td>TOTAL</td>
-                <td class="amount">Rp {{ number_format($pengeluaran->sum('nominal'), 0) }}</td>
+                <td class="amount">Rp {{ number_format($pengeluaran->sum('nominal'), 0, ',', '.') }}</td>
             </tr>
         @endif
     </table>
