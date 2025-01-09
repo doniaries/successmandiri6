@@ -11,19 +11,24 @@ trait GenerateMonthlyNumber
         $month = $today->format('m');
         $year = $today->format('Y');
 
-        // Ambil nomor terakhir untuk hari ini
-        $lastNumber = static::whereDate('tanggal', $today->toDateString())
-            ->withTrashed() // Termasuk data yang sudah dihapus
-            ->max('nomor');
+        // Get all numbers for today (both active and trashed)
+        $lastNumbers = static::whereDate('tanggal', $today->toDateString())
+            ->withTrashed()
+            ->pluck('nomor')
+            ->toArray();
 
-        if (!$lastNumber) {
-            // Jika belum ada nomor untuk hari ini
-            $newNumber = 1;
-        } else {
-            // Ekstrak nomor dari format DO-YYYYMMDD-XXXX
-            preg_match('/DO-\d{8}-(\d+)/', $lastNumber, $matches);
-            $newNumber = isset($matches[1]) ? ((int)$matches[1] + 1) : 1;
+        $maxSequence = 0;
+
+        // Extract and find the highest sequence number
+        foreach ($lastNumbers as $number) {
+            if (preg_match('/DO-\d{8}-(\d+)/', $number, $matches)) {
+                $sequence = (int)$matches[1];
+                $maxSequence = max($maxSequence, $sequence);
+            }
         }
+
+        // Increment the highest sequence number
+        $newNumber = $maxSequence + 1;
 
         // Format: DO-YYYYMMDD-XXXX
         return sprintf(
