@@ -241,7 +241,7 @@ class TransaksiDoResource extends Resource
                                                 }
 
                                                 // Format nomor polisi
-                                                // $noPolisi = strtoupper(trim($data['no_polisi']));
+                                                $noPolisi = strtoupper(trim($data['no_polisi']));
 
                                                 // Ambil supir_id dari form utama jika tidak ada di data
                                                 $supirId = $data['supir_id'] ?? $get('supir_id');
