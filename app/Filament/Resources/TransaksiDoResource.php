@@ -178,10 +178,10 @@ class TransaksiDoResource extends Resource
                                         ->preload()
                                         ->live()
                                         ->required()
-                                        // ->afterStateUpdated(function ($state, Forms\Set $set) {
-                                        //     // Reset kendaraan when supir changes
-                                        //     $set('kendaraan_id', null);
-                                        // })
+                                        ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                            // Reset kendaraan when supir changes
+                                            $set('kendaraan_id', null);
+                                        })
                                         ->createOptionForm([
                                             Forms\Components\TextInput::make('nama')
                                                 ->required()
@@ -196,14 +196,14 @@ class TransaksiDoResource extends Resource
                                     Forms\Components\Select::make('kendaraan_id')
                                         ->label('Nomor Polisi')
                                         ->placeholder('Pilih atau tambah kendaraan')
-                                        // ->options(function (Forms\Get $get) {
-                                        //     $supirId = $get('supir_id');
-                                        //     if (!$supirId) return [];
+                                        ->options(function (Forms\Get $get) {
+                                            $supirId = $get('supir_id');
+                                            if (!$supirId) return [];
 
-                                        //     return Kendaraan::query()
-                                        //         ->where('supir_id', $supirId)
-                                        //         ->pluck('no_polisi', 'id');
-                                        // })
+                                            return Kendaraan::query()
+                                                ->where('supir_id', $supirId)
+                                                ->pluck('no_polisi', 'id');
+                                        })
                                         ->searchable()
                                         ->preload()
                                         ->live()
@@ -215,10 +215,10 @@ class TransaksiDoResource extends Resource
                                                 ->maxLength(10)
                                                 ->placeholder('BA 1234 XX'),
 
-                                            // Forms\Components\Hidden::make('supir_id')
-                                            //     ->default(function (Forms\Get $get) {
-                                            //         return $get('../../supir_id');
-                                            //     })
+                                            Forms\Components\Hidden::make('supir_id')
+                                                ->default(function (Forms\Get $get) {
+                                                    return $get('../../supir_id');
+                                                })
                                         ])
                                         ->createOptionAction(function (Forms\Components\Actions\Action $action) {
                                             return $action
