@@ -1,16 +1,23 @@
-on: push
 name: 🚀 Deploy website on push
+on:
+  push:
+    branches: [ main ]
 jobs:
   web-deploy:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
     - name: 🚚 Get latest code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
+  # Langkah ini memastikan CSS/JS dibuat sebelum dikirim ke server
+    - name: 🛠️ Build Assets
+      run: |
+        npm install
+        npm run build
     
     - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: ${{ secrets.FTP_SERVER}}
+        server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD}}
+        password: ${{ secrets.FTP_PASSWORD }}
