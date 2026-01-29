@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardStatsWidget extends BaseWidget
 {
-    protected static bool $shouldRegister = false;
+    protected static bool $shouldRegister = true;
     protected static ?int $sort = 1;
     protected int | string | array $columnSpan = 'full';
 
@@ -104,10 +104,10 @@ class DashboardStatsWidget extends BaseWidget
         $dateRange = "Periode: {$startOfMonth->format('d M Y')} - {$endOfMonth->format('d M Y')}";
 
         return [
-            // Stat::make('Sisa Saldo', 'Rp ' . number_format($currentBalance, 0, ',', '.'))
-            //     ->description('Total saldo masuk - Total pengeluaran')
-            //     ->icon('heroicon-m-banknotes')
-            //     ->color($currentBalance >= 0 ? 'success' : 'danger'),
+            Stat::make('Sisa Saldo', 'Rp ' . number_format($currentBalance, 0, ',', '.'))
+                ->description('Total saldo masuk - Total pengeluaran (Kumulatif)')
+                ->icon('heroicon-m-banknotes')
+                ->color($currentBalance >= 0 ? 'success' : 'danger'),
 
             Stat::make('Pemasukan Bulan Ini', 'Rp ' . number_format($monthlyIncome, 0, ',', '.'))
                 ->description(sprintf(
