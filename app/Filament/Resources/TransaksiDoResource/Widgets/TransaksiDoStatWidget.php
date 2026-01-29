@@ -21,11 +21,8 @@ class TransaksiDoStatWidget extends BaseWidget
         try {
             // Get stats from cache or calculate
             return Cache::remember('transaksi-stats', 60, function () {
-                // Calculate total incoming funds (Total Saldo/Uang Masuk):
-                // - Sum of debt payments
-                // - Sum of remaining payments for specific payment methods
-                // - Plus operational income
-                $incomingFunds = DB::table('transaksi_do')
+                // --- MONTHLY CALCULATIONS (For display in specific widgets) ---
+                $incomingFundsMonthly = DB::table('transaksi_do')
                     ->whereNull('deleted_at')
                     ->whereMonth('tanggal', now()->month)
                     ->whereYear('tanggal', now()->year)
@@ -38,83 +35,96 @@ class TransaksiDoStatWidget extends BaseWidget
                         END), 0) as remaining_payments')
                     ])->first();
 
-                $operationalIncome = DB::table('operasional')
+                $operationalIncomeMonthly = DB::table('operasional')
                     ->whereNull('deleted_at')
                     ->where('operasional', 'pemasukan')
                     ->whereMonth('tanggal', now()->month)
                     ->whereYear('tanggal', now()->year)
                     ->sum('nominal');
 
-                // Update cara bayar untuk konsistensi
-                $totalIncoming = $incomingFunds->total_debt_payments +
-                    $incomingFunds->remaining_payments +
-                    $operationalIncome;
+                $totalIncomingMonthly = $incomingFundsMonthly->total_debt_payments +
+                    $incomingFundsMonthly->remaining_payments +
+                    $operationalIncomeMonthly;
 
-                // Calculate total expenditure (Pengeluaran/Uang Keluar):
-                // - Sum of all DO sub_totals
-                // - Plus total operational expenses
-                $totalDO = DB::table('transaksi_do')
+                $totalDOMonthly = DB::table('transaksi_do')
                     ->whereNull('deleted_at')
                     ->whereMonth('tanggal', now()->month)
                     ->whereYear('tanggal', now()->year)
                     ->sum('sub_total');
 
-                $totalOperational = DB::table('operasional')
+                $totalOperationalMonthly = DB::table('operasional')
                     ->whereNull('deleted_at')
                     ->where('operasional', 'pengeluaran')
                     ->whereMonth('tanggal', now()->month)
                     ->whereYear('tanggal', now()->year)
                     ->sum('nominal');
 
-                $totalExpenditure = $totalDO + $totalOperational;
+                $totalExpenditureMonthly = $totalDOMonthly + $totalOperationalMonthly;
 
-                // Calculate remaining balance (Sisa Saldo)
-                $remainingBalance = $totalIncoming - $totalExpenditure;
+                // --- GLOBAL CALCULATIONS (Cumulative - For Sisa Saldo) ---
+                $incomingFundsGlobal = DB::table('transaksi_do')
+                    ->whereNull('deleted_at')
+                    ->select([
+                        DB::raw('COALESCE(SUM(pembayaran_hutang), 0) as total_debt_payments'),
+                        DB::raw('COALESCE(SUM(CASE
+                            WHEN cara_bayar IN ("transfer", "cair di luar", "belum dibayar")
+                            THEN sisa_bayar
+                            ELSE 0
+                        END), 0) as remaining_payments')
+                    ])->first();
 
-                // Periksa apakah nilai sudah sesuai dengan yang diharapkan
-                $expectedRemainingBalance = 134876700;
-                $expectedTotalIncoming = 431775680;
-                $expectedTotalExpenditure = 296898980;
+                $operationalIncomeGlobal = DB::table('operasional')
+                    ->whereNull('deleted_at')
+                    ->where('operasional', 'pemasukan')
+                    ->sum('nominal');
 
-                if ($remainingBalance !== $expectedRemainingBalance || $totalIncoming !== $expectedTotalIncoming || $totalExpenditure !== $expectedTotalExpenditure) {
-                    Log::warning('Nilai tidak sesuai dengan yang diharapkan', [
-                        'Sisa Saldo' => $remainingBalance,
-                        'Total Saldo/Uang Masuk' => $totalIncoming,
-                        'Pengeluaran/Uang Keluar' => $totalExpenditure,
-                    ]);
-                }
+                $totalIncomingGlobal = $incomingFundsGlobal->total_debt_payments +
+                    $incomingFundsGlobal->remaining_payments +
+                    $operationalIncomeGlobal;
+
+                $totalDOGlobal = DB::table('transaksi_do')
+                    ->whereNull('deleted_at')
+                    ->sum('sub_total');
+
+                $totalOperationalGlobal = DB::table('operasional')
+                    ->whereNull('deleted_at')
+                    ->where('operasional', 'pengeluaran')
+                    ->sum('nominal');
+
+                $totalExpenditureGlobal = $totalDOGlobal + $totalOperationalGlobal;
+                $remainingBalanceGlobal = $totalIncomingGlobal - $totalExpenditureGlobal;
 
                 return [
-                    // Remaining Balance
-                    Stat::make('Sisa Saldo', 'Rp ' . number_format($remainingBalance, 0, ',', '.'))
-                        ->description('Total saldo masuk - Total pengeluaran')
+                    // Remaining Balance (Global/Cumulative)
+                    Stat::make('Sisa Saldo', 'Rp ' . number_format($remainingBalanceGlobal, 0, ',', '.'))
+                        ->description('Total saldo (Kumulatif)')
                         ->descriptionIcon('heroicon-m-banknotes')
-                        ->color($remainingBalance >= 0 ? 'success' : 'danger'),
+                        ->color($remainingBalanceGlobal >= 0 ? 'success' : 'danger'),
 
-                    // Total Income
-                    Stat::make('Total Saldo/Uang Masuk', 'Rp ' . number_format($totalIncoming, 0, ',', '.'))
+                    // Total Income (Monthly)
+                    Stat::make('Uang Masuk (Bulan Ini)', 'Rp ' . number_format($totalIncomingMonthly, 0, ',', '.'))
                         ->description(sprintf(
-                            "Pembayaran Hutang: Rp %s\nPembayaran Sisa: Rp %s\nPemasukan Operasional: Rp %s",
-                            number_format($incomingFunds->total_debt_payments, 0, ',', '.'),
-                            number_format($incomingFunds->remaining_payments, 0, ',', '.'),
-                            number_format($operationalIncome, 0, ',', '.')
+                            "Bayar Hutang: Rp %s\nBayar Sisa: Rp %s\nOperasional: Rp %s",
+                            number_format($incomingFundsMonthly->total_debt_payments, 0, ',', '.'),
+                            number_format($incomingFundsMonthly->remaining_payments, 0, ',', '.'),
+                            number_format($operationalIncomeMonthly, 0, ',', '.')
                         ))
                         ->descriptionIcon('heroicon-m-arrow-trending-up')
                         ->color('success'),
 
-                    // Total Expenditure
-                    Stat::make('Pengeluaran/Uang Keluar', 'Rp ' . number_format($totalExpenditure, 0, ',', '.'))
+                    // Total Expenditure (Monthly)
+                    Stat::make('Pengeluaran (Bulan Ini)', 'Rp ' . number_format($totalExpenditureMonthly, 0, ',', '.'))
                         ->description(sprintf(
-                            "Total DO: Rp %s\nTotal Operasional: Rp %s",
-                            number_format($totalDO, 0, ',', '.'),
-                            number_format($totalOperational, 0, ',', '.')
+                            "DO: Rp %s\nOperasional: Rp %s",
+                            number_format($totalDOMonthly, 0, ',', '.'),
+                            number_format($totalOperationalMonthly, 0, ',', '.')
                         ))
                         ->descriptionIcon('heroicon-m-arrow-trending-down')
                         ->color('danger'),
 
-                    Stat::make('Total Transaksi', TransaksiDo::currentMonth()->count())
+                    Stat::make('Transaksi (Bulan Ini)', TransaksiDo::currentMonth()->count())
                         ->description(sprintf(
-                            "tunai: %d\ntransfer: %d\ncair di luar: %d\nbelum dibayar: %d",
+                            "tunai: %d | transfer: %d\ncair: %d | belum: %d",
                             TransaksiDo::currentMonth()->where('cara_bayar', 'tunai')->count(),
                             TransaksiDo::currentMonth()->where('cara_bayar', 'transfer')->count(),
                             TransaksiDo::currentMonth()->where('cara_bayar', 'cair di luar')->count(),
