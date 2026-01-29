@@ -70,9 +70,13 @@ class ListTransaksiDos extends ListRecords
                 ->badge(fn() => TransaksiDo::query()
                     ->when($this->getTableFilters()['created_at'] ?? null, function ($query, $filter) {
                         $data = $filter->getState();
-                        return $query->whereDate('tanggal', '>=', $data['created_from'])
-                            ->whereDate('tanggal', '<=', $data['created_to']);
-                    })->count())
+                        if (!empty($data['created_from']) && !empty($data['created_to'])) {
+                            return $query->whereDate('tanggal', '>=', $data['created_from'])
+                                ->whereDate('tanggal', '<=', $data['created_to']);
+                        }
+                        return $query->currentMonth();
+                    }, fn($query) => $query->currentMonth())
+                    ->count())
                 ->modifyQueryUsing(fn(Builder $query) => $query)
                 ->badgeColor('primary'),
 
@@ -82,9 +86,13 @@ class ListTransaksiDos extends ListRecords
                     ->where('cara_bayar', 'tunai')
                     ->when($this->getTableFilters()['created_at'] ?? null, function ($query, $filter) {
                         $data = $filter->getState();
-                        return $query->whereDate('tanggal', '>=', $data['created_from'])
-                            ->whereDate('tanggal', '<=', $data['created_to']);
-                    })->count())
+                        if (!empty($data['created_from']) && !empty($data['created_to'])) {
+                            return $query->whereDate('tanggal', '>=', $data['created_from'])
+                                ->whereDate('tanggal', '<=', $data['created_to']);
+                        }
+                        return $query->currentMonth();
+                    }, fn($query) => $query->currentMonth())
+                    ->count())
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'tunai'))
                 ->badgeColor('success'),
 
@@ -95,11 +103,11 @@ class ListTransaksiDos extends ListRecords
                     ->when($this->getTableFilters()['created_at'] ?? null, function ($query, $filter) {
                         $data = $filter->getState();
                         if (!empty($data['created_from']) && !empty($data['created_to'])) {
-                            $query->whereBetween('tanggal', [$data['created_from'], $data['created_to']]);
-                        } else {
-                            $query->whereDate('tanggal', now());
+                            return $query->whereBetween('tanggal', [$data['created_from'], $data['created_to']]);
                         }
-                    })->count())
+                        return $query->currentMonth();
+                    }, fn($query) => $query->currentMonth())
+                    ->count())
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'transfer'))
                 ->badgeColor('info'),
 
@@ -110,11 +118,11 @@ class ListTransaksiDos extends ListRecords
                     ->when($this->getTableFilters()['created_at'] ?? null, function ($query, $filter) {
                         $data = $filter->getState();
                         if (!empty($data['created_from']) && !empty($data['created_to'])) {
-                            $query->whereBetween('tanggal', [$data['created_from'], $data['created_to']]);
-                        } else {
-                            $query->whereDate('tanggal', now());
+                            return $query->whereBetween('tanggal', [$data['created_from'], $data['created_to']]);
                         }
-                    })->count())
+                        return $query->currentMonth();
+                    }, fn($query) => $query->currentMonth())
+                    ->count())
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'cair di luar'))
                 ->badgeColor('warning'),
 
@@ -125,11 +133,11 @@ class ListTransaksiDos extends ListRecords
                     ->when($this->getTableFilters()['created_at'] ?? null, function ($query, $filter) {
                         $data = $filter->getState();
                         if (!empty($data['created_from']) && !empty($data['created_to'])) {
-                            $query->whereBetween('tanggal', [$data['created_from'], $data['created_to']]);
-                        } else {
-                            $query->whereDate('tanggal', now());
+                            return $query->whereBetween('tanggal', [$data['created_from'], $data['created_to']]);
                         }
-                    })->count())
+                        return $query->currentMonth();
+                    }, fn($query) => $query->currentMonth())
+                    ->count())
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_bayar', 'belum dibayar'))
                 ->badgeColor('danger'),
         ];

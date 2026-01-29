@@ -42,8 +42,15 @@ class TransaksiDoResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getEloquentQuery()
-            ->whereDate('created_at', today())
             ->count();
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->with(['penjual', 'supir', 'kendaraan'])
+            ->currentMonth()
+            ->latest('tanggal');
     }
 
     public static function getWidgets(): array
@@ -499,7 +506,7 @@ class TransaksiDoResource extends Resource
                                                             'Pembayaran disesuaikan menjadi Rp %s sesuai total hutang',
                                                             number_format($hutangAwal, 0, ',', '.')
                                                         ))
-                                                        ->persistent(false)
+                                                        ->persistent()
                                                         ->actions([
                                                             \Filament\Notifications\Actions\Action::make('Tambah Saldo')
                                                                 ->button()
@@ -786,7 +793,7 @@ class TransaksiDoResource extends Resource
                     ->weight('bold')
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->currency('IDR', 'true')
+                            ->currency('IDR', true)
                     ])
                     ->sortable(),
 
@@ -795,7 +802,7 @@ class TransaksiDoResource extends Resource
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->currency('IDR', 'true')
+                            ->currency('IDR', true)
                     ])
                     ->sortable(),
 
@@ -803,7 +810,7 @@ class TransaksiDoResource extends Resource
                     ->label('Biaya')
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->currency('IDR', 'true')
+                            ->currency('IDR', true)
                     ])
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
@@ -822,7 +829,7 @@ class TransaksiDoResource extends Resource
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->currency('IDR', 'true')
+                            ->currency('IDR', true)
                     ])
                     ->color(Color::Orange)
                     ->sortable(),
@@ -876,7 +883,7 @@ class TransaksiDoResource extends Resource
                     ->weight('bold')
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->currency('IDR', 'true')
+                            ->currency('IDR', true)
                     ])
                     ->sortable(),
 
@@ -981,14 +988,6 @@ class TransaksiDoResource extends Resource
             ->striped();
     }
 
-    // Tambahan untuk memastikan data diload dengan benar
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->with(['penjual', 'supir', 'kendaraan']) // Eager loading
-            // ->whereDate('created_at', today())
-            ->latest('tanggal');
-    }
 
 
 
@@ -1070,9 +1069,9 @@ class TransaksiDoResource extends Resource
         $bayarHutang = self::formatCurrency($state);
 
         // Validate bayar hutang
-        if ($bayarHutang > $hutang_awal) {
-            $bayarHutang = $hutang_awal;
-            $set('pembayaran_hutang', $hutang_awal);
+        if ($bayarHutang > $hutang) {
+            $bayarHutang = $hutang;
+            $set('pembayaran_hutang', $hutang);
 
             // Perbaikan format notifikasi
             Notification::make()
@@ -1080,17 +1079,17 @@ class TransaksiDoResource extends Resource
                 ->title('Pembayaran Hutang')
                 ->body(sprintf(
                     'Pembayaran disesuaikan menjadi Rp %s sesuai total hutang',
-                    number_format($hutang_awal, 0, ',', '.')
+                    number_format($hutang, 0, ',', '.')
                 ))
                 ->duration(3000)
-                ->persistent(false)
+                ->persistent()
                 ->color('warning')
                 ->icon('heroicon-o-banknotes')
                 ->send();
         }
 
         // Update sisa hutang
-        $sisaHutang = $hutang_awal - $bayarHutang;
+        $sisaHutang = $hutang - $bayarHutang;
         $set('sisa_hutang_penjual', max(0, $sisaHutang));
 
         // Recalculate sisa bayar

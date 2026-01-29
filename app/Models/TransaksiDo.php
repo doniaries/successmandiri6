@@ -192,9 +192,10 @@ class TransaksiDo extends Model
         );
     }
 
-    public function scopeRecent($query, $days = 30)
+    public function scopeCurrentMonth($query)
     {
-        return $query->where('tanggal', '>=', now()->subDays($days));
+        return $query->whereMonth('tanggal', now()->month)
+            ->whereYear('tanggal', now()->year);
     }
 
     public function scopeByPenjual($query, $penjualId)

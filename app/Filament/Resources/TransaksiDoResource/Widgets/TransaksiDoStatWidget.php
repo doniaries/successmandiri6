@@ -27,6 +27,8 @@ class TransaksiDoStatWidget extends BaseWidget
                 // - Plus operational income
                 $incomingFunds = DB::table('transaksi_do')
                     ->whereNull('deleted_at')
+                    ->whereMonth('tanggal', now()->month)
+                    ->whereYear('tanggal', now()->year)
                     ->select([
                         DB::raw('COALESCE(SUM(pembayaran_hutang), 0) as total_debt_payments'),
                         DB::raw('COALESCE(SUM(CASE
@@ -39,6 +41,8 @@ class TransaksiDoStatWidget extends BaseWidget
                 $operationalIncome = DB::table('operasional')
                     ->whereNull('deleted_at')
                     ->where('operasional', 'pemasukan')
+                    ->whereMonth('tanggal', now()->month)
+                    ->whereYear('tanggal', now()->year)
                     ->sum('nominal');
 
                 // Update cara bayar untuk konsistensi
@@ -51,11 +55,15 @@ class TransaksiDoStatWidget extends BaseWidget
                 // - Plus total operational expenses
                 $totalDO = DB::table('transaksi_do')
                     ->whereNull('deleted_at')
+                    ->whereMonth('tanggal', now()->month)
+                    ->whereYear('tanggal', now()->year)
                     ->sum('sub_total');
 
                 $totalOperational = DB::table('operasional')
                     ->whereNull('deleted_at')
                     ->where('operasional', 'pengeluaran')
+                    ->whereMonth('tanggal', now()->month)
+                    ->whereYear('tanggal', now()->year)
                     ->sum('nominal');
 
                 $totalExpenditure = $totalDO + $totalOperational;
@@ -104,13 +112,13 @@ class TransaksiDoStatWidget extends BaseWidget
                         ->descriptionIcon('heroicon-m-arrow-trending-down')
                         ->color('danger'),
 
-                    Stat::make('Total Transaksi', TransaksiDo::count())
+                    Stat::make('Total Transaksi', TransaksiDo::currentMonth()->count())
                         ->description(sprintf(
                             "tunai: %d\ntransfer: %d\ncair di luar: %d\nbelum dibayar: %d",
-                            TransaksiDo::where('cara_bayar', 'tunai')->count(),
-                            TransaksiDo::where('cara_bayar', 'transfer')->count(),
-                            TransaksiDo::where('cara_bayar', 'cair di luar')->count(),
-                            TransaksiDo::where('cara_bayar', 'belum dibayar')->count()
+                            TransaksiDo::currentMonth()->where('cara_bayar', 'tunai')->count(),
+                            TransaksiDo::currentMonth()->where('cara_bayar', 'transfer')->count(),
+                            TransaksiDo::currentMonth()->where('cara_bayar', 'cair di luar')->count(),
+                            TransaksiDo::currentMonth()->where('cara_bayar', 'belum dibayar')->count()
                         ))
                         ->descriptionIcon('heroicon-m-document-text')
                         ->color('primary'),
