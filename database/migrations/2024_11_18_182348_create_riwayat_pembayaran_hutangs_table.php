@@ -23,7 +23,7 @@ return new class extends Migration
 
             // Indexes
             $table->index('tanggal');
-            $table->index(['tipe', 'penjual_id', 'pekerja_id']);
+            $table->index(['tipe_nama', 'penjual_id', 'pekerja_id']);
         });
     }
 
