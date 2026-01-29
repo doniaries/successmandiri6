@@ -161,6 +161,40 @@ class LaporanKeuanganResource extends Resource
 
             //download PDF//
             ->headerActions([
+                Tables\Actions\Action::make('cetakRekap')
+                    ->label(fn($livewire) => 'Cetak Rekap ' . ($livewire->activeTab === 'hari_ini' ? 'Hari Ini' : ($livewire->activeTab === 'bulan_ini' ? 'Bulan Ini' : 'Terpilih')))
+                    ->icon('heroicon-o-printer')
+                    ->color('success')
+                    ->action(function (LaporanKeuanganService $service, $livewire) {
+                        $startDate = now();
+                        $endDate = now();
+
+                        if ($livewire->activeTab === 'bulan_ini') {
+                            $startDate = now()->startOfMonth();
+                            $endDate = now()->endOfMonth();
+                        } elseif ($livewire->activeTab === 'tahun_ini') {
+                            $startDate = now()->startOfYear();
+                            $endDate = now()->endOfYear();
+                        } elseif ($livewire->activeTab === 'semua' || empty($livewire->activeTab)) {
+                            // Default to month if "Semua" is active to avoid massive PDFs
+                            $startDate = now()->startOfMonth();
+                            $endDate = now()->endOfMonth();
+                        }
+
+                        try {
+                            $viewData = $service->generatePdfReport($startDate, $endDate);
+                            $pdf = Pdf::loadView('laporan.keuangan-harian', $viewData);
+                            $pdf->setPaper('a4', 'landscape');
+
+                            return response()->streamDownload(
+                                fn() => print($pdf->output()),
+                                "rekap-{$livewire->activeTab}-" . now()->format('Y-m-d') . ".pdf"
+                            );
+                        } catch (\Exception $e) {
+                            \Illuminate\Support\Facades\Log::error('Quick Print Error: ' . $e->getMessage());
+                        }
+                    })
+                    ->hidden(fn($livewire) => $livewire->activeTab === 'semua'),
                 Tables\Actions\Action::make('syncSaldo')
                     ->label('Sync Saldo')
                     ->icon('heroicon-o-arrow-path') // Icon sync
@@ -236,7 +270,7 @@ class LaporanKeuanganResource extends Resource
                             Notification::make()
                                 ->danger()
                                 ->duration(3000)
-                                ->persistent(false)
+                                ->persistent()
                                 ->title('Error')
                                 ->body('Gagal membuat laporan: ' . $e->getMessage())
                                 ->send();
@@ -337,8 +371,7 @@ class LaporanKeuanganResource extends Resource
     public static function getWidgets(): array
     {
         return [
-            // LaporanKeuanganDoStatsWidget::class,
-            TransaksiDoStatWidget::class,
+            LaporanKeuanganDoStatsWidget::class,
         ];
     }
     public static function getNavigationBadgeColor(): ?string

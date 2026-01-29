@@ -138,11 +138,11 @@
 
     <table class="saldo-header">
         <tr>
-            <td>
-                <div style="text-align: center" class="saldo-title">SISA SALDO</div>
-                <div style="text-align: center" class="saldo-amount">Rp {{ number_format($saldoAwal, 0, ',', '.') }}</div>
+            <td style="width: 20%;">
+                <div style="text-align: center" class="saldo-title">SELISIH KAS (PERIODE)</div>
+                <div style="text-align: center" class="saldo-amount">Rp {{ number_format($selisihPeriode, 0, ',', '.') }}</div>
             </td>
-            <td>
+            <td style="width: 30%;">
                 <div style="text-align: center" class="saldo-title">TOTAL SALDO/UANG MASUK</div>
                 <div style="text-align: center" class="saldo-amount">Rp
                     {{ number_format($totalPemasukan, 0, ',', '.') }}
@@ -156,20 +156,23 @@
                     belum dibayar: {{ $transaksiCount['belumDibayar'] }})
                 </div>
             </td>
-            <td>
+            <td style="width: 25%;">
                 <div style="text-align: center" class="saldo-title">PENGELUARAN/UANG KELUAR</div>
                 <div style="text-align: center" class="saldo-amount">Rp
-                    {{ number_format($totalPengeluaran, 0, ',', '.') }}</div>
+                    {{ number_format($totalPengeluaran, 0, ',', '.') }}
+                </div>
                 <div style="text-align: center">
                     Total DO: Rp {{ number_format($totalSubTotal, 0, ',', '.') }}<br>
                     Total Operasional: Rp {{ number_format($pengeluaranOperasional, 0, ',', '.') }}
                 </div>
             </td>
-            <td>
-                <div style="text-align: center" class="saldo-title">JUMLAH TRANSAKSI</div>
-                <div style="text-align: center" class="saldo-amount">{{ $transaksiCount['total'] }}</div>
+            <td style="width: 25%;">
+                <div style="text-align: center" class="saldo-title">SALDO AKHIR PERUSAHAAN</div>
+                <div style="text-align: center" class="saldo-amount">Rp {{ number_format($currentSaldo, 0, ',', '.') }}</div>
+                <div style="text-align: center" class="transaction-count">
+                    Total: {{ $transaksiCount['total'] }} Transaksi
+                </div>
             </td>
-
         </tr>
     </table>
 
@@ -193,28 +196,28 @@
         </thead>
         <tbody>
             @foreach ($transaksiDo as $index => $transaksi)
-                <tr>
-                    <td class="amount">{{ $index + 1 }}</td>
-                    <td>{{ $transaksi->penjual->nama ?? '-' }}</td>
-                    <td>{{ $transaksi->supir->nama ?? '-' }}</td>
-                    <td class="amount">{{ number_format($transaksi->tonase, 0) }}</td>
-                    <td class="amount">{{ number_format($transaksi->harga_satuan, 0) }}</td>
-                    <td class="amount">{{ number_format($transaksi->sub_total, 0) }}</td>
-                    <td class="amount">{{ number_format($transaksi->biaya_lain + $transaksi->upah_bongkar, 0) }}</td>
-                    <td class="amount">{{ number_format($transaksi->pembayaran_hutang, 0) }}</td>
-                    <td class="amount">
-                        {{ strtolower($transaksi->cara_bayar) === 'tunai' ? number_format($transaksi->sisa_bayar, 0) : '' }}
-                    </td>
-                    <td class="amount">
-                        {{ strtolower($transaksi->cara_bayar) === 'transfer' ? number_format($transaksi->sisa_bayar, 0) : '' }}
-                    </td>
-                    <td class="amount">
-                        {{ strtolower($transaksi->cara_bayar) === 'cair di luar' ? number_format($transaksi->sisa_bayar, 0) : '' }}
-                    </td>
-                    <td class="amount">
-                        {{ strtolower($transaksi->cara_bayar) === 'belum dibayar' ? number_format($transaksi->sisa_bayar, 0) : '' }}
-                    </td>
-                </tr>
+            <tr>
+                <td class="amount">{{ $index + 1 }}</td>
+                <td>{{ $transaksi->penjual->nama ?? '-' }}</td>
+                <td>{{ $transaksi->supir->nama ?? '-' }}</td>
+                <td class="amount">{{ number_format($transaksi->tonase, 0) }}</td>
+                <td class="amount">{{ number_format($transaksi->harga_satuan, 0) }}</td>
+                <td class="amount">{{ number_format($transaksi->sub_total, 0) }}</td>
+                <td class="amount">{{ number_format($transaksi->biaya_lain + $transaksi->upah_bongkar, 0) }}</td>
+                <td class="amount">{{ number_format($transaksi->pembayaran_hutang, 0) }}</td>
+                <td class="amount">
+                    {{ strtolower($transaksi->cara_bayar) === 'tunai' ? number_format($transaksi->sisa_bayar, 0) : '' }}
+                </td>
+                <td class="amount">
+                    {{ strtolower($transaksi->cara_bayar) === 'transfer' ? number_format($transaksi->sisa_bayar, 0) : '' }}
+                </td>
+                <td class="amount">
+                    {{ strtolower($transaksi->cara_bayar) === 'cair di luar' ? number_format($transaksi->sisa_bayar, 0) : '' }}
+                </td>
+                <td class="amount">
+                    {{ strtolower($transaksi->cara_bayar) === 'belum dibayar' ? number_format($transaksi->sisa_bayar, 0) : '' }}
+                </td>
+            </tr>
             @endforeach
             <!-- Total Row -->
             <tr class="total-row">
@@ -242,91 +245,91 @@
         </tr>
 
         @php
-            $pemasukan = $operasional->where('operasional', 'pemasukan')->values();
-            $pengeluaran = $operasional->where('operasional', 'pengeluaran')->values();
-            $maxRows = max($pemasukan->count(), $pengeluaran->count());
+        $pemasukan = $operasional->where('operasional', 'pemasukan')->values();
+        $pengeluaran = $operasional->where('operasional', 'pengeluaran')->values();
+        $maxRows = max($pemasukan->count(), $pengeluaran->count());
         @endphp
 
         @if ($maxRows == 0)
-            <tr>
-                <td colspan="4" style="text-align: center;">Tidak ada data operasional untuk periode ini</td>
-            </tr>
+        <tr>
+            <td colspan="4" style="text-align: center;">Tidak ada data operasional untuk periode ini</td>
+        </tr>
         @else
-            @foreach (range(0, $maxRows - 1) as $i)
-                <tr>
-                    <!-- Pemasukan -->
-                    @if ($i < $pemasukan->count())
-                        <td style="width: 25%;">
-                            {{ strtoupper($pemasukan[$i]->kategoriLabel) }}
-                            {{-- @if ($pemasukan[$i]->user)
+        @foreach (range(0, $maxRows - 1) as $i)
+        <tr>
+            <!-- Pemasukan -->
+            @if ($i < $pemasukan->count())
+                <td style="width: 25%;">
+                    {{ strtoupper($pemasukan[$i]->kategoriLabel) }}
+                    {{-- @if ($pemasukan[$i]->user)
                                 <br><small>Oleh: {{ $pemasukan[$i]->user->name }}</small>
-                            @endif --}}
-                            @if ($pemasukan[$i]->tipe_nama)
-                                <br><small>
-                                    @switch($pemasukan[$i]->tipe_nama)
-                                        @case('supir')
-                                            Peminjam: {{ $pemasukan[$i]->supir->nama ?? '-' }} (Supir)
-                                        @break
+                    @endif --}}
+                    @if ($pemasukan[$i]->tipe_nama)
+                    <br><small>
+                        @switch($pemasukan[$i]->tipe_nama)
+                        @case('supir')
+                        Peminjam: {{ $pemasukan[$i]->supir->nama ?? '-' }} (Supir)
+                        @break
 
-                                        @case('penjual')
-                                            Peminjam: {{ $pemasukan[$i]->penjual->nama ?? '-' }} (Penjual)
-                                        @break
+                        @case('penjual')
+                        Peminjam: {{ $pemasukan[$i]->penjual->nama ?? '-' }} (Penjual)
+                        @break
 
-                                        @case('pekerja')
-                                            Peminjam: {{ $pemasukan[$i]->pekerja->nama ?? '-' }} (Pekerja)
-                                        @break
-                                    @endswitch
-                                </small>
-                            @endif
-                        </td>
-                        <td style="width: 25%;" class="amount">
-                            Rp {{ number_format($pemasukan[$i]->nominal, 0, ',', '.') }}
-                        </td>
-                    @else
-                        <td style="width: 25%;"></td>
-                        <td style="width: 25%;"></td>
+                        @case('pekerja')
+                        Peminjam: {{ $pemasukan[$i]->pekerja->nama ?? '-' }} (Pekerja)
+                        @break
+                        @endswitch
+                    </small>
                     @endif
+                </td>
+                <td style="width: 25%;" class="amount">
+                    Rp {{ number_format($pemasukan[$i]->nominal, 0, ',', '.') }}
+                </td>
+                @else
+                <td style="width: 25%;"></td>
+                <td style="width: 25%;"></td>
+                @endif
 
-                    <!-- Pengeluaran -->
-                    @if ($i < $pengeluaran->count())
-                        <td style="width: 25%;">
-                            {{ strtoupper($pengeluaran[$i]->kategoriLabel) }}
-                            @if ($pengeluaran[$i]->kategori === 'pinjaman')
-                            @endif
-                            @if ($pengeluaran[$i]->tipe_nama)
-                                <br><small>
-                                    @switch($pengeluaran[$i]->tipe_nama)
-                                        @case('supir')
-                                            Peminjam: {{ $pengeluaran[$i]->supir->nama ?? '-' }} (Supir)
-                                        @break
+                <!-- Pengeluaran -->
+                @if ($i < $pengeluaran->count())
+                    <td style="width: 25%;">
+                        {{ strtoupper($pengeluaran[$i]->kategoriLabel) }}
+                        @if ($pengeluaran[$i]->kategori === 'pinjaman')
+                        @endif
+                        @if ($pengeluaran[$i]->tipe_nama)
+                        <br><small>
+                            @switch($pengeluaran[$i]->tipe_nama)
+                            @case('supir')
+                            Peminjam: {{ $pengeluaran[$i]->supir->nama ?? '-' }} (Supir)
+                            @break
 
-                                        @case('penjual')
-                                            Peminjam: {{ $pengeluaran[$i]->penjual->nama ?? '-' }} (Penjual)
-                                        @break
+                            @case('penjual')
+                            Peminjam: {{ $pengeluaran[$i]->penjual->nama ?? '-' }} (Penjual)
+                            @break
 
-                                        @case('pekerja')
-                                            Peminjam: {{ $pengeluaran[$i]->pekerja->nama ?? '-' }} (Pekerja)
-                                        @break
-                                    @endswitch
-                                </small>
-                            @endif
-                        </td>
-                        <td style="width: 25%;" class="amount">
-                            Rp {{ number_format($pengeluaran[$i]->nominal, 0, ',', '.') }}
-                        </td>
+                            @case('pekerja')
+                            Peminjam: {{ $pengeluaran[$i]->pekerja->nama ?? '-' }} (Pekerja)
+                            @break
+                            @endswitch
+                        </small>
+                        @endif
+                    </td>
+                    <td style="width: 25%;" class="amount">
+                        Rp {{ number_format($pengeluaran[$i]->nominal, 0, ',', '.') }}
+                    </td>
                     @else
-                        <td style="width: 25%;"></td>
-                        <td style="width: 25%;"></td>
+                    <td style="width: 25%;"></td>
+                    <td style="width: 25%;"></td>
                     @endif
-                </tr>
-            @endforeach
+        </tr>
+        @endforeach
 
-            <tr class="total-row">
-                <td>TOTAL</td>
-                <td class="amount">Rp {{ number_format($pemasukan->sum('nominal'), 0, ',', '.') }}</td>
-                <td>TOTAL</td>
-                <td class="amount">Rp {{ number_format($pengeluaran->sum('nominal'), 0, ',', '.') }}</td>
-            </tr>
+        <tr class="total-row">
+            <td>TOTAL</td>
+            <td class="amount">Rp {{ number_format($pemasukan->sum('nominal'), 0, ',', '.') }}</td>
+            <td>TOTAL</td>
+            <td class="amount">Rp {{ number_format($pengeluaran->sum('nominal'), 0, ',', '.') }}</td>
+        </tr>
         @endif
     </table>
 </body>

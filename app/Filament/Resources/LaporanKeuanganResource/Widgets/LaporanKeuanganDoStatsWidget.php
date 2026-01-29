@@ -143,15 +143,22 @@ class LaporanKeuanganDoStatsWidget extends BaseWidget
     // Get filtered statistics
     private function getFilteredStats(): array
     {
-        $query = LaporanKeuangan::query()
-            ->whereBetween('tanggal', [
+        $query = LaporanKeuangan::query();
+
+        // Apply time-based filter from tab
+        match ($this->activeTab) {
+            'hari_ini' => $query->whereDate('tanggal', now()),
+            'bulan_ini' => $query->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year),
+            'tahun_ini' => $query->whereYear('tanggal', now()->year),
+            'semua' => $query->whereBetween('tanggal', [
                 $this->startDate->startOfDay(),
                 $this->endDate->endOfDay()
-            ]);
-
-        if ($this->activeTab !== 'semua') {
-            $query->where('cara_pembayaran', $this->activeTab);
-        }
+            ]),
+            default => $query->whereBetween('tanggal', [
+                $this->startDate->startOfDay(),
+                $this->endDate->endOfDay()
+            ]),
+        };
 
         $stats = $query->select([
             // Basic counts

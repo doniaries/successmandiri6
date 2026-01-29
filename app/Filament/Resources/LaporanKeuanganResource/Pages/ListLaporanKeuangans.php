@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\ListRecords\Tab;
 use App\Filament\Resources\LaporanKeuanganResource;
 use App\Filament\Resources\TransaksiDoResource\Widgets\TransaksiDoStatWidget;
+use App\Services\LaporanKeuanganService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class ListLaporanKeuangans extends ListRecords
 {
@@ -18,17 +21,13 @@ class ListLaporanKeuangans extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            // Actions\CreateAction::make(),//disable tombol buat
-        ];
+        return [];
     }
 
     protected function getHeaderWidgets(): array
     {
         return [
-            // LaporanKeuanganDoStatsWidget::class,
-            // LaporanKeuanganResource\Widgets\LaporanKeuanganDoStatsWidget::class,
-            TransaksiDoStatWidget::make(),
+            LaporanKeuanganResource\Widgets\LaporanKeuanganDoStatsWidget::class,
         ];
     }
 
@@ -51,59 +50,40 @@ class ListLaporanKeuangans extends ListRecords
         ]);
     }
 
-    // public function getTabs(): array
-    // {
-    //     return [
-    //         'semua' => Tab::make('Semua Laporan')
-    //             ->icon('heroicon-o-clipboard-document-list')
-    //             ->badge($this->getTabCount('semua'))
-    //             ->modifyQueryUsing(fn(Builder $query) => $query)
-    //             ->badgeColor('primary'),
+    public function getTabs(): array
+    {
+        return [
+            'hari_ini' => Tab::make('Hari Ini')
+                ->icon('heroicon-o-calendar')
+                ->modifyQueryUsing(fn(Builder $query) => $query->whereDate('tanggal', now()))
+                ->badge($this->getTabCount('hari_ini')),
 
-    //         'tunai' => Tab::make('tunai')
-    //             ->icon('heroicon-o-banknotes')
-    //             ->badge($this->getTabCount('tunai'))
-    //             ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'tunai'))
-    //             ->badgeColor('success'),
+            'bulan_ini' => Tab::make('Bulan Ini')
+                ->icon('heroicon-o-calendar-days')
+                ->modifyQueryUsing(fn(Builder $query) => $query->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year))
+                ->badge($this->getTabCount('bulan_ini')),
 
-    //         'transfer' => Tab::make('transfer')
-    //             ->icon('heroicon-o-credit-card')
-    //             ->badge($this->getTabCount('transfer'))
-    //             ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'transfer'))
-    //             ->badgeColor('info'),
+            'tahun_ini' => Tab::make('Tahun Ini')
+                ->icon('heroicon-o-archive-box')
+                ->modifyQueryUsing(fn(Builder $query) => $query->whereYear('tanggal', now()->year))
+                ->badge($this->getTabCount('tahun_ini')),
 
-    //         'cair_di_luar' => Tab::make('cair di luar')
-    //             ->icon('heroicon-o-check-circle')
-    //             ->badge($this->getTabCount('cair di luar'))
-    //             ->modifyQueryUsing(fn(Builder $query) => $query->where('cara_pembayaran', 'cair di luar'))
-    //             ->badgeColor('warning'),
-    //     ];
-    // }
+            'semua' => Tab::make('Semua')
+                ->icon('heroicon-o-clipboard-document-list')
+                ->modifyQueryUsing(fn(Builder $query) => $query)
+                ->badge($this->getTabCount('semua')),
+        ];
+    }
 
-    // protected function getTabCount(string $tab): int
-    // {
-    //     $query = $this->getModel()::query();
+    protected function getTabCount(string $tab): int
+    {
+        $query = $this->getModel()::query();
 
-    //     // Apply date filter if exists
-    //     $dateFilter = $this->getTableFilters()['date_range'] ?? null;
-    //     if ($dateFilter) {
-    //         $data = $dateFilter->getState();
-    //         if (!empty($data['dari_tanggal']) && !empty($data['sampai_tanggal'])) {
-    //             $query->whereBetween('tanggal', [
-    //                 $data['dari_tanggal'],
-    //                 $data['sampai_tanggal']
-    //             ]);
-    //         }
-    //     }
-
-    //     // Apply tab filter
-    //     if ($tab !== 'semua') {
-    //         $query->where('cara_pembayaran', $tab);
-    //     }
-
-    //     return $query->count();
-    // }
-
-
-
+        return match ($tab) {
+            'hari_ini' => $query->whereDate('tanggal', now())->count(),
+            'bulan_ini' => $query->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year)->count(),
+            'tahun_ini' => $query->whereYear('tanggal', now()->year)->count(),
+            default => $query->count(),
+        };
+    }
 }

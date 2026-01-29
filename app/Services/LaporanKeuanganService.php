@@ -107,22 +107,11 @@ class LaporanKeuanganService
                 Carbon::parse($endDate)->endOfDay()
             ])->get();
 
-            // Hitung jumlah transaksi per cara bayar
-            $transaksiCount = [
-                'tunai' => $transaksiDo->where('cara_bayar', 'tunai')->count(),
-                'transfer' => $transaksiDo->where('cara_bayar', 'transfer')->count(),
-                'cairDiluar' => $transaksiDo->where('cara_bayar', 'cair di luar')->count(),
-                'belumDibayar' => $transaksiDo->where('cara_bayar', 'belum dibayar')->count(),
-                'total' => $transaksiDo->count()
-            ];
-
             // Pembayaran per metode DO
-            $pembayaran = [
-                'tunai' => $transaksiDo->where('cara_bayar', 'tunai')->sum('sisa_bayar'),
-                'transfer' => $transaksiDo->where('cara_bayar', 'transfer')->sum('sisa_bayar'),
-                'cairDiluar' => $transaksiDo->where('cara_bayar', 'cair di luar')->sum('sisa_bayar'),
-                'belumDibayar' => $transaksiDo->where('cara_bayar', 'belum dibayar')->sum('sisa_bayar'),
-            ];
+            $pembayaranTunai = $transaksiDo->where('cara_bayar', 'tunai')->sum('sisa_bayar');
+            $pembayaranTransfer = $transaksiDo->where('cara_bayar', 'transfer')->sum('sisa_bayar');
+            $pembayaranCairDiluar = $transaksiDo->where('cara_bayar', 'cair di luar')->sum('sisa_bayar');
+            $pembayaranBelumDibayar = $transaksiDo->where('cara_bayar', 'belum dibayar')->sum('sisa_bayar');
 
             $pemasukanOperasional = $operasional->where('operasional', 'pemasukan')->sum('nominal');
             $pengeluaranOperasional = $operasional->where('operasional', 'pengeluaran')->sum('nominal');
@@ -138,23 +127,39 @@ class LaporanKeuanganService
             $totalPengeluaran = $transaksiDo->sum('sub_total') + // Total DO
                 $pengeluaranOperasional; // Pengeluaran operasional
 
-            // Hitung sisa saldo
-            $sisaSaldo = $totalPemasukan - $totalPengeluaran;
-
             // Hitung total lainnya
             $totalTonase = $transaksiDo->sum('tonase');
             $totalSubTotal = $transaksiDo->sum('sub_total');
-            $totalBiaya = $transaksiDo->sum(fn($item) => $item->biaya_lain + $item->upah_bongkar);
+            $totalBiaya = $transaksiDo->sum(fn($item) => ($item->biaya_lain ?? 0) + ($item->upah_bongkar ?? 0));
+
+            // Hitung sisa saldo (Selisih periode)
+            $selisihPeriode = $totalPemasukan - $totalPengeluaran;
+
+            // Fetch current company balance
+            $perusahaanModel = Perusahaan::first();
+            $currentSaldo = $perusahaanModel ? $perusahaanModel->saldo : 0;
+
+            // Prepare breakdown for return
+            $pembayaran = [
+                'tunai' => $pembayaranTunai,
+                'transfer' => $pembayaranTransfer,
+                'cairDiluar' => $pembayaranCairDiluar,
+                'belumDibayar' => $pembayaranBelumDibayar,
+            ];
+
+            $transaksiCount = [
+                'total' => $transaksiDo->count(),
+                'tunai' => $transaksiDo->where('cara_bayar', 'tunai')->count(),
+                'transfer' => $transaksiDo->where('cara_bayar', 'transfer')->count(),
+                'cairDiluar' => $transaksiDo->where('cara_bayar', 'cair di luar')->count(),
+                'belumDibayar' => $transaksiDo->where('cara_bayar', 'belum dibayar')->count(),
+            ];
 
             Log::info('Report Calculations:', [
-                'pemasukan_tunai_transfer' => $pembayaran['tunai'] + $pembayaran['transfer'],
-                'pemasukan_cair_diluar' => $pembayaran['cairDiluar'],
-                'bayar_hutang' => $totalBayarHutang,
-                'pemasukan_operasional' => $pemasukanOperasional,
-                'total_saldo_masuk' => $totalPemasukan,
-                'total_pengeluaran' => $totalPengeluaran,
-                'sisa_saldo' => $sisaSaldo,
-                'transaksi_count' => $transaksiCount
+                'pemasukan' => $totalPemasukan,
+                'pengeluaran' => $totalPengeluaran,
+                'selisih' => $selisihPeriode,
+                'current_saldo' => $currentSaldo
             ]);
 
             return [
@@ -163,7 +168,8 @@ class LaporanKeuanganService
                 'operasional' => $operasional,
                 'totalPemasukan' => $totalPemasukan,
                 'totalPengeluaran' => $totalPengeluaran,
-                'saldoAwal' => $sisaSaldo,
+                'selisihPeriode' => $selisihPeriode,
+                'currentSaldo' => $currentSaldo,
                 'pembayaran' => $pembayaran,
                 'transaksiCount' => $transaksiCount,
                 'totalTonase' => $totalTonase,
